@@ -104,3 +104,84 @@ The source code for earlier versions of the Ionic Framework may exist in other r
 
 * **Ionic 2/3**: Moved to [`ionic-team/ionic-v3`](https://github.com/ionic-team/ionic-v3)
 * **Ionic 1**: Moved to [`ionic-team/ionic-v1`](https://github.com/ionic-team/ionic-v1)
+
+# GPS2
+
+![Ionic Framework](https://ionicframework.com/)
+
+## Description
+GPS2 is an Ionic project.
+
+## Installation
+To install GPS2, follow these steps:
+
+1. Clone the repository.
+2. Navigate to the project directory.
+3. Run the following command to install the dependencies:
+
+
+## Usage
+To start GPS2, use the following command:
+
+
+This will run the project using the Angular development server.
+
+## Scripts
+The following scripts are available in GPS2:
+
+- `ng`: Runs the Angular CLI.
+- `start`: Starts the project using the Angular development server.
+- `build`: Builds the project.
+- `watch`: Builds the project in watch mode with the development configuration.
+- `test`: Runs tests for the project.
+- `lint`: Runs the linter for the project.
+
+## Dependencies
+GPS2 has the following dependencies:
+
+- @angular/animations: ^16.0.0
+- @angular/common: ^16.0.0
+- @angular/compiler: ^16.0.0
+- @angular/core: ^16.0.0
+- @angular/forms: ^16.0.0
+- @angular/platform-browser: ^16.0.0
+- @angular/platform-browser-dynamic: ^16.0.0
+- @angular/router: ^16.0.0
+- @angular/service-worker: ^16.0.0
+- @capacitor/app: 5.0.2
+- @capacitor/camera: ^5.0.2
+- @capacitor/core: ^5.0.0-rc.2
+- @capacitor/geolocation: ^5.0.2
+- @capacitor/haptics: 5.0.2
+- @capacitor/keyboard: 5.0.2
+- @capacitor/share: ^5.0.2
+- @capacitor/status-bar: 5.0.2
+- @ionic/angular: ^7.0.0
+- @ionic/pwa-elements: ^3.1.1
+- ionicons: ^7.0.0
+- rxjs: ~7.8.0
+- tslib: ^2.3.0
+- zone.js: ~0.13.0
+
+## Development Dependencies
+GPS2 has the following development dependencies:
+
+- @angular-devkit/build-angular: ^16.0.0
+- @angular-eslint/builder: ^16.0.0
+- @angular-eslint/eslint-plugin: ^16.0.0
+- @angular-eslint/eslint-plugin-template: ^16.0.0
+- @angular-eslint/schematics: ^16.0.0
+- @angular-eslint/template-parser: ^16.0.0
+- @angular/cli: ^16.0.0
+- @angular/compiler: ^16.0.0
+- @angular/compiler-cli: ^16.0.0
+- @angular/language-service: ^16.0.0
+- @capacitor/cli: ^5.0.0-rc.2
+- @ionic/angular-toolkit: ^9.0.0
+- @types/jasmine: ~4.3.0
+- @types/node: ^12.11.1
+- @typescript-eslint/eslint-plugin: 5.3.0
+- @typescript-eslint/parser: 5.3.0
+- eslint: ^7.26.0
+- eslint-plugin-import
+
