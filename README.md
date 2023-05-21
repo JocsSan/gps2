@@ -117,7 +117,7 @@ To install GPS2, follow these steps:
 2. Navigate to the project directory.
 3. Run the following command to install the dependencies:
 
-npm start
+`npm start`
 
 
 ## Usage
