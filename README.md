@@ -107,8 +107,6 @@ The source code for earlier versions of the Ionic Framework may exist in other r
 
 # GPS2
 
-![Ionic Framework](https://ionicframework.com/)
-
 ## Description
 GPS2 is an Ionic project.
 
