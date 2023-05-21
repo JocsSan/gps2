@@ -1,0 +1,7 @@
+{
+  "name": "gps2",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
