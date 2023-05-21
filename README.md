@@ -117,12 +117,12 @@ To install GPS2, follow these steps:
 2. Navigate to the project directory.
 3. Run the following command to install the dependencies:
 
-`npm start`
+`npm i`
 
 
 ## Usage
 To start GPS2, use the following command:
-
+`npm install`
 
 This will run the project using the Angular development server.
 
