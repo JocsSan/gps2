@@ -35,7 +35,9 @@
         Share!
       </ion-button>
       <p>{{cambioDistancias}}</p>
-      <h3>Se guardo a los</h3>
+      <h3 *ngIf="seGuardo">
+        Se guardo a los {{logGuardado | date:'dd/MM/yyyy HH:mm'}}
+      </h3>
     </ion-card-content>
   </ion-card>
 </ion-content>

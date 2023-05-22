@@ -12,6 +12,8 @@ import { interval } from 'rxjs';
 export class HomePage implements OnInit {
   myImage: any;
   position?: any;
+  logGuardado: any;
+  seGuardo: boolean = false;
 
   cambioDistancias!: number;
 
@@ -80,6 +82,14 @@ export class HomePage implements OnInit {
         Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distancia = radioTierra * c;
+
+    if (distancia > 180) {
+      this.seGuardo = true;
+
+      this.logGuardado = Date.now();
+
+      console.log('se ha guardado');
+    }
 
     return distancia;
   }
