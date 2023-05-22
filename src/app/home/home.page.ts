@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Geolocation, Position } from '@capacitor/geolocation';
 import { Share } from '@capacitor/share';
+import { interval } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -15,19 +16,14 @@ export class HomePage implements OnInit {
   cambioDistancias!: number;
 
   constructor() {}
+
+  coordenadasActual!: { long: number; lat: number };
+
   ngOnInit(): void {
-    const latitudPuntoA = 40.7128; // Latitud del punto A en grados
-    const longitudPuntoA = -74.006; // Longitud del punto A en grados
-    const latitudPuntoB = 40.7306; // Latitud del punto B en grados
-    const longitudPuntoB = -73.9352; // Longitud del punto B en grados
-    const distancia = this.calcularDistancia(
-      latitudPuntoA,
-      longitudPuntoA,
-      latitudPuntoB,
-      longitudPuntoB
-    );
-    this.cambioDistancias = distancia;
-    console.log('Diferencia en metros:', distancia.toFixed(2), 'metros');
+    interval(5000).subscribe(() => {
+      // Realizar el cálculo cada 5 segundos
+      this.getCurrentPosition();
+    });
   }
 
   async takePicture() {
@@ -45,6 +41,21 @@ export class HomePage implements OnInit {
     const coordinates = await Geolocation.getCurrentPosition();
 
     this.position = coordinates;
+
+    console.log(this.position);
+
+    const latitudPuntoA = 15.46791001156522; // Latitud del punto A en grados
+    const longitudPuntoA = -87.96034665999613; // Longitud del punto A en grados
+    const latitudPuntoB = 15.46654599918261; // Latitud del punto B en grados
+    const longitudPuntoB = -87.96122335408147; // Longitud del punto B en grados
+    const distancia = this.calcularDistancia(
+      this.position.coords.latitude,
+      this.position.coords.longitude,
+      latitudPuntoB,
+      longitudPuntoB
+    );
+    this.cambioDistancias = distancia;
+    console.log('Diferencia en metros:', distancia.toFixed(2), 'metros');
   }
 
   async share() {
