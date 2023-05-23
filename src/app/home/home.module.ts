@@ -6,6 +6,8 @@ import { HomePage } from './home.page';
 import { ButtonModule } from 'primeng/button';
 
 import { HomePageRoutingModule } from './home-routing.module';
+import { MapComponent } from './components/map/map.component';
+import { IndexComponent } from './components/index/index.component';
 
 @NgModule({
   imports: [
@@ -15,6 +17,6 @@ import { HomePageRoutingModule } from './home-routing.module';
     HomePageRoutingModule,
     ButtonModule,
   ],
-  declarations: [HomePage],
+  declarations: [HomePage, MapComponent, IndexComponent],
 })
 export class HomePageModule {}
