@@ -126,7 +126,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
   //? calculo de distancias
   calcularDistancia(lat1: number, lon1: number, lat2: number, lon2: number) {
-    const radioTierra = 6371000; // Radio de la Tierra en metros
+    const radioTierra = 6371000;
     const dLat = this.toRad(lat2 - lat1);
     const dLon = this.toRad(lon2 - lon1);
     const a =
