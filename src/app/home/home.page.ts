@@ -3,7 +3,7 @@ import { PluginListenerHandle } from '@capacitor/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Geolocation, Position } from '@capacitor/geolocation';
 import { Share } from '@capacitor/share';
-import { interval } from 'rxjs';
+import { Subscription, interval } from 'rxjs';
 import { Network } from '@capacitor/network';
 
 @Component({
@@ -12,6 +12,7 @@ import { Network } from '@capacitor/network';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit, OnDestroy {
+  public subscripciones: { [key: string]: Subscription } = {};
   myImage: any;
   position?: any;
   logGuardado: any;
@@ -27,7 +28,7 @@ export class HomePage implements OnInit, OnDestroy {
   coordenadasActual!: { long: number; lat: number };
 
   ngOnInit(): void {
-    const intervalos = interval(5000).subscribe(() => {
+    this.subscripciones['interval'] = interval(5000).subscribe(() => {
       // Realizar el cálculo cada 5 segundos
       this.getCurrentPosition();
       this.listenerInternet();
@@ -56,6 +57,13 @@ export class HomePage implements OnInit, OnDestroy {
     if (this.networkListener) {
       this.networkListener.remove();
     }
+    Object.keys(this.subscripciones).forEach((key) => {
+      try {
+        this.subscripciones[key].unsubscribe();
+      } catch (error) {
+        console.log(error);
+      }
+    });
   }
 
   listenerInternet() {
