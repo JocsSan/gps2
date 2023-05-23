@@ -90,8 +90,8 @@ export class HomePage implements OnInit, OnDestroy {
 
       //    console.log(this.position);
 
-      const latitudPuntoA = 15.46791001156522; // Latitud del punto A en grados
-      const longitudPuntoA = -87.96034665999613; // Longitud del punto A en grados
+      //const latitudPuntoA = 15.46791001156522; // Latitud del punto A en grados
+      //const longitudPuntoA = -87.96034665999613; // Longitud del punto A en grados
       const latitudPuntoB = 15.46654599918261; // Latitud del punto B en grados
       const longitudPuntoB = -87.96122335408147; // Longitud del punto B en grados
       const distancia = this.calcularDistancia(
