@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { PluginListenerHandle } from '@capacitor/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Geolocation, Position } from '@capacitor/geolocation';
 import { Share } from '@capacitor/share';
 import { interval } from 'rxjs';
+import { Network } from '@capacitor/network';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, OnDestroy {
   myImage: any;
   position?: any;
   logGuardado: any;
@@ -17,15 +19,56 @@ export class HomePage implements OnInit {
 
   cambioDistancias!: number;
 
+  networkStatus: any;
+  networkListener!: PluginListenerHandle;
+
   constructor() {}
 
   coordenadasActual!: { long: number; lat: number };
 
   ngOnInit(): void {
-    interval(5000).subscribe(() => {
+    const intervalos = interval(5000).subscribe(() => {
       // Realizar el cálculo cada 5 segundos
       this.getCurrentPosition();
+      this.listenerInternet();
     });
+    this.networkListener = Network.addListener(
+      'networkStatusChange',
+      (status) => {
+        this.networkStatus = status;
+        console.log('Network status changed', status);
+      }
+    );
+  }
+
+  async getNetWorkStatus() {
+    this.networkStatus = await Network.getStatus();
+    console.log(this.networkStatus);
+  }
+
+  endNetworkListener() {
+    if (this.networkListener) {
+      this.networkListener.remove();
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.networkListener) {
+      this.networkListener.remove();
+    }
+  }
+
+  listenerInternet() {
+    console.log('internet');
+
+    Network.addListener('networkStatusChange', (status) => {
+      console.log('Network status changed', status);
+    });
+    const logCurrentNetworkStatus = async () => {
+      const status = await Network.getStatus();
+
+      console.log('Network status:', status);
+    };
   }
 
   async takePicture() {
@@ -44,7 +87,7 @@ export class HomePage implements OnInit {
 
     this.position = coordinates;
 
-    console.log(this.position);
+    //    console.log(this.position);
 
     const latitudPuntoA = 15.46791001156522; // Latitud del punto A en grados
     const longitudPuntoA = -87.96034665999613; // Longitud del punto A en grados
