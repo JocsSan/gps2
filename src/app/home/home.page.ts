@@ -28,18 +28,26 @@ export class HomePage implements OnInit, OnDestroy {
   coordenadasActual!: { long: number; lat: number };
 
   ngOnInit(): void {
-    this.subscripciones['interval'] = interval(5000).subscribe(() => {
-      // Realizar el cálculo cada 5 segundos
-      this.getCurrentPosition();
-      this.listenerInternet();
-    });
     this.networkListener = Network.addListener(
       'networkStatusChange',
       (status) => {
         this.networkStatus = status;
+        if (status.connected) {
+          // Se ha restablecido la conexión a Internet
+          this.getCurrentPosition();
+        }
         console.log('Network status changed', status);
       }
     );
+
+    this.getNetWorkStatus();
+
+    this.subscripciones['interval'] = interval(5000).subscribe(() => {
+      if (this.networkStatus?.connected) {
+        // Hay conexión a Internet, obtener la ubicación
+        this.getCurrentPosition();
+      }
+    });
   }
 
   async getNetWorkStatus() {
@@ -91,24 +99,24 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   async getCurrentPosition() {
-    const coordinates = await Geolocation.getCurrentPosition();
+    try {
+      const coordinates = await Geolocation.getCurrentPosition();
 
-    this.position = coordinates;
+      this.position = coordinates;
+      const latitudPuntoB = 15.46654599918261; // Latitud del punto B en grados
+      const longitudPuntoB = -87.96122335408147; // Longitud del punto B en grados
 
-    //    console.log(this.position);
+      const distancia = this.calcularDistancia(
+        coordinates.coords.latitude,
+        coordinates.coords.longitude,
+        latitudPuntoB,
+        longitudPuntoB
+      );
 
-    //const latitudPuntoA = 15.46791001156522; // Latitud del punto A en grados
-    //const longitudPuntoA = -87.96034665999613; // Longitud del punto A en grados
-    const latitudPuntoB = 15.46654599918261; // Latitud del punto B en grados
-    const longitudPuntoB = -87.96122335408147; // Longitud del punto B en grados
-    const distancia = this.calcularDistancia(
-      this.position.coords.latitude,
-      this.position.coords.longitude,
-      latitudPuntoB,
-      longitudPuntoB
-    );
-    this.cambioDistancias = distancia;
-    console.log('Diferencia en metros:', distancia.toFixed(2), 'metros');
+      console.log('Diferencia en metros:', distancia.toFixed(2), 'metros');
+    } catch (error) {
+      console.log('Error al obtener la ubicación', error);
+    }
   }
 
   async share() {
