@@ -1,13 +1,20 @@
-<google-map
-  height="400px"
-  width="400px"
-  [center]="center"
-  [zoom]="zoom"
-  (mapClick)="addMarker($event)"
->
-  <map-marker
-    *ngFor="let markerPosition of markerPositions"
-    [position]="markerPosition"
-    [options]="markerOptions"
-  ></map-marker>
-</google-map>
+<ion-content>
+  <div style="height: 80%; width: 100%">
+    <google-map height="100%" width="100%" [center]="center" [zoom]="zoom">
+      <map-marker
+        [position]="markerPositions"
+        [options]="markerOptions"
+      ></map-marker>
+      <map-circle [center]="markerPositions" [radius]="1"></map-circle>
+    </google-map>
+  </div>
+  <div style="display: flex; align-items: center">
+    <ion-label style="flex: 1">
+      <h1>H1 Heading</h1>
+      <p>Paragraph</p>
+    </ion-label>
+    <ion-button [routerLink]="['index']">
+      <ion-icon name="exit-sharp"></ion-icon>
+    </ion-button>
+  </div>
+</ion-content>

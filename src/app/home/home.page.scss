@@ -25,3 +25,22 @@
 #container a {
   text-decoration: none;
 }
+
+ion-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .content-wrapper {
+    text-align: center;
+    margin: auto;
+    margin-top: 250px;
+    max-width: 300px; // Ajusta el valor según tus necesidades
+    max-height: 300px; // Ajusta el valor según tus necesidades
+    display: flex;
+    align-content: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}

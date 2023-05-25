@@ -31,3 +31,11 @@
 body {
   font-family: var(--font-family);
 }
+
+ion-content.ion-text-center {
+  --ion-text-center: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+

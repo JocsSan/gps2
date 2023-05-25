@@ -1,14 +1,26 @@
-<ion-card>
-  <ion-card-header>
-    <ion-card-title>Card Title</ion-card-title>
-    <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-  </ion-card-header>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title> Rutas </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-item *ngFor="let item of listado">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Orden {{ item.Orden }}</ion-card-title>
+        <ion-card-subtitle>{{ item.NomCliente }}</ion-card-subtitle>
+        <ion-card-subtitle
+          >{{ item.Contacto }}. Tel : {{ item.Telefono }}
+        </ion-card-subtitle>
+      </ion-card-header>
 
-  <ion-card-content>
-    Here's a small text description for the card content. Nothing more, nothing
-    less.
-  </ion-card-content>
+      <ion-card-content>
+        {{ item.Direccion }}
+      </ion-card-content>
 
-  <ion-button fill="clear">Action 1</ion-button>
-  <ion-button fill="clear">Action 2</ion-button>
-</ion-card>
+      <ion-button fill="clear" (click)="navigateToDestination(item)"
+        >Tomar Orden</ion-button
+      >
+    </ion-card>
+  </ion-item>
+</ion-content>

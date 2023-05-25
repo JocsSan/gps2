@@ -1,62 +1,14 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-title> Capacitor PWA </ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
-  <ion-button (click)="takePicture()" expand="block">
-    <ion-icon name="camera" slot="start"></ion-icon>
-    Capture image
-  </ion-button>
-
-  <ion-img *ngIf="myImage" [src]="myImage"></ion-img>
-
-  <ion-button (click)="getCurrentPosition()" expand="block">
-    <ion-icon name="locate" slot="start"></ion-icon>
-    Get position
-  </ion-button>
-  <p>{{cambioDistancias}}</p>
-
-  <!-- present the geolocation information -->
-  <ion-card *ngIf="position">
-    <ion-card-content>
-      <ion-item>
-        <ion-icon name="location" slot="start"></ion-icon>
-        Lat: {{ position.coords.latitude }}
-      </ion-item>
-      <ion-item>
-        <ion-icon name="location" slot="start"></ion-icon>
-        Lng: {{ position.coords.longitude }}
-      </ion-item>
-
-      <ion-button (click)="share()" expand="block" color="secondary">
-        <ion-icon name="share" slot="start"></ion-icon>
-        Share!
-      </ion-button>
-      <p>{{cambioDistancias}}</p>
-      <h3 *ngIf="seGuardo">
-        Se guardo a los {{logGuardado | date:'dd/MM/yyyy HH:mm'}}
-      </h3>
-    </ion-card-content>
-  </ion-card>
-  <ion-card>
-    <ion-card-header>
-      <h2>
-        Network connection:
-        <ion-icon size="large" name="wifi" color="primary"></ion-icon><br />
-        {{ networkStatus | json }}
-      </h2>
-    </ion-card-header>
-    <ion-card-content class="ion-float-right">
-      <ion-button size="small" (click)="getNetWorkStatus()">
-        Get network status
-      </ion-button>
-      <ion-button size="small" color="danger" (click)="endNetworkListener()">
-        End network listener
-      </ion-button>
-    </ion-card-content>
-  </ion-card>
-  <ion-button [routerLink]="['index']">Go to index</ion-button>
-  <ion-button [routerLink]="['map']">Go to map</ion-button>
+  <div class="content-wrapper">
+    <ion-input
+      #inputx
+      label="Codigo"
+      label-placement="floating"
+      fill="outline"
+      placeholder="Ingrese el codigo"
+    ></ion-input>
+    <ion-button [disabled]="inputx.value === ''" [routerLink]="['index']">
+      Ruta
+    </ion-button>
+  </div>
 </ion-content>
