@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { PluginListenerHandle } from '@capacitor/core';
 import { Network } from '@capacitor/network';
-import { Geolocation, Position } from '@capacitor/geolocation';
+import { Geolocation } from '@capacitor/geolocation';
 import { Share } from '@capacitor/share';
 import { Subscription, interval } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -24,13 +24,17 @@ export class MapComponent implements OnInit {
   networkStatus: any;
   networkListener!: PluginListenerHandle;
   constructor(private router: Router) {}
-  receivedData!: string;
+  receivedData!: any;
 
   ngOnInit(): void {
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras && navigation.extras.state) {
       this.receivedData = navigation.extras?.state['data'];
       console.log(this.receivedData);
+      this.markerDestiny = {
+        lat: this.receivedData.Lat,
+        lng: this.receivedData.Lon,
+      };
     }
     this.networkListener = Network.addListener(
       'networkStatusChange',
@@ -61,10 +65,10 @@ export class MapComponent implements OnInit {
   markerOptions: google.maps.MarkerOptions = {
     draggable: false,
   };
-  markerPositions: google.maps.LatLngLiteral = {
-    lat: 15.467898589493027,
-    lng: -87.96033849948236,
-  };
+  markerPosition!: google.maps.LatLngLiteral;
+
+  //15.464858, -87.964024
+  markerDestiny!: google.maps.LatLngLiteral;
 
   async getNetWorkStatus() {
     this.networkStatus = await Network.getStatus();
@@ -129,7 +133,12 @@ export class MapComponent implements OnInit {
         longitudPuntoB
       );
 
+      this.cambioDistancias = distancia;
       console.log('Diferencia en metros:', distancia.toFixed(2), 'metros');
+      this.markerPosition = {
+        lat: coordinates.coords.latitude,
+        lng: coordinates.coords.longitude,
+      };
     } catch (error) {
       console.log('Error al obtener la ubicación', error);
     }

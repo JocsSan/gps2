@@ -2,18 +2,27 @@
   <div style="height: 80%; width: 100%">
     <google-map height="100%" width="100%" [center]="center" [zoom]="zoom">
       <map-marker
-        [position]="markerPositions"
+        *ngIf="markerPosition"
+        [position]="markerPosition"
+        [options]="markerOptions"
+        [icon]="{ url: 'assets/icons/icons8-truck-16.png' }"
+      ></map-marker>
+      <map-marker
+        [position]="markerDestiny"
         [options]="markerOptions"
       ></map-marker>
-      <map-circle [center]="markerPositions" [radius]="1"></map-circle>
     </google-map>
   </div>
   <div style="display: flex; align-items: center">
     <ion-label style="flex: 1">
-      <h1>H1 Heading</h1>
-      <p>Paragraph</p>
+      <h1>{{ receivedData.NomCliente }}</h1>
+      <h3>{{ receivedData.Direccion }}</h3>
+      <h3>{{ receivedData.Telefono }}</h3>
+      <h3>
+        {{ cambioDistancias }}
+      </h3>
     </ion-label>
-    <ion-button [routerLink]="['index']">
+    <ion-button [routerLink]="['../index']">
       <ion-icon name="exit-sharp"></ion-icon>
     </ion-button>
   </div>

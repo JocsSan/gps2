@@ -34,8 +34,8 @@ export class IndexComponent implements OnInit {
       Contacto: 'WILMER CERNA',
       Telefono: 'NULL',
       Direccion: 'COL. CALPULES CALLE PRINCIPAL ANTES DE PULP. FLORES',
-      Lat: 14.05036,
-      Lon: -87.19817,
+      Lat: 15.466383,
+      Lon: -87.961358,
     },
     {
       Orden: 2,
@@ -44,8 +44,8 @@ export class IndexComponent implements OnInit {
       Contacto: 'JOSE FELIPE MARTINEZ MEJIA',
       Telefono: 'NULL',
       Direccion: 'COL. SAN JOSE LA PEA ZONA D BLOQUE 2',
-      Lat: 14.055887,
-      Lon: -87.203582,
+      Lat: 15.468077,
+      Lon: -87.962137,
     },
     {
       Orden: 3,
@@ -55,8 +55,8 @@ export class IndexComponent implements OnInit {
       Telefono: 'NULL',
       Direccion:
         'COL. SAN JOSE DE LA PEA SUBIENDO LA CUESTA DE LOS BOMBEROS A MANO IZQUIERDA DEL PARQUEO LA 5TA CASA',
-      Lat: 14.059011,
-      Lon: -87.202184,
+      Lat: 15.465421,
+      Lon: -87.961327,
     },
     {
       Orden: 4,
