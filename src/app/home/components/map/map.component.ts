@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { PluginListenerHandle } from '@capacitor/core';
 import { Network } from '@capacitor/network';
@@ -12,7 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements OnInit, OnDestroy {
   private subscripciones: { [key: string]: Subscription } = {};
   myImage: any;
   position?: any;
@@ -30,8 +30,12 @@ export class MapComponent implements OnInit {
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras && navigation.extras.state) {
       this.receivedData = navigation.extras?.state['data'];
-      console.log(this.receivedData);
       this.markerDestiny = {
+        lat: this.receivedData.Lat,
+        lng: this.receivedData.Lon,
+      };
+
+      this.center = {
         lat: this.receivedData.Lat,
         lng: this.receivedData.Lon,
       };
@@ -67,7 +71,6 @@ export class MapComponent implements OnInit {
   };
   markerPosition!: google.maps.LatLngLiteral;
 
-  //15.464858, -87.964024
   markerDestiny!: google.maps.LatLngLiteral;
 
   async getNetWorkStatus() {
@@ -95,8 +98,6 @@ export class MapComponent implements OnInit {
   }
 
   listenerInternet() {
-    console.log('internet');
-
     Network.addListener('networkStatusChange', (status) => {
       console.log('Network status changed', status);
     });
@@ -132,6 +133,11 @@ export class MapComponent implements OnInit {
         latitudPuntoB,
         longitudPuntoB
       );
+
+      this.center = {
+        lat: coordinates.coords.latitude,
+        lng: coordinates.coords.longitude,
+      };
 
       this.cambioDistancias = distancia;
       console.log('Diferencia en metros:', distancia.toFixed(2), 'metros');

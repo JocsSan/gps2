@@ -1,5 +1,5 @@
 <ion-content>
-  <div style="height: 80%; width: 100%">
+  <div style="height: 75%; width: 100%">
     <google-map height="100%" width="100%" [center]="center" [zoom]="zoom">
       <map-marker
         *ngIf="markerPosition"
@@ -13,15 +13,21 @@
       ></map-marker>
     </google-map>
   </div>
-  <div style="display: flex; align-items: center">
-    <ion-label style="flex: 1">
-      <h1>{{ receivedData.NomCliente }}</h1>
-      <h3>Direccion: {{ receivedData.Direccion }}</h3>
-      <h3>Telefono: {{ receivedData.Telefono }}</h3>
-      <h3>Distancia: {{ cambioDistancias | number : "1.0-0" }}</h3>
-    </ion-label>
-    <ion-button [routerLink]="['../index']">
-      <ion-icon name="exit-sharp"></ion-icon>
-    </ion-button>
+  <div style="height: 25%">
+    <ion-grid>
+      <ion-row>
+        <ion-label style="flex: 1">
+          <h1>{{ receivedData.NomCliente }}</h1>
+          <h3>Direccion: {{ receivedData.Direccion }}</h3>
+          <h3>Telefono: {{ receivedData.Telefono }}</h3>
+          <h3>Distancia: {{ cambioDistancias | number : "1.0-0" }}</h3>
+        </ion-label>
+      </ion-row>
+      <ion-row>
+        <ion-button [routerLink]="['../index']">
+          <ion-icon name="exit-sharp"></ion-icon>
+        </ion-button>
+      </ion-row>
+    </ion-grid>
   </div>
 </ion-content>

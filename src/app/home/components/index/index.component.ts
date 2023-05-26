@@ -12,8 +12,6 @@ export class IndexComponent implements OnInit {
   ngOnInit() {}
 
   navigateToDestination(dataToSend: any) {
-    console.log('navega');
-
     this.router.navigate(['home/map'], { state: { data: dataToSend } });
   }
 
