@@ -16,11 +16,9 @@
   <div style="display: flex; align-items: center">
     <ion-label style="flex: 1">
       <h1>{{ receivedData.NomCliente }}</h1>
-      <h3>{{ receivedData.Direccion }}</h3>
-      <h3>{{ receivedData.Telefono }}</h3>
-      <h3>
-        {{ cambioDistancias }}
-      </h3>
+      <h3>Direccion: {{ receivedData.Direccion }}</h3>
+      <h3>Telefono: {{ receivedData.Telefono }}</h3>
+      <h3>Distancia: {{ cambioDistancias }}</h3>
     </ion-label>
     <ion-button [routerLink]="['../index']">
       <ion-icon name="exit-sharp"></ion-icon>
