@@ -5,9 +5,9 @@
 </ion-header>
 <ion-content>
   <ion-item *ngFor="let item of listado">
-    <ion-card>
+    <ion-card [style]="{ 'min-width': '100%' }" style="min-width: 100%">
       <ion-card-header>
-        <ion-card-title>Orden {{ item.Orden }}</ion-card-title>
+        <ion-card-title>Cliente: {{ item.Cliente }}</ion-card-title>
         <ion-card-subtitle>{{ item.NomCliente }}</ion-card-subtitle>
         <ion-card-subtitle
           >{{ item.Contacto }}. Tel : {{ item.Telefono }}
