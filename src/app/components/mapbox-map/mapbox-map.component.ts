@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
-import { Geolocation, GeolocationOptions } from '@ionic-native/geolocation/ngx';
 @Component({
   selector: 'app-mapbox-map',
   templateUrl: './mapbox-map.component.html',
@@ -15,7 +14,7 @@ export class MapboxMapComponent implements OnInit, AfterViewInit {
 
   coordenadas!: { lng: number; lat: number };
 
-  constructor(private geolocation: Geolocation) {}
+  constructor() {}
   ngAfterViewInit(): void {}
 
   ngOnInit() {
@@ -33,7 +32,7 @@ export class MapboxMapComponent implements OnInit, AfterViewInit {
       .catch((error) => {
         console.log('Error al obtener la ubicación', error);
       });
-      */
+
 
     const options: GeolocationOptions = {
       enableHighAccuracy: true, // Opcional: habilita la máxima precisión posible
@@ -54,7 +53,7 @@ export class MapboxMapComponent implements OnInit, AfterViewInit {
       (error) => {
         console.log('Error al obtener la ubicación desde mapa', error);
       }
-    );
+    );*/
 
     // Para detener el seguimiento, puedes llamar a watch.unsubscribe()
   }
