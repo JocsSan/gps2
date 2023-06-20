@@ -5,7 +5,7 @@ import { Network } from '@capacitor/network';
 import { Geolocation } from '@capacitor/geolocation';
 import { Share } from '@capacitor/share';
 import { Subscription, interval } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-map',

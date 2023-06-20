@@ -3,6 +3,7 @@ import { PluginListenerHandle } from '@capacitor/core';
 import { Subscription } from 'rxjs';
 import { GeotService } from '../services/geot.service';
 import { Router } from '@angular/router';
+import { Geolocation, GeolocationPosition } from '@capacitor/geolocation';
 
 @Component({
   selector: 'app-home',
@@ -11,27 +12,42 @@ import { Router } from '@angular/router';
 })
 export class HomePage implements OnInit, OnDestroy {
   public subscripciones: { [key: string]: Subscription } = {};
-  myImage: any;
-  position?: any;
-  logGuardado: any;
-  seGuardo: boolean = false;
-
-  cambioDistancias!: number;
-
-  networkStatus: any;
-  networkListener!: PluginListenerHandle;
 
   constructor(private geot$: GeotService, private router: Router) {}
 
-  coordenadasActual!: { long: number; lat: number };
+  ngOnInit(): void {
+    this.iniciarSeguimiento();
+  }
 
-  ngOnInit(): void {}
+  watchId: any;
+
+  coordenadas!: { lat: number; lng: number };
+
+  iniciarSeguimiento() {
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 3000,
+    };
+
+    this.watchId = Geolocation.watchPosition(options, (position: any) => {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      this.coordenadas = { lat: latitude, lng: longitude };
+      console.log('Ubicación actualizada:', latitude, longitude);
+    });
+  }
+
+  detenerSeguimiento() {
+    if (this.watchId) {
+      Geolocation.clearWatch({ id: this.watchId });
+      this.watchId = undefined;
+    }
+  }
 
   messagetoast!: string;
 
   isToastOpen = false;
-
-  code!: string;
 
   getlisatados(code: any) {
     this.geot$.getlistado(code).subscribe(
