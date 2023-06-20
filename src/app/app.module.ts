@@ -8,6 +8,8 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { HttpClientModule } from '@angular/common/http';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -15,6 +17,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
     BrowserModule,
     GoogleMapsModule,
     IonicModule.forRoot(),
+    HttpClientModule,
     AppRoutingModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
@@ -23,7 +26,10 @@ import { GoogleMapsModule } from '@angular/google-maps';
       registrationStrategy: 'registerWhenStable:30000',
     }),
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    Geolocation,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -1,17 +1,6 @@
 <ion-content>
   <div style="height: 75%; width: 100%">
-    <google-map height="100%" width="100%" [center]="center" [zoom]="zoom">
-      <map-marker
-        *ngIf="markerPosition"
-        [position]="markerPosition"
-        [options]="markerOptions"
-        [icon]="{ url: 'assets/icons/icons8-truck-24.png' }"
-      ></map-marker>
-      <map-marker
-        [position]="markerDestiny"
-        [options]="markerOptions"
-      ></map-marker>
-    </google-map>
+    <app-mapbox-map></app-mapbox-map>
   </div>
   <div style="height: 25%">
     <ion-grid>

@@ -368,4 +368,10 @@ export class IndexComponent implements OnInit {
       Lon: -87.240829,
     },
   ];
+
+  isToastOpen = false;
+
+  setOpen(isOpen: boolean) {
+    this.isToastOpen = isOpen;
+  }
 }

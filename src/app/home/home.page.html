@@ -7,8 +7,17 @@
       fill="outline"
       placeholder="Ingrese el codigo"
     ></ion-input>
-    <ion-button [disabled]="inputx.value === ''" [routerLink]="['index']">
+    <ion-button
+      [disabled]="inputx.value === ''"
+      (click)="getlisatados(inputx?.value)"
+    >
       Ruta
     </ion-button>
+    <ion-toast
+      [isOpen]="isToastOpen"
+      [message]="messagetoast"
+      [duration]="5000"
+      (didDismiss)="setOpen(false)"
+    ></ion-toast>
   </div>
 </ion-content>

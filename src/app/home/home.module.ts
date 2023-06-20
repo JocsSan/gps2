@@ -9,6 +9,7 @@ import { ButtonModule } from 'primeng/button';
 import { HomePageRoutingModule } from './home-routing.module';
 import { MapComponent } from './components/map/map.component';
 import { IndexComponent } from './components/index/index.component';
+import { MapboxMapComponent } from '../components/mapbox-map/mapbox-map.component';
 
 @NgModule({
   imports: [
@@ -19,6 +20,6 @@ import { IndexComponent } from './components/index/index.component';
     ButtonModule,
     GoogleMapsModule,
   ],
-  declarations: [HomePage, MapComponent, IndexComponent],
+  declarations: [HomePage, MapComponent, IndexComponent, MapboxMapComponent],
 })
 export class HomePageModule {}
