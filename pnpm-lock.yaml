@@ -58,9 +58,6 @@ dependencies:
   '@capacitor/status-bar':
     specifier: 5.0.2
     version: 5.0.2(@capacitor/core@5.0.0-rc.2)
-  '@ionic-native/geolocation':
-    specifier: ^5.36.0
-    version: 5.36.0(@ionic-native/core@5.36.0)(rxjs@7.8.0)
   '@ionic/angular':
     specifier: ^7.0.0
     version: 7.0.0(@angular/core@16.0.0)(@angular/forms@16.0.0)(@angular/router@16.0.0)(rxjs@7.8.0)(zone.js@0.13.0)
@@ -2303,26 +2300,6 @@ packages:
       - supports-color
     dev: true
 
-  /@ionic-native/core@5.36.0(rxjs@7.8.0):
-    resolution: {integrity: sha512-lOrkktadlKYbYf1LrDyAtsu1JnQ0oCCdkOU7iHQ8oXnNOkMwobFfD2m62F1CoOr0u9LIkpYnZSPjng8lZbmbNw==}
-    peerDependencies:
-      rxjs: ^5.5.0 || ^6.5.0
-    dependencies:
-      '@types/cordova': 11.0.0
-      rxjs: 7.8.0
-    dev: false
-
-  /@ionic-native/geolocation@5.36.0(@ionic-native/core@5.36.0)(rxjs@7.8.0):
-    resolution: {integrity: sha512-Fk7YXBn9/dOBGqtySSQgoCg7OLlmS8M6Y1Xa3hjgZBzFU0NPb9nnhVuMWI5Wp2qH/7cuzWRB7kEp4oN2tZ6fbw==}
-    peerDependencies:
-      '@ionic-native/core': ^5.1.0
-      rxjs: ^5.5.0 || ^6.5.0
-    dependencies:
-      '@ionic-native/core': 5.36.0(rxjs@7.8.0)
-      '@types/cordova': 11.0.0
-      rxjs: 7.8.0
-    dev: false
-
   /@ionic/angular-toolkit@9.0.0:
     resolution: {integrity: sha512-Rh8z+XGQiyEzJ2nMKTAa3nmejgabxY6f/2q+9Jm/B/VnXjpyeSe8bgP008c0EZYBvrKs7MjP1ZrNi+4FM0W3fg==}
     dependencies:
@@ -2900,10 +2877,6 @@ packages:
   /@types/cookie@0.4.1:
     resolution: {integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==}
     dev: true
-
-  /@types/cordova@11.0.0:
-    resolution: {integrity: sha512-AtBm1IAqqXsXszJe6XxuA2iXLhraNCj25p/FHRyikPeW0Z3YfgM6qzWb+VJglJTmZc5lqRNy84cYM/sQI5v6Vw==}
-    dev: false
 
   /@types/cors@2.8.13:
     resolution: {integrity: sha512-RG8AStHlUiV5ysZQKq97copd2UmVYw3/pRMLefISZ3S1hK104Cwm7iLQ3fTKx+lsUH2CE8FlLaYeEA2LSeqYUA==}
