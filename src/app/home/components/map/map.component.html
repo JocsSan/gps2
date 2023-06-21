@@ -1,6 +1,10 @@
 <ion-content>
   <div style="height: 75%; width: 100%">
-    <app-mapbox-map></app-mapbox-map>
+    <app-mapbox-map
+      [destiniyPoint]="markerDestiny"
+      [currentPoint]="currentPoint"
+      [center]="center"
+    ></app-mapbox-map>
   </div>
   <div style="height: 25%">
     <ion-grid>

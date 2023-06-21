@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { PluginListenerHandle } from '@capacitor/core';
 import { Network } from '@capacitor/network';
-import { Geolocation } from '@capacitor/geolocation';
+import { Geolocation, GeolocationPosition } from '@capacitor/geolocation';
 import { Share } from '@capacitor/share';
 import { Subscription, interval } from 'rxjs';
 import { Router } from '@angular/router';
@@ -19,23 +19,32 @@ export class MapComponent implements OnInit, OnDestroy {
   logGuardado: any;
   seGuardo: boolean = false;
 
-  cambioDistancias!: number;
-
   networkStatus: any;
   networkListener!: PluginListenerHandle;
-  constructor(private router: Router) {}
   receivedData!: any;
+
+  //*variables de mapa-------------------------------
+  cambioDistancias!: number;
+
+  //?variables de puntos de mapa
+
+  markerDestiny!: { lat: number; lng: number };
+
+  currentPoint!: { lat: number; lng: number };
+
+  center!: { lat: number; lng: number };
+
+  //?--------------------------
+
+  //*------------------------------------------------
+
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras && navigation.extras.state) {
       this.receivedData = navigation.extras?.state['data'];
       this.markerDestiny = {
-        lat: this.receivedData.Lat,
-        lng: this.receivedData.Lon,
-      };
-
-      this.center = {
         lat: this.receivedData.Lat,
         lng: this.receivedData.Lon,
       };
@@ -46,32 +55,21 @@ export class MapComponent implements OnInit, OnDestroy {
         this.networkStatus = status;
         if (status.connected) {
           // Se ha restablecido la conexión a Internet
-          this.getCurrentPosition();
         }
         console.log('Network status changed', status);
       }
     );
 
+    this.iniciarSeguimiento();
+
     this.getNetWorkStatus();
 
     this.subscripciones['interval'] = interval(5000).subscribe(() => {
       if (this.networkStatus?.connected) {
-        // Hay conexión a Internet, obtener la ubicación
-        this.getCurrentPosition();
+        // Hay conexión a Internet
       }
     });
   }
-  center: google.maps.LatLngLiteral = {
-    lat: 15.467898589493027,
-    lng: -87.96033849948236,
-  };
-  zoom = 14;
-  markerOptions: google.maps.MarkerOptions = {
-    draggable: false,
-  };
-  markerPosition!: google.maps.LatLngLiteral;
-
-  markerDestiny!: google.maps.LatLngLiteral;
 
   async getNetWorkStatus() {
     this.networkStatus = await Network.getStatus();
@@ -95,6 +93,8 @@ export class MapComponent implements OnInit, OnDestroy {
         console.log(error);
       }
     });
+
+    this.detenerSeguimiento();
   }
 
   listenerInternet() {
@@ -104,7 +104,7 @@ export class MapComponent implements OnInit, OnDestroy {
     const logCurrentNetworkStatus = async () => {
       const status = await Network.getStatus();
 
-      console.log('Network status:', status);
+      console.log('Network status para ver si simplifico:', status);
     };
   }
 
@@ -119,36 +119,47 @@ export class MapComponent implements OnInit, OnDestroy {
     this.myImage = image.webPath;
   }
 
-  async getCurrentPosition() {
-    try {
-      const coordinates = await Geolocation.getCurrentPosition();
+  watchId: any;
 
-      this.position = coordinates;
-      const latitudPuntoB = 15.46654599918261; // Latitud del punto B en grados
-      const longitudPuntoB = -87.96122335408147; // Longitud del punto B en grados
+  //*--------------------------------------------------------------------
 
-      const distancia = this.calcularDistancia(
-        coordinates.coords.latitude,
-        coordinates.coords.longitude,
-        latitudPuntoB,
-        longitudPuntoB
+  //?obtencion de coordenadas
+  iniciarSeguimiento() {
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 3000,
+    };
+
+    this.watchId = Geolocation.watchPosition(options, (position: any) => {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      this.currentPoint = { lat: latitude, lng: longitude };
+      this.center = { lat: latitude, lng: longitude };
+      this.cambioDistancias = this.calcularDistancia(
+        this.currentPoint.lat,
+        this.currentPoint.lng,
+        this.markerDestiny.lat,
+        this.markerDestiny.lng
+      );
+      console.log(
+        'cambios de la distancia con nuevo seguimiento',
+        this.cambioDistancias
       );
 
-      this.center = {
-        lat: coordinates.coords.latitude,
-        lng: coordinates.coords.longitude,
-      };
+      console.log('Ubicación actualizada:', latitude, longitude);
+    });
+  }
 
-      this.cambioDistancias = distancia;
-      console.log('Diferencia en metros:', distancia.toFixed(2), 'metros');
-      this.markerPosition = {
-        lat: coordinates.coords.latitude,
-        lng: coordinates.coords.longitude,
-      };
-    } catch (error) {
-      console.log('Error al obtener la ubicación', error);
+  //?matar la obtencion de coordenadas
+  detenerSeguimiento() {
+    if (this.watchId) {
+      Geolocation.clearWatch({ id: this.watchId });
+      this.watchId = undefined;
     }
   }
+
+  //*-----------------------------------------------------------------------
 
   async share() {
     await Share.share({

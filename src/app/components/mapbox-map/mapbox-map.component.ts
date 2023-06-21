@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 @Component({
   selector: 'app-mapbox-map',
@@ -6,56 +6,42 @@ import * as mapboxgl from 'mapbox-gl';
   styleUrls: ['./mapbox-map.component.scss'],
 })
 export class MapboxMapComponent implements OnInit, AfterViewInit {
+  @Input() destiniyPoint!: { lng: number; lat: number };
+  @Input() currentPoint!: { lat: number; lng: number };
+  @Input() center!: { lat: number; lng: number };
+
   map: any;
   geojson: any;
 
   lat: any;
   lng: any;
 
-  coordenadas!: { lng: number; lat: number };
-
   constructor() {}
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+    setTimeout(() => this.mapboxinit(), 500);
+  }
+
+  /*
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
+    const currentPoint = changes['currentPoint'].currentValue;
+    const center = changes['center'].currentValue;
+    console.log(
+      !changes['center']?.firstChange && !changes['currentPoint']?.firstChange
+    );
+    console.log('first cahnge: ', changes['currentPoint']?.firstChange);
+
+    if (
+      !changes['center']?.firstChange &&
+      !changes['currentPoint']?.firstChange
+    ) {
+    }
+  }
+
+  */
 
   ngOnInit() {
-    this.coordenadas = { lat: 15.467518, lng: -87.960144 };
-    setTimeout(() => this.mapboxinit(), 500);
-    /*
-    this.geolocation
-      .getCurrentPosition()
-      .then((position: GeolocationPosition) => {
-        // Aquí puedes acceder a las coordenadas de latitud y longitud
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-        console.log('desde el mapa', latitude, longitude);
-      })
-      .catch((error) => {
-        console.log('Error al obtener la ubicación', error);
-      });
-
-
-    const options: GeolocationOptions = {
-      enableHighAccuracy: true, // Opcional: habilita la máxima precisión posible
-    };
-
-    const watch = this.geolocation.watchPosition(options).subscribe(
-      (position: any) => {
-        // Aquí puedes acceder a las coordenadas de latitud y longitud en tiempo real
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-
-        console.log(
-          'desde el mapa',
-          this.coordenadas.lat,
-          this.coordenadas.lng
-        );
-      },
-      (error) => {
-        console.log('Error al obtener la ubicación desde mapa', error);
-      }
-    );*/
-
-    // Para detener el seguimiento, puedes llamar a watch.unsubscribe()
+    console.log(this.center, this.currentPoint, this.destiniyPoint);
   }
 
   mapboxinit() {
@@ -66,8 +52,8 @@ export class MapboxMapComponent implements OnInit, AfterViewInit {
       container: 'mapabox', // container ID
       // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
       style: 'mapbox://styles/mapbox/streets-v12', // style URL
-      center: [this.coordenadas.lng, this.coordenadas.lat], // starting position
-      zoom: 9, // starting zoom
+      center: [this.destiniyPoint.lng, this.destiniyPoint.lat], // starting position
+      zoom: 14, // starting zoom
     });
     // Add map controls
     this.map.addControl(new mapboxgl.NavigationControl());
@@ -90,21 +76,24 @@ export class MapboxMapComponent implements OnInit, AfterViewInit {
                   type: 'Feature',
                   geometry: {
                     type: 'Point',
-                    coordinates: [this.coordenadas.lng, this.coordenadas.lat],
+                    coordinates: [
+                      this.destiniyPoint.lng,
+                      this.destiniyPoint.lat,
+                    ],
                   },
                   properties: {
                     title: 'Mapbox DC',
                   },
                 },
                 {
-                  // feature for Mapbox SF
+                  // feature for Mapbox DC
                   type: 'Feature',
                   geometry: {
                     type: 'Point',
-                    coordinates: [this.coordenadas.lng, this.coordenadas.lat],
+                    coordinates: [this.currentPoint.lng, this.currentPoint.lat],
                   },
                   properties: {
-                    title: 'Mapbox SF',
+                    title: 'Mapbox Current Point',
                   },
                 },
               ],
@@ -128,5 +117,42 @@ export class MapboxMapComponent implements OnInit, AfterViewInit {
         }
       );
     });
+  }
+
+  actualizarPuntos(
+    newLng1: number,
+    newLng2: number,
+    newLat1: number,
+    newLat2: number
+  ) {
+    console.log('actualizarPuntos');
+
+    const source = this.map?.getSource('points');
+    console.log(source);
+
+    if (source) {
+      const puntos = [
+        {
+          lng: newLng1,
+          lat: newLat1,
+          title: 'Punto 1',
+        },
+        {
+          lng: newLng2,
+          lat: newLng2,
+          title: 'Punto 2',
+        },
+        // Agrega más puntos aquí si es necesario
+      ];
+
+      console.log('funcionara esta madre');
+
+      puntos.forEach((punto) => {
+        const marker = new mapboxgl.Marker()
+          .setLngLat([punto.lng, punto.lat])
+          .setPopup(new mapboxgl.Popup().setHTML(`<p>${punto.title}</p>`))
+          .addTo(this.map);
+      });
+    }
   }
 }
