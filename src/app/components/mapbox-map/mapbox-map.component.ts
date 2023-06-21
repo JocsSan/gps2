@@ -53,7 +53,7 @@ export class MapboxMapComponent implements OnInit, AfterViewInit {
       // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
       style: 'mapbox://styles/mapbox/streets-v12', // style URL
       center: [this.destiniyPoint.lng, this.destiniyPoint.lat], // starting position
-      zoom: 14, // starting zoom
+      zoom: 16, // starting zoom
     });
     // Add map controls
     this.map.addControl(new mapboxgl.NavigationControl());
