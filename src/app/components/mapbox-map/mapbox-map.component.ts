@@ -129,8 +129,8 @@ export class MapboxMapComponent implements OnInit, AfterViewInit, OnChanges {
 
     const source = this.map?.getSource('points');
     console.log(source);
-
     if (source) {
+      this.map.setCenter([this.currentPoint.lng, this.currentPoint.lat]);
       this.map.getSource('points').setData({
         type: 'FeatureCollection',
         features: [
