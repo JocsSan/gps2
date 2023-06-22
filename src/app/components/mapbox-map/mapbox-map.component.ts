@@ -66,7 +66,7 @@ export class MapboxMapComponent implements OnInit, AfterViewInit, OnChanges {
     this.map.on('load', () => {
       // Add an image to use as a custom marker
       this.map.loadImage(
-        'https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png',
+        '/assets/icons/icons8-map-marker-48.png',
         (error: any, image: any) => {
           if (error) throw error;
           this.map.addImage('custom-marker', image);
@@ -130,7 +130,12 @@ export class MapboxMapComponent implements OnInit, AfterViewInit, OnChanges {
     const source = this.map?.getSource('points');
     console.log(source);
     if (source) {
-      this.map.setCenter([this.currentPoint.lng, this.currentPoint.lat]);
+      this.map.flyTo({
+        center: [this.currentPoint.lng, this.currentPoint.lat],
+        zoom: 16,
+        speed: 1.5, // Ajusta la velocidad de la animación según tus preferencias
+        curve: 1, // Ajusta la curva de la animación según tus preferencias
+      });
       this.map.getSource('points').setData({
         type: 'FeatureCollection',
         features: [
