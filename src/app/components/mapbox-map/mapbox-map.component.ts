@@ -79,6 +79,49 @@ export class MapboxMapComponent implements OnInit, AfterViewInit, OnChanges {
         },
       });
 
+      this.map.loadImage(
+        '/assets/icons/grabar.png',
+        (error: any, image: any) => {
+          if (error) throw error;
+          this.map.addImage('custom-marker', image);
+          // Add a GeoJSON source with 2 points
+          this.map.addSource('points', {
+            type: 'geojson',
+            data: {
+              type: 'FeatureCollection',
+              features: [
+                {
+                  // feature for Mapbox DC
+                  type: 'Feature',
+                  geometry: {
+                    type: 'Point',
+                    coordinates: [this.currentPoint.lng, this.currentPoint.lat],
+                  },
+                  properties: {
+                    title: `Mapbox Current Point ${this.currentPoint.lat}  ${this.currentPoint.lng}`,
+                  },
+                },
+              ],
+            },
+          });
+
+          // Add a symbol layer
+          this.map.addLayer({
+            id: 'points',
+            type: 'symbol',
+            source: 'points',
+            layout: {
+              'icon-image': 'custom-marker',
+              // get the title name from the source's "title" property
+              'text-field': ['get', 'title'],
+              'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
+              'text-offset': [0, 1.25],
+              'text-anchor': 'top',
+            },
+          });
+        }
+      );
+
       // Add a layer for the line
       this.map.addLayer({
         id: 'line',
@@ -91,31 +134,6 @@ export class MapboxMapComponent implements OnInit, AfterViewInit, OnChanges {
       });
 
       //start
-
-      this.map.addLayer({
-        id: 'point',
-        type: 'circle',
-        source: {
-          type: 'geojson',
-          data: {
-            type: 'FeatureCollection',
-            features: [
-              {
-                type: 'Feature',
-                properties: {},
-                geometry: {
-                  type: 'Point',
-                  coordinates: [this.currentPoint.lng, this.currentPoint.lat],
-                },
-              },
-            ],
-          },
-        },
-        paint: {
-          'circle-radius': 10,
-          'circle-color': '#3887be',
-        },
-      });
 
       //adding end
 
@@ -173,6 +191,23 @@ export class MapboxMapComponent implements OnInit, AfterViewInit, OnChanges {
         },
       };
 
+      this.map.getSource('points').setData({
+        type: 'FeatureCollection',
+        features: [
+          {
+            // feature for Mapbox DC
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [this.currentPoint.lng, this.currentPoint.lat],
+            },
+            properties: {
+              title: `Mapbox Current Point new ${this.currentPoint.lng} & ${this.currentPoint.lat}`,
+            },
+          },
+        ],
+      });
+
       this.map.getSource('line').setData(lineFeature);
 
       //?new point
@@ -189,8 +224,6 @@ export class MapboxMapComponent implements OnInit, AfterViewInit, OnChanges {
           },
         ],
       };
-
-      this.map.getSource('point').setData(end);
     }
   }
 
