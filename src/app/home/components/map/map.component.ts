@@ -132,15 +132,15 @@ export class MapComponent implements OnInit, OnDestroy {
     };
 
     this.watchId = Geolocation.watchPosition(options, (position: any) => {
-      const latitude = position.coords.latitude;
-      const longitude = position.coords.longitude;
+      const latitude = position?.coords?.latitude;
+      const longitude = position?.coords?.longitude;
       this.currentPoint = { lat: latitude, lng: longitude };
       this.center = { lat: latitude, lng: longitude };
       this.cambioDistancias = this.calcularDistancia(
-        this.currentPoint.lat,
-        this.currentPoint.lng,
-        this.markerDestiny.lat,
-        this.markerDestiny.lng
+        this.currentPoint?.lat,
+        this.currentPoint?.lng,
+        this.markerDestiny?.lat,
+        this.markerDestiny?.lng
       );
       console.log(
         'cambios de la distancia con nuevo seguimiento',
