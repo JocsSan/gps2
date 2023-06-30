@@ -4,7 +4,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <ion-item *ngFor="let item of listado">
+  <ion-item *ngFor="let item of listadoClientes">
     <ion-card [style]="{ 'min-width': '100%' }" style="min-width: 100%">
       <ion-card-header>
         <ion-card-title>Cliente: {{ item.Cliente }}</ion-card-title>
@@ -13,6 +13,7 @@
         <ion-card-subtitle> Tel : {{ item.Telefono }} </ion-card-subtitle>
       </ion-card-header>
       <ion-card-content> Direccion: {{ item.Direccion }} </ion-card-content>
+      <ion-card-content> Current: {{ nuevaPosition | json }} </ion-card-content>
 
       <ion-button fill="clear" (click)="navigateToDestination(item)"
         >Tomar Orden</ion-button

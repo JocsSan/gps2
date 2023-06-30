@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { Listado } from 'src/app/interfaces/listados.interface';
+import { GeolocationService } from 'src/app/services/geolocation.service';
 
 @Component({
   selector: 'app-index',
@@ -7,24 +10,49 @@ import { Router } from '@angular/router';
   styleUrls: ['./index.component.scss'],
 })
 export class IndexComponent implements OnInit {
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private geolocation$: GeolocationService
+  ) {}
+  private subscripciones: { [key: string]: Subscription } = {};
 
-  ngOnInit() {}
-
-  navigateToDestination(dataToSend: any) {
-    this.router.navigate(['home/map'], { state: { data: dataToSend } });
+  listadoClientes!: Listado[];
+  ngOnInit(): void {
+    const listadoLocal = localStorage.getItem('listadoClientes');
+    if (listadoLocal) {
+      console.log(JSON.parse(listadoLocal));
+      this.listadoClientes = JSON.parse(listadoLocal);
+    } else {
+      this.listadoClientes = this.listado;
+    }
+    this.getseguimiento();
   }
 
-  listado: {
-    Orden: number;
-    Cliente: string;
-    NomCliente: string;
-    Contacto: string;
-    Telefono: string;
-    Direccion: string;
-    Lat: number;
-    Lon: number;
-  }[] = [
+  navigateToDestination(dataToSend: any): void {
+    localStorage.removeItem('cliente');
+    localStorage.setItem('cliente', JSON.stringify(dataToSend));
+    this.router.navigate(['home/map']);
+  }
+
+  nuevaPosition: any;
+
+  getseguimiento() {
+    this.subscripciones['geolocation'] = this.geolocation$
+      .getPositionObservable()
+      .subscribe(
+        (position) => {
+          this.nuevaPosition = position;
+          // Aquí puedes utilizar la posición actualizada
+          console.log(position);
+        },
+        (error) => {
+          // Manejo de errores
+          console.error(error);
+        }
+      );
+  }
+
+  listado: any = [
     {
       Orden: 1,
       Cliente: 'T115759',

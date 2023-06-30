@@ -3,6 +3,7 @@ import {
   Component,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   SimpleChanges,
 } from '@angular/core';
@@ -12,7 +13,9 @@ import * as mapboxgl from 'mapbox-gl';
   templateUrl: './mapbox-map.component.html',
   styleUrls: ['./mapbox-map.component.scss'],
 })
-export class MapboxMapComponent implements OnInit, AfterViewInit, OnChanges {
+export class MapboxMapComponent
+  implements OnInit, AfterViewInit, OnChanges, OnDestroy
+{
   @Input() destiniyPoint!: { lng: number; lat: number };
   @Input() currentPoint!: { lat: number; lng: number };
   @Input() center!: { lat: number; lng: number };
@@ -24,19 +27,17 @@ export class MapboxMapComponent implements OnInit, AfterViewInit, OnChanges {
   lng: any;
 
   constructor() {}
+  ngOnDestroy(): void {
+    this.map.remove();
+  }
   ngAfterViewInit(): void {
     setTimeout(() => this.mapboxinit(), 500);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
+    //console.log(changes);
     const currentPoint = changes['currentPoint'].currentValue;
     const center = changes['center'].currentValue;
-    console.log(
-      !changes['center']?.firstChange && !changes['currentPoint']?.firstChange
-    );
-    console.log('first cahnge: ', changes['currentPoint']?.firstChange);
-
     if (
       !changes['center']?.firstChange &&
       !changes['currentPoint']?.firstChange
@@ -165,17 +166,17 @@ export class MapboxMapComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   async actualizarPuntos() {
-    console.log('actualizarPuntos');
+    //console.log('actualizarPuntos');
 
     const source = this.map?.getSource('line');
-    console.log(source);
+    //console.log(source);
 
     if (source) {
       const ruta = await this.obtenerRutaOptima(
         [this.currentPoint.lng, this.currentPoint.lat],
         [this.destiniyPoint.lng, this.destiniyPoint.lat]
       );
-      console.log('calculo final', ruta);
+      //console.log('calculo final', ruta);
       this.map.flyTo({
         center: [this.currentPoint.lng, this.currentPoint.lat],
         zoom: 16,
@@ -234,7 +235,7 @@ export class MapboxMapComponent implements OnInit, AfterViewInit, OnChanges {
     );
     const json = await query.json();
     const data = json.routes[0];
-    console.log('objeto', data);
+    //console.log('objeto', data);
     const route = data.geometry.coordinates;
 
     return route;

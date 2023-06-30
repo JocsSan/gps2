@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { PluginListenerHandle } from '@capacitor/core';
 import { Network } from '@capacitor/network';
@@ -6,13 +6,14 @@ import { Geolocation, GeolocationPosition } from '@capacitor/geolocation';
 import { Share } from '@capacitor/share';
 import { Subscription, interval } from 'rxjs';
 import { Router } from '@angular/router';
+import { GeolocationService } from 'src/app/services/geolocation.service';
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
 })
-export class MapComponent implements OnInit, OnDestroy {
+export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   private subscripciones: { [key: string]: Subscription } = {};
   myImage: any;
   position?: any;
@@ -38,17 +39,11 @@ export class MapComponent implements OnInit, OnDestroy {
 
   //*------------------------------------------------
 
-  constructor(private router: Router) {}
-
-  ngOnInit(): void {
-    const navigation = this.router.getCurrentNavigation();
-    if (navigation && navigation.extras && navigation.extras.state) {
-      this.receivedData = navigation.extras?.state['data'];
-      this.markerDestiny = {
-        lat: this.receivedData.Lat,
-        lng: this.receivedData.Lon,
-      };
-    }
+  constructor(
+    private router: Router,
+    private geolocation$: GeolocationService
+  ) {}
+  ngAfterViewInit(): void {
     this.networkListener = Network.addListener(
       'networkStatusChange',
       (status) => {
@@ -56,11 +51,9 @@ export class MapComponent implements OnInit, OnDestroy {
         if (status.connected) {
           // Se ha restablecido la conexión a Internet
         }
-        console.log('Network status changed', status);
+        //console.log('Network status changed', status);
       }
     );
-
-    this.iniciarSeguimiento();
 
     this.getNetWorkStatus();
 
@@ -71,9 +64,24 @@ export class MapComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngOnInit(): void {
+    this.receivedData = null;
+    const localCliente = localStorage.getItem('cliente');
+
+    if (localCliente) {
+      this.receivedData = JSON.parse(localCliente);
+      console.log(this.receivedData);
+      this.markerDestiny = {
+        lat: this.receivedData.Lat,
+        lng: this.receivedData.Lon,
+      };
+    }
+    this.getseguimiento();
+  }
+
   async getNetWorkStatus() {
     this.networkStatus = await Network.getStatus();
-    console.log(this.networkStatus);
+    //console.log(this.networkStatus);
   }
 
   endNetworkListener() {
@@ -83,6 +91,8 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.receivedData = null;
+    localStorage.removeItem('cliente');
     if (this.networkListener) {
       this.networkListener.remove();
     }
@@ -99,12 +109,12 @@ export class MapComponent implements OnInit, OnDestroy {
 
   listenerInternet() {
     Network.addListener('networkStatusChange', (status) => {
-      console.log('Network status changed', status);
+      //console.log('Network status changed', status);
     });
     const logCurrentNetworkStatus = async () => {
       const status = await Network.getStatus();
 
-      console.log('Network status para ver si simplifico:', status);
+      //console.log('Network status para ver si simplifico:', status);
     };
   }
 
@@ -124,31 +134,37 @@ export class MapComponent implements OnInit, OnDestroy {
   //*--------------------------------------------------------------------
 
   //?obtencion de coordenadas
-  iniciarSeguimiento() {
-    const options = {
-      enableHighAccuracy: true,
-      timeout: 5000,
-      maximumAge: 3000,
-    };
 
-    this.watchId = Geolocation.watchPosition(options, (position: any) => {
-      const latitude = position?.coords?.latitude;
-      const longitude = position?.coords?.longitude;
-      this.currentPoint = { lat: latitude, lng: longitude };
-      this.center = { lat: latitude, lng: longitude };
-      this.cambioDistancias = this.calcularDistancia(
-        this.currentPoint?.lat,
-        this.currentPoint?.lng,
-        this.markerDestiny?.lat,
-        this.markerDestiny?.lng
-      );
-      console.log(
-        'cambios de la distancia con nuevo seguimiento',
-        this.cambioDistancias
-      );
+  nuevaPosition: any;
 
-      console.log('Ubicación actualizada:', latitude, longitude);
-    });
+  getseguimiento() {
+    this.subscripciones['geolocation'] = this.geolocation$
+      .getPositionObservable()
+      .subscribe(
+        (positionObs: { lat: number; lng: number }) => {
+          this.nuevaPosition = positionObs;
+          // Aquí puedes utilizar la posición actualizada
+          console.log(positionObs);
+          const { lat } = positionObs;
+          const { lng } = positionObs;
+          this.currentPoint = { lat: lat, lng: lng };
+          this.center = { lat: lat, lng: lng };
+          this.cambioDistancias = this.calcularDistancia(
+            this.currentPoint?.lat,
+            this.currentPoint?.lng,
+            this.markerDestiny?.lat,
+            this.markerDestiny?.lng
+          );
+          console.log(
+            'cambios de la distancia con nuevo seguimiento',
+            this.cambioDistancias
+          );
+        },
+        (error) => {
+          // Manejo de errores
+          console.error(error);
+        }
+      );
   }
 
   //?matar la obtencion de coordenadas
@@ -189,7 +205,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
       this.logGuardado = Date.now();
 
-      console.log('se ha guardado');
+      //console.log('se ha guardado');
     }
 
     return distancia;
