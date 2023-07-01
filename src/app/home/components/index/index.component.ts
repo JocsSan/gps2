@@ -34,7 +34,7 @@ export class IndexComponent implements OnInit {
     this.router.navigate(['home/map']);
   }
 
-  nuevaPosition: any;
+  nuevaPosition: { lat: number; lng: number } = { lat: 0, lng: 0 };
 
   getseguimiento() {
     this.subscripciones['geolocation'] = this.geolocation$

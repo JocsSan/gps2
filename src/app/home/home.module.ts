@@ -10,6 +10,7 @@ import { HomePageRoutingModule } from './home-routing.module';
 import { MapComponent } from './components/map/map.component';
 import { IndexComponent } from './components/index/index.component';
 import { MapboxMapComponent } from '../components/mapbox-map/mapbox-map.component';
+import { CalcularDistanciaPipe } from '../pipes/calculo-distancia.pipe';
 
 @NgModule({
   imports: [
@@ -20,6 +21,12 @@ import { MapboxMapComponent } from '../components/mapbox-map/mapbox-map.componen
     ButtonModule,
     GoogleMapsModule,
   ],
-  declarations: [HomePage, MapComponent, IndexComponent, MapboxMapComponent],
+  declarations: [
+    HomePage,
+    MapComponent,
+    IndexComponent,
+    MapboxMapComponent,
+    CalcularDistanciaPipe,
+  ],
 })
 export class HomePageModule {}

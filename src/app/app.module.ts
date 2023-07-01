@@ -21,13 +21,11 @@ import { HttpClientModule } from '@angular/common/http';
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable
-      // or after 30 seconds (whichever comes first).
+      // or after 30 seconds (whichever comes first).p
       registrationStrategy: 'registerWhenStable:30000',
     }),
   ],
-  providers: [
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-  ],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

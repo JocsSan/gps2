@@ -13,7 +13,14 @@
         <ion-card-subtitle> Tel : {{ item.Telefono }} </ion-card-subtitle>
       </ion-card-header>
       <ion-card-content> Direccion: {{ item.Direccion }} </ion-card-content>
-      <ion-card-content> Current: {{ nuevaPosition | json }} </ion-card-content>
+      <ion-card-content>
+        Esta a :
+        {{
+          nuevaPosition.lat
+            | calcularDistancia : nuevaPosition.lng : item.Lat : item.Lon
+        }}
+        mts
+      </ion-card-content>
 
       <ion-button fill="clear" (click)="navigateToDestination(item)"
         >Tomar Orden</ion-button
