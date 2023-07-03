@@ -26,6 +26,8 @@ export class MapboxMapComponent
   lat: any;
   lng: any;
 
+  points: any;
+
   constructor() {}
   ngOnDestroy(): void {
     this.map.remove();
@@ -172,26 +174,6 @@ export class MapboxMapComponent
     //console.log(source);
 
     if (source) {
-      const ruta = await this.obtenerRutaOptima(
-        [this.currentPoint.lng, this.currentPoint.lat],
-        [this.destiniyPoint.lng, this.destiniyPoint.lat]
-      );
-      //console.log('calculo final', ruta);
-      this.map.flyTo({
-        center: [this.currentPoint.lng, this.currentPoint.lat],
-        zoom: 16,
-        speed: 1.5,
-        curve: 1,
-      });
-
-      const lineFeature = {
-        type: 'Feature',
-        geometry: {
-          type: 'LineString',
-          coordinates: ruta,
-        },
-      };
-
       this.map.getSource('points').setData({
         type: 'FeatureCollection',
         features: [
@@ -208,6 +190,27 @@ export class MapboxMapComponent
           },
         ],
       });
+
+      //console.log('calculo final', ruta);
+      this.map.flyTo({
+        center: [this.currentPoint.lng, this.currentPoint.lat],
+        zoom: 16,
+        speed: 1.5,
+        curve: 1,
+      });
+
+      const ruta = await this.obtenerRutaOptima(
+        [this.currentPoint.lng, this.currentPoint.lat],
+        [this.destiniyPoint.lng, this.destiniyPoint.lat]
+      );
+
+      const lineFeature = {
+        type: 'Feature',
+        geometry: {
+          type: 'LineString',
+          coordinates: ruta,
+        },
+      };
 
       this.map.getSource('line').setData(lineFeature);
 
