@@ -40,9 +40,12 @@ export class HomePage implements OnInit, OnDestroy {
       },
       (err) => {
         console.log(err);
-        this.messagetoast = err.message;
+        const customMsg = err?.error?.error || '';
+        this.messagetoast = `${err.message}; ${customMsg}`;
         this.setOpen(true);
-        this.router.navigate(['home/index']);
+        setTimeout(() => {
+          this.router.navigate(['home/index']);
+        }, 2000);
       }
     );
   }

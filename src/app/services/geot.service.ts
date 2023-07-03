@@ -32,6 +32,7 @@ export class GeotService {
 
     return this.http.post<Listado[]>(url, body).pipe(
       map((res) => {
+        console.log(res);
         return res;
       }),
       catchError((err) => {
