@@ -26,7 +26,7 @@ export class MapboxMapComponent
   lat: any;
   lng: any;
 
-  points: any;
+  rutaOptimaCache: any[] = [];
 
   constructor() {}
   ngOnDestroy(): void {
@@ -232,17 +232,121 @@ export class MapboxMapComponent
   }
 
   async obtenerRutaOptima(start: any, end: any) {
-    const query = await fetch(
-      `https://api.mapbox.com/directions/v5/mapbox/driving-traffic/${start[0]},${start[1]};${end[0]},${end[1]}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
-      { method: 'GET' }
-    );
-    const json = await query.json();
-    const data = json.routes[0];
-    //console.log('objeto', data);
-    const route = data.geometry.coordinates;
+    const sensibilidad = 10; // Sensibilidad de cambio en metros
 
-    return route;
-    // Actualiza el GeoJSON de la ruta en el mapa
+    // Verifica si hay una ruta óptima almacenada en la caché
+    if (
+      this.rutaOptimaCache.length > 0 &&
+      this.calcularDistancia(
+        start[1],
+        start[0],
+        this.rutaOptimaCache[1][1],
+        this.rutaOptimaCache[1][0]
+      ) <= sensibilidad
+    ) {
+      return this.rutaOptimaCache;
+    } else {
+      const rumboActual = this.calcularRumbo(
+        start[1],
+        start[0],
+        this.rutaOptimaCache[1][1],
+        this.rutaOptimaCache[1][0]
+      );
+      const rumboDestino = this.calcularRumbo(
+        start[1],
+        start[0],
+        end[1],
+        end[0]
+      );
+
+      // Calcula la diferencia de rumbo entre el rumbo actual y el rumbo hacia el destino
+      const diferenciaRumbo = Math.abs(rumboActual - rumboDestino);
+
+      // Si la diferencia de rumbo es pequeña, se está aproximando al destino
+      if (diferenciaRumbo < 45 || diferenciaRumbo > 315) {
+        return this.rutaOptimaCache;
+      } else {
+        const query = await fetch(
+          `https://api.mapbox.com/directions/v5/mapbox/driving-traffic/${start[0]},${start[1]};${end[0]},${end[1]}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
+          { method: 'GET' }
+        );
+        const json = await query.json();
+        const data = json.routes[0];
+        const route = data.geometry.coordinates;
+
+        // Actualiza la caché con la nueva ruta óptima
+        this.rutaOptimaCache = route;
+
+        return route;
+      }
+    }
+  }
+
+  calcularRumbo(lat1: number, lon1: number, lat2: number, lon2: number) {
+    const dLon = this.toRadians(lon2 - lon1);
+    const y = Math.sin(dLon) * Math.cos(this.toRadians(lat2));
+    const x =
+      Math.cos(this.toRadians(lat1)) * Math.sin(this.toRadians(lat2)) -
+      Math.sin(this.toRadians(lat1)) *
+        Math.cos(this.toRadians(lat2)) *
+        Math.cos(dLon);
+    let rumbo = this.toDegrees(Math.atan2(y, x));
+    rumbo = (rumbo + 360) % 360; // Asegura que el rumbo esté en el rango [0, 360)
+    return rumbo;
+  }
+
+  toRadians(degrees: number) {
+    return (degrees * Math.PI) / 180;
+  }
+
+  toDegrees(radians: number) {
+    return (radians * 180) / Math.PI;
+  }
+
+  //calculo de distancia
+  calcularDistancia(lat1: number, lon1: number, lat2: number, lon2: number) {
+    const radioTierra = 6371000;
+    const dLat = this.toRad(lat2 - lat1);
+    const dLon = this.toRad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.toRad(lat1)) *
+        Math.cos(this.toRad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distancia = radioTierra * c;
+
+    if (distancia > 180) {
+      //console.log('se ha guardado');
+    }
+
+    return distancia;
+  }
+
+  toRad(grados: any) {
+    return (grados * Math.PI) / 180;
+  }
+
+  guardarPuntosActuales() {
+    // Guarda los puntos actuales en una variable
+    this.lat = this.currentPoint.lat;
+    this.lng = this.currentPoint.lng;
+  }
+
+  reemplazarUltimoPunto() {
+    const source = this.map?.getSource('points');
+    if (source) {
+      const features = source._data.features;
+      if (features && features.length > 0) {
+        const lastFeature = features[features.length - 1];
+        lastFeature.geometry.coordinates = [
+          this.currentPoint.lng,
+          this.currentPoint.lat,
+        ];
+        this.map.getSource('points').setData(source._data);
+      }
+    }
   }
 
   // Llama a la función obtenerRutaOptima con los puntos de inicio y fin deseados
