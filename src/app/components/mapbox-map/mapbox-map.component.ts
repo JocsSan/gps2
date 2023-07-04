@@ -250,44 +250,58 @@ export class MapboxMapComponent
       return route;
     }
 
-    const tiempoMinimoEntrePeticiones = 60000; // 1 minuto en milisegundos
     const sensibilidad = 10; // Sensibilidad de cambio en metros
 
-    // Verifica si ha pasado suficiente tiempo desde la última petición al API
-    const tiempoTranscurrido = Date.now() - this.labelTest;
-    if (tiempoTranscurrido < tiempoMinimoEntrePeticiones) {
-      // Verifica si hay una ruta óptima almacenada en la caché
-      if (
-        this.rutaOptimaCache.length > 0 &&
-        this.calcularDistancia(
-          start[1],
-          start[0],
-          this.rutaOptimaCache[0][1],
-          this.rutaOptimaCache[0][0]
-        ) <= sensibilidad
-      ) {
-        this.rutaOptimaCache[0][0] = start[0];
-        this.rutaOptimaCache[0][1] = start[1];
+    // Verifica si hay una ruta óptima almacenada en la caché
+    if (
+      this.rutaOptimaCache.length > 0 &&
+      this.calcularDistancia(
+        start[1],
+        start[0],
+        this.rutaOptimaCache[0][1],
+        this.rutaOptimaCache[0][0]
+      ) <= sensibilidad
+    ) {
+      this.rutaOptimaCache[0][0] = start[0];
+      this.rutaOptimaCache[0][1] = start[1];
 
+      return this.rutaOptimaCache;
+    } else {
+      const rumboActual = this.calcularRumbo(
+        start[1],
+        start[0],
+        this.rutaOptimaCache[0][1],
+        this.rutaOptimaCache[0][0]
+      );
+      const rumboDestino = this.calcularRumbo(
+        start[1],
+        start[0],
+        end[1],
+        end[0]
+      );
+
+      // Calcula la diferencia de rumbo entre el rumbo actual y el rumbo hacia el destino
+      const diferenciaRumbo = Math.abs(rumboActual - rumboDestino);
+
+      // Si la diferencia de rumbo es pequeña, se está aproximando al destino
+      if (diferenciaRumbo < 45 || diferenciaRumbo > 315) {
         return this.rutaOptimaCache;
       } else {
-        return this.rutaOptimaCache;
+        this.labelTest = Date.now();
+        const query = await fetch(
+          `https://api.mapbox.com/directions/v5/mapbox/driving-traffic/${start[0]},${start[1]};${end[0]},${end[1]}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
+          { method: 'GET' }
+        );
+        const json = await query.json();
+        const data = json.routes[0];
+        const route = data.geometry.coordinates;
+
+        // Actualiza la caché con la nueva ruta óptima
+        this.rutaOptimaCache = route;
+
+        return route;
       }
     }
-
-    this.labelTest = Date.now();
-    const query = await fetch(
-      `https://api.mapbox.com/directions/v5/mapbox/driving-traffic/${start[0]},${start[1]};${end[0]},${end[1]}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
-      { method: 'GET' }
-    );
-    const json = await query.json();
-    const data = json.routes[0];
-    const route = data.geometry.coordinates;
-
-    // Actualiza la caché con la nueva ruta óptima
-    this.rutaOptimaCache = route;
-
-    return route;
   }
 
   calcularRumbo(lat1: number, lon1: number, lat2: number, lon2: number) {
@@ -334,27 +348,6 @@ export class MapboxMapComponent
 
   toRad(grados: any) {
     return (grados * Math.PI) / 180;
-  }
-
-  guardarPuntosActuales() {
-    // Guarda los puntos actuales en una variable
-    this.lat = this.currentPoint.lat;
-    this.lng = this.currentPoint.lng;
-  }
-
-  reemplazarUltimoPunto() {
-    const source = this.map?.getSource('points');
-    if (source) {
-      const features = source._data.features;
-      if (features && features.length > 0) {
-        const lastFeature = features[features.length - 1];
-        lastFeature.geometry.coordinates = [
-          this.currentPoint.lng,
-          this.currentPoint.lat,
-        ];
-        this.map.getSource('points').setData(source._data);
-      }
-    }
   }
 
   // Llama a la función obtenerRutaOptima con los puntos de inicio y fin deseados
