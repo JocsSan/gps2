@@ -258,8 +258,8 @@ export class MapboxMapComponent
       this.calcularDistancia(
         start[1],
         start[0],
-        this.rutaOptimaCache[1][1],
-        this.rutaOptimaCache[1][0]
+        this.rutaOptimaCache[0][1],
+        this.rutaOptimaCache[0][0]
       ) <= sensibilidad
     ) {
       this.rutaOptimaCache[0][0] = start[0];
@@ -270,8 +270,8 @@ export class MapboxMapComponent
       const rumboActual = this.calcularRumbo(
         start[1],
         start[0],
-        this.rutaOptimaCache[1][1],
-        this.rutaOptimaCache[1][0]
+        this.rutaOptimaCache[0][1],
+        this.rutaOptimaCache[0][0]
       );
       const rumboDestino = this.calcularRumbo(
         start[1],
