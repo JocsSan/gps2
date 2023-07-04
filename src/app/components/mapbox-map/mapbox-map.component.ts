@@ -244,6 +244,9 @@ export class MapboxMapComponent
         this.rutaOptimaCache[1][0]
       ) <= sensibilidad
     ) {
+      this.rutaOptimaCache[0][0] = start[0];
+      this.rutaOptimaCache[0][1] = start[1];
+
       return this.rutaOptimaCache;
     } else {
       const rumboActual = this.calcularRumbo(
