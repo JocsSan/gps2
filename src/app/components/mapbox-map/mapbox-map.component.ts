@@ -28,6 +28,8 @@ export class MapboxMapComponent
 
   rutaOptimaCache: any[] = [];
 
+  labelTest!: any;
+
   constructor() {}
   ngOnDestroy(): void {
     this.map.remove();
@@ -172,8 +174,8 @@ export class MapboxMapComponent
 
     const source = this.map?.getSource('line');
     //console.log(source);
-
-    if (source) {
+    const source2 = this.map?.getSource('points');
+    if (source || source2) {
       this.map.getSource('points').setData({
         type: 'FeatureCollection',
         features: [
@@ -232,6 +234,22 @@ export class MapboxMapComponent
   }
 
   async obtenerRutaOptima(start: any, end: any) {
+    if (!this.rutaOptimaCache?.length) {
+      this.labelTest = Date.now();
+      const query = await fetch(
+        `https://api.mapbox.com/directions/v5/mapbox/driving-traffic/${start[0]},${start[1]};${end[0]},${end[1]}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
+        { method: 'GET' }
+      );
+      const json = await query.json();
+      const data = json.routes[0];
+      const route = data.geometry.coordinates;
+
+      // Actualiza la caché con la nueva ruta óptima
+      this.rutaOptimaCache = route;
+
+      return route;
+    }
+
     const sensibilidad = 10; // Sensibilidad de cambio en metros
 
     // Verifica si hay una ruta óptima almacenada en la caché
@@ -269,6 +287,7 @@ export class MapboxMapComponent
       if (diferenciaRumbo < 45 || diferenciaRumbo > 315) {
         return this.rutaOptimaCache;
       } else {
+        this.labelTest = Date.now();
         const query = await fetch(
           `https://api.mapbox.com/directions/v5/mapbox/driving-traffic/${start[0]},${start[1]};${end[0]},${end[1]}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
           { method: 'GET' }
