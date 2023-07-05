@@ -1,8 +1,13 @@
 <div id="mapabox" style="width: 100%; height: 90%"></div>
 
-<ion-button [color]="flyingbool ? 'dark' : 'primary'" (click)="cambiarEstado()">
-  <ion-icon name="locate-outline"></ion-icon>
-</ion-button>
-
-<p>{{ currentPoint | json }}</p>
-<p>{{ labelTest | date : "hh:mm:ss a" }}</p>
+<div class="grid grid-cols-3 gap-4">
+  <div>
+    <ion-button
+      class="bg-primary text-white"
+      [color]="flyingbool ? 'dark' : 'primary'"
+      (click)="cambiarEstado()"
+    >
+      <ion-icon name="locate-outline"></ion-icon>
+    </ion-button>
+  </div>
+</div>

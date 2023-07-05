@@ -35,6 +35,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   center!: { lat: number; lng: number };
 
+  previousPoint!: { lat: number; lng: number };
+
   //?--------------------------
 
   //*------------------------------------------------
@@ -155,6 +157,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
             this.markerDestiny?.lat,
             this.markerDestiny?.lng
           );
+
+          if (this.currentPoint?.lat) {
+            this.guardar();
+          }
           console.log(
             'cambios de la distancia con nuevo seguimiento',
             this.cambioDistancias
@@ -165,6 +171,83 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           console.error(error);
         }
       );
+  }
+
+  private fisrtValue: boolean = true;
+
+  timestampText: any;
+
+  mssg!: string;
+
+  finalizo: boolean = false;
+
+  guardar() {
+    // Verificar si currentPoint y markerDestiny no son nulos o indefinidos
+
+    if (this.fisrtValue) {
+      const distanciaDestino = this.calcularDistancia(
+        this.currentPoint.lat,
+        this.currentPoint.lng,
+        this.markerDestiny.lat,
+        this.markerDestiny.lng
+      );
+
+      if (distanciaDestino < 200) {
+        console.log('Finalizó el destino en primer tiro');
+        this.mssg = 'Finalizó el destino en primer tiro';
+        this.finalizo = true;
+        this.timestampText = Date.now();
+        return;
+      }
+
+      console.log('Primer tiro');
+      this.mssg = 'Primer Tiro';
+      this.timestampText = Date.now();
+    }
+
+    this.fisrtValue = false;
+
+    if (this.currentPoint && this.markerDestiny) {
+      const distanciaDestino = this.calcularDistancia(
+        this.currentPoint.lat,
+        this.currentPoint.lng,
+        this.markerDestiny.lat,
+        this.markerDestiny.lng
+      );
+
+      if (distanciaDestino < 200) {
+        console.log('Finalizó el destino');
+        this.mssg = 'Finalizó el destino';
+        this.finalizo = true;
+        this.timestampText = Date.now();
+      }
+
+      if (
+        this.previousPoint &&
+        this.calcularDistancia(
+          this.previousPoint.lat,
+          this.previousPoint.lng,
+          this.currentPoint.lat,
+          this.currentPoint.lng
+        ) >= 200
+      ) {
+        this.previousPoint = this.currentPoint;
+      }
+
+      if (
+        this.previousPoint &&
+        this.calcularDistancia(
+          this.previousPoint.lat,
+          this.previousPoint.lng,
+          this.currentPoint.lat,
+          this.currentPoint.lng
+        ) < 200
+      ) {
+        console.log('Próximo a 200 metros del punto anterior');
+        this.mssg = 'Próximo a 200 metros del punto anterior';
+        this.timestampText = Date.now();
+      }
+    }
   }
 
   //?matar la obtencion de coordenadas

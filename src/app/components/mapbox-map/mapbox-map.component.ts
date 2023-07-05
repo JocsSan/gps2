@@ -184,11 +184,12 @@ export class MapboxMapComponent
   flyingbool = false;
 
   cambiarEstado(): void {
+    this.fliying();
     this.flyingbool = !this.flyingbool;
   }
 
   async actualizarPuntos() {
-    //console.log('actualizarPuntos');
+    console.log('actualizarPuntos');
 
     const source = this.map?.getSource('line');
     //console.log(source);
@@ -249,6 +250,8 @@ export class MapboxMapComponent
   }
 
   async obtenerRutaOptima(start: any, end: any) {
+    console.log('obteniendo ruta');
+
     if (!this.rutaOptimaCache?.length) {
       this.labelTest = Date.now();
       const query = await fetch(
