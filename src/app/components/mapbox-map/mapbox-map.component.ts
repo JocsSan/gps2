@@ -35,7 +35,10 @@ export class MapboxMapComponent
     this.map.remove();
   }
   ngAfterViewInit(): void {
-    setTimeout(() => this.mapboxinit(), 500);
+    setTimeout(() => {
+      this.mapboxinit();
+      this.fliying();
+    }, 500);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -169,6 +172,21 @@ export class MapboxMapComponent
     });
   }
 
+  fliying() {
+    this.map.flyTo({
+      center: [this.currentPoint.lng, this.currentPoint.lat],
+      zoom: 16,
+      speed: 1.5,
+      curve: 1,
+    });
+  }
+
+  flyingbool = false;
+
+  cambiarEstado(): void {
+    this.flyingbool = !this.flyingbool;
+  }
+
   async actualizarPuntos() {
     //console.log('actualizarPuntos');
 
@@ -193,14 +211,11 @@ export class MapboxMapComponent
         ],
       });
 
-      //console.log('calculo final', ruta);
-      this.map.flyTo({
-        center: [this.currentPoint.lng, this.currentPoint.lat],
-        zoom: 16,
-        speed: 1.5,
-        curve: 1,
-      });
+      if (this.flyingbool) {
+        this.fliying();
+      }
 
+      //console.log('calculo final', ruta);
       const ruta = await this.obtenerRutaOptima(
         [this.currentPoint.lng, this.currentPoint.lat],
         [this.destiniyPoint.lng, this.destiniyPoint.lat]
@@ -250,58 +265,44 @@ export class MapboxMapComponent
       return route;
     }
 
+    const tiempoMinimoEntrePeticiones = 30000; // 1 minuto en milisegundos
     const sensibilidad = 10; // Sensibilidad de cambio en metros
 
-    // Verifica si hay una ruta óptima almacenada en la caché
-    if (
-      this.rutaOptimaCache.length > 0 &&
-      this.calcularDistancia(
-        start[1],
-        start[0],
-        this.rutaOptimaCache[0][1],
-        this.rutaOptimaCache[0][0]
-      ) <= sensibilidad
-    ) {
-      this.rutaOptimaCache[0][0] = start[0];
-      this.rutaOptimaCache[0][1] = start[1];
+    // Verifica si ha pasado suficiente tiempo desde la última petición al API
+    const tiempoTranscurrido = Date.now() - this.labelTest;
+    if (tiempoTranscurrido < tiempoMinimoEntrePeticiones) {
+      // Verifica si hay una ruta óptima almacenada en la caché
+      if (
+        this.rutaOptimaCache.length > 0 &&
+        this.calcularDistancia(
+          start[1],
+          start[0],
+          this.rutaOptimaCache[0][1],
+          this.rutaOptimaCache[0][0]
+        ) <= sensibilidad
+      ) {
+        this.rutaOptimaCache[0][0] = start[0];
+        this.rutaOptimaCache[0][1] = start[1];
 
-      return this.rutaOptimaCache;
-    } else {
-      const rumboActual = this.calcularRumbo(
-        start[1],
-        start[0],
-        this.rutaOptimaCache[0][1],
-        this.rutaOptimaCache[0][0]
-      );
-      const rumboDestino = this.calcularRumbo(
-        start[1],
-        start[0],
-        end[1],
-        end[0]
-      );
-
-      // Calcula la diferencia de rumbo entre el rumbo actual y el rumbo hacia el destino
-      const diferenciaRumbo = Math.abs(rumboActual - rumboDestino);
-
-      // Si la diferencia de rumbo es pequeña, se está aproximando al destino
-      if (diferenciaRumbo < 45 || diferenciaRumbo > 315) {
         return this.rutaOptimaCache;
       } else {
-        this.labelTest = Date.now();
-        const query = await fetch(
-          `https://api.mapbox.com/directions/v5/mapbox/driving-traffic/${start[0]},${start[1]};${end[0]},${end[1]}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
-          { method: 'GET' }
-        );
-        const json = await query.json();
-        const data = json.routes[0];
-        const route = data.geometry.coordinates;
-
-        // Actualiza la caché con la nueva ruta óptima
-        this.rutaOptimaCache = route;
-
-        return route;
+        return this.rutaOptimaCache;
       }
     }
+
+    this.labelTest = Date.now();
+    const query = await fetch(
+      `https://api.mapbox.com/directions/v5/mapbox/driving-traffic/${start[0]},${start[1]};${end[0]},${end[1]}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
+      { method: 'GET' }
+    );
+    const json = await query.json();
+    const data = json.routes[0];
+    const route = data.geometry.coordinates;
+
+    // Actualiza la caché con la nueva ruta óptima
+    this.rutaOptimaCache = route;
+
+    return route;
   }
 
   calcularRumbo(lat1: number, lon1: number, lat2: number, lon2: number) {
