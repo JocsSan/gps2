@@ -26,7 +26,7 @@ export class MapboxMapComponent
   lat: any;
   lng: any;
 
-  rutaOptimaCache: any[] = [];
+  rutaOptimaCache = [];
 
   labelTest!: any;
 
@@ -250,50 +250,54 @@ export class MapboxMapComponent
   }
 
   async obtenerRutaOptima(start: any, end: any) {
-    console.log('obteniendo ruta');
+    const currentLat =
+      this.currentPoint.lat; /* Obtener la latitud de la ubicación actual */
+    const currentLng =
+      this.currentPoint.lng; /* Obtener la longitud de la ubicación actual */
+    const previousResponse = this.rutaOptimaCache;
 
-    if (!this.rutaOptimaCache?.length) {
+    console.log(this.rutaOptimaCache.length);
+
+    if (previousResponse?.length == 0) {
+      // No hay una respuesta anterior, realizar la primera solicitud al API
+      console.log('Realizando la primera solicitud al API...');
       this.labelTest = Date.now();
-      const query = await fetch(
-        `https://api.mapbox.com/directions/v5/mapbox/driving-traffic/${start[0]},${start[1]};${end[0]},${end[1]}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
-        { method: 'GET' }
+      const ruta = await this.getRuta(start, end);
+      this.rutaOptimaCache = ruta;
+      return ruta;
+    } else {
+      console.log('verificando distancia');
+
+      // Verificar la distancia entre la ubicación actual y el primer punto de la respuesta anterior
+      const referenceLat = previousResponse[0][1]; // Latitud del primer punto de la respuesta anterior
+      const referenceLng = previousResponse[0][0]; // Longitud del primer punto de la respuesta anterior
+
+      const distance = this.calcularDistancia(
+        currentLat,
+        currentLng,
+        referenceLat,
+        referenceLng
       );
-      const json = await query.json();
-      const data = json.routes[0];
-      const route = data.geometry.coordinates;
-
-      // Actualiza la caché con la nueva ruta óptima
-      this.rutaOptimaCache = route;
-
-      return route;
-    }
-
-    const tiempoMinimoEntrePeticiones = 30000; // 1 minuto en milisegundos
-    const sensibilidad = 10; // Sensibilidad de cambio en metros
-
-    // Verifica si ha pasado suficiente tiempo desde la última petición al API
-    const tiempoTranscurrido = Date.now() - this.labelTest;
-    if (tiempoTranscurrido < tiempoMinimoEntrePeticiones) {
-      // Verifica si hay una ruta óptima almacenada en la caché
-      if (
-        this.rutaOptimaCache.length > 0 &&
-        this.calcularDistancia(
-          start[1],
-          start[0],
-          this.rutaOptimaCache[0][1],
-          this.rutaOptimaCache[0][0]
-        ) <= sensibilidad
-      ) {
-        this.rutaOptimaCache[0][0] = start[0];
-        this.rutaOptimaCache[0][1] = start[1];
-
-        return this.rutaOptimaCache;
+      if (distance <= 1000) {
+        // La ubicación actual está dentro del radio de 1 km del primer punto de la respuesta anterior
+        console.log('La ubicación actual está dentro del radio establecido.');
+        return previousResponse;
       } else {
-        return this.rutaOptimaCache;
+        // La ubicación actual está fuera del radio de 1 km del primer punto de la respuesta anterior
+        console.log(
+          'La ubicación actual está fuera del radio establecido. Actualizando las rutas...'
+        );
+
+        this.labelTest = Date.now();
+
+        const ruta = await this.getRuta(start, end);
+        this.rutaOptimaCache = ruta;
+        return ruta;
       }
     }
+  }
 
-    this.labelTest = Date.now();
+  async getRuta(start: any, end: any) {
     const query = await fetch(
       `https://api.mapbox.com/directions/v5/mapbox/driving-traffic/${start[0]},${start[1]};${end[0]},${end[1]}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
       { method: 'GET' }
@@ -301,32 +305,7 @@ export class MapboxMapComponent
     const json = await query.json();
     const data = json.routes[0];
     const route = data.geometry.coordinates;
-
-    // Actualiza la caché con la nueva ruta óptima
-    this.rutaOptimaCache = route;
-
     return route;
-  }
-
-  calcularRumbo(lat1: number, lon1: number, lat2: number, lon2: number) {
-    const dLon = this.toRadians(lon2 - lon1);
-    const y = Math.sin(dLon) * Math.cos(this.toRadians(lat2));
-    const x =
-      Math.cos(this.toRadians(lat1)) * Math.sin(this.toRadians(lat2)) -
-      Math.sin(this.toRadians(lat1)) *
-        Math.cos(this.toRadians(lat2)) *
-        Math.cos(dLon);
-    let rumbo = this.toDegrees(Math.atan2(y, x));
-    rumbo = (rumbo + 360) % 360; // Asegura que el rumbo esté en el rango [0, 360)
-    return rumbo;
-  }
-
-  toRadians(degrees: number) {
-    return (degrees * Math.PI) / 180;
-  }
-
-  toDegrees(radians: number) {
-    return (radians * 180) / Math.PI;
   }
 
   //calculo de distancia

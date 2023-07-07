@@ -22,6 +22,13 @@
         <ion-button [routerLink]="['../index']">
           <ion-icon name="exit-sharp"></ion-icon>
         </ion-button>
+        <ion-button id="present-alert">Click Me</ion-button>
+        <ion-alert
+          trigger="present-alert"
+          header="Please enter your info"
+          [buttons]="alertButtons"
+          [inputs]="alertInputs"
+        ></ion-alert>
       </ion-row>
     </ion-grid>
   </div>

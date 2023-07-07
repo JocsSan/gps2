@@ -7,6 +7,7 @@ import { Share } from '@capacitor/share';
 import { Subscription, interval } from 'rxjs';
 import { Router } from '@angular/router';
 import { GeolocationService } from 'src/app/services/geolocation.service';
+import { AlertInput } from '@ionic/angular';
 
 @Component({
   selector: 'app-map',
@@ -45,6 +46,34 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private geolocation$: GeolocationService
   ) {}
+
+  valueInput: string = 'alguna mierda';
+
+  //?---botones del alert
+  public alertButtons = ['OK'];
+  public alertInputs = [
+    {
+      placeholder: 'Nickname (max 8 characters)',
+      attributes: {
+        maxlength: 8,
+      },
+      handler: (data: { username: string }) => {
+        // Tu lógica de validación aquí
+      },
+      value: this.valueInput,
+      // Escucha el evento ionInput y llama a handleInputChange
+      '(ionInput)': 'handleInputChange($event)',
+    },
+  ];
+
+  handleInputChange(event: CustomEvent) {
+    const inputValue = event.detail.value;
+    // Hacer algo con el valor del campo de entrada
+    console.log('Valor actual del campo de entrada:', inputValue);
+  }
+
+  //?-----------------------
+
   ngAfterViewInit(): void {
     this.networkListener = Network.addListener(
       'networkStatusChange',
