@@ -38,7 +38,7 @@ export class MapboxMapComponent
     setTimeout(() => {
       this.mapboxinit();
       this.fliying();
-    }, 500);
+    }, 1000);
   }
 
   ngOnChanges(changes: SimpleChanges): void {

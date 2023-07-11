@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Listado } from 'src/app/interfaces/listados.interface';
 import { GeolocationService } from 'src/app/services/geolocation.service';
+import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
   selector: 'app-index',
@@ -12,24 +13,29 @@ import { GeolocationService } from 'src/app/services/geolocation.service';
 export class IndexComponent implements OnInit {
   constructor(
     private router: Router,
-    private geolocation$: GeolocationService
+    private geolocation$: GeolocationService,
+    private storage$: StorageService
   ) {}
   private subscripciones: { [key: string]: Subscription } = {};
 
   listadoClientes!: Listado[];
   ngOnInit(): void {
-    const listadoLocal = localStorage.getItem('listadoClientes');
-    if (listadoLocal) {
-      console.log(JSON.parse(listadoLocal));
-      this.listadoClientes = JSON.parse(listadoLocal);
+    this.getseguimiento();
+    this.getListado();
+  }
+
+  async getListado() {
+    const previusListado = await this.storage$.get('listado');
+    if (previusListado) {
+      console.log(previusListado);
+      this.listadoClientes = previusListado;
     } else {
       this.listadoClientes = this.listado;
     }
-    this.getseguimiento();
   }
 
   navigateToDestination(dataToSend: any): void {
-    localStorage.removeItem('cliente');
+    this.storage$.set('cliente', dataToSend);
     localStorage.setItem('cliente', JSON.stringify(dataToSend));
     this.router.navigate(['home/map']);
   }

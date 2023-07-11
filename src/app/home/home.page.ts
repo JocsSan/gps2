@@ -5,6 +5,7 @@ import { GeotService } from '../services/geot.service';
 import { Router } from '@angular/router';
 import { Listado } from '../interfaces/listados.interface';
 import { GeolocationService } from '../services/geolocation.service';
+import { StorageService } from '../services/storage.service';
 
 @Component({
   selector: 'app-home',
@@ -17,7 +18,8 @@ export class HomePage implements OnInit, OnDestroy {
   constructor(
     private geot$: GeotService,
     private router: Router,
-    private geolocation$: GeolocationService
+    private geolocation$: GeolocationService,
+    private storage$: StorageService
   ) {}
 
   ngOnInit(): void {
@@ -30,11 +32,23 @@ export class HomePage implements OnInit, OnDestroy {
 
   listadoClientes!: Listado[];
 
-  getlisatados(code: any) {
+  async getlisatados(code: any) {
+    const previusListado = await this.storage$.get('listado');
+    const previusCode = (await this.storage$.get('key')) || '';
+
+    if (!!previusListado?.length && previusCode != '' && code == previusCode) {
+      console.log('ya hay data');
+
+      this.router.navigate(['home/index']);
+      return;
+    }
+
     this.geot$.getlistado(code).subscribe(
       (res) => {
         this.listadoClientes = res;
         const listadoString = JSON.stringify(this.listadoClientes);
+        this.storage$.set('key', code);
+        this.storage$.set('listado', res);
         localStorage.setItem('listadoClientes', listadoString);
         this.router.navigate(['home/index']);
       },

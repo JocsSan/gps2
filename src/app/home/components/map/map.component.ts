@@ -7,7 +7,8 @@ import { Share } from '@capacitor/share';
 import { Subscription, interval } from 'rxjs';
 import { Router } from '@angular/router';
 import { GeolocationService } from 'src/app/services/geolocation.service';
-import { AlertInput } from '@ionic/angular';
+import { ActionSheetController, AlertInput } from '@ionic/angular';
+import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
   selector: 'app-map',
@@ -44,10 +45,14 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private router: Router,
-    private geolocation$: GeolocationService
+    private geolocation$: GeolocationService,
+    private actionSheetCtrl: ActionSheetController,
+    private storage$: StorageService
   ) {}
 
   valueInput: string = 'alguna mierda';
+
+  presentingElement: any;
 
   //?---botones del alert
   public alertButtons = ['OK'];
@@ -95,18 +100,27 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  ngOnInit(): void {
-    this.receivedData = null;
-    const localCliente = localStorage.getItem('cliente');
+  async getclienteDb() {
+    const cliente = await this.storage$.get('cliente');
+    return cliente;
+  }
 
-    if (localCliente) {
-      this.receivedData = JSON.parse(localCliente);
-      console.log(this.receivedData);
+  async ngOnInit() {
+    this.presentingElement = document.querySelector('.ion-page');
+    this.getseguimiento();
+    this.getclienteDb();
+    this.receivedData = null;
+
+    const cliente = await this.getclienteDb();
+    //    const localCliente = localStorage.getItem('cliente');
+    if (cliente) {
+      this.receivedData = cliente;
       this.markerDestiny = {
         lat: this.receivedData.Lat,
         lng: this.receivedData.Lon,
       };
     }
+
     this.getseguimiento();
   }
 
@@ -325,5 +339,34 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   toRad(grados: any) {
     return (grados * Math.PI) / 180;
+  }
+
+  canDismiss = async () => {
+    const actionSheet = await this.actionSheetCtrl.create({
+      header: 'Are you sure?',
+      buttons: [
+        {
+          text: 'Yes',
+          role: 'confirm',
+        },
+        {
+          text: 'No',
+          role: 'cancel',
+        },
+      ],
+    });
+
+    actionSheet.present();
+
+    const { role } = await actionSheet.onWillDismiss();
+
+    return role === 'confirm';
+  };
+
+  selectedOption!: string;
+  inputValue!: string;
+  submitForm() {
+    console.log('Opción seleccionada:', this.selectedOption);
+    console.log('Valor del campo de entrada:', this.inputValue);
   }
 }
