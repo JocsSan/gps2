@@ -1,4 +1,11 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { PluginListenerHandle } from '@capacitor/core';
 import { Network } from '@capacitor/network';
@@ -9,6 +16,7 @@ import { Router } from '@angular/router';
 import { GeolocationService } from 'src/app/services/geolocation.service';
 import { ActionSheetController, AlertInput } from '@ionic/angular';
 import { StorageService } from 'src/app/services/storage.service';
+import { PostOfflinerService } from 'src/app/services/post-offliner.service';
 
 @Component({
   selector: 'app-map',
@@ -21,9 +29,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   position?: any;
   logGuardado: any;
   seGuardo: boolean = false;
-
-  networkStatus: any;
-  networkListener!: PluginListenerHandle;
   receivedData!: any;
 
   //*variables de mapa-------------------------------
@@ -41,74 +46,36 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   //?--------------------------
 
-  //*------------------------------------------------
+  selectedOption!: string;
+  inputValue!: string;
 
-  constructor(
-    private router: Router,
-    private geolocation$: GeolocationService,
-    private actionSheetCtrl: ActionSheetController,
-    private storage$: StorageService
-  ) {}
+  watchId: any;
+  nuevaPosition: any;
+
+  timestampText: any;
+
+  mssg!: string;
+
+  finalizo: boolean = false;
+
+  lasPoint!: { lat: number; lng: number };
+  //*------------------------------------------------
 
   valueInput: string = 'alguna mierda';
 
   presentingElement: any;
 
-  //?---botones del alert
-  public alertButtons = ['OK'];
-  public alertInputs = [
-    {
-      placeholder: 'Nickname (max 8 characters)',
-      attributes: {
-        maxlength: 8,
-      },
-      handler: (data: { username: string }) => {
-        // Tu lógica de validación aquí
-      },
-      value: this.valueInput,
-      // Escucha el evento ionInput y llama a handleInputChange
-      '(ionInput)': 'handleInputChange($event)',
-    },
-  ];
-
-  handleInputChange(event: CustomEvent) {
-    const inputValue = event.detail.value;
-    // Hacer algo con el valor del campo de entrada
-    console.log('Valor actual del campo de entrada:', inputValue);
-  }
-
-  //?-----------------------
-
-  ngAfterViewInit(): void {
-    this.networkListener = Network.addListener(
-      'networkStatusChange',
-      (status) => {
-        this.networkStatus = status;
-        if (status.connected) {
-          // Se ha restablecido la conexión a Internet
-        }
-        //console.log('Network status changed', status);
-      }
-    );
-
-    this.getNetWorkStatus();
-
-    this.subscripciones['interval'] = interval(5000).subscribe(() => {
-      if (this.networkStatus?.connected) {
-        // Hay conexión a Internet
-      }
-    });
-  }
-
-  async getclienteDb() {
-    const cliente = await this.storage$.get('cliente');
-    return cliente;
-  }
+  constructor(
+    private router: Router,
+    private geolocation$: GeolocationService,
+    private actionSheetCtrl: ActionSheetController,
+    private storage$: StorageService,
+    private posttworker$: PostOfflinerService
+  ) {}
 
   async ngOnInit() {
     this.presentingElement = document.querySelector('.ion-page');
     this.getseguimiento();
-    this.getclienteDb();
     this.receivedData = null;
 
     const cliente = await this.getclienteDb();
@@ -124,26 +91,15 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.getseguimiento();
   }
 
-  async getNetWorkStatus() {
-    this.networkStatus = await Network.getStatus();
-    //console.log(this.networkStatus);
-  }
-
-  endNetworkListener() {
-    if (this.networkListener) {
-      this.networkListener.remove();
-    }
-  }
+  ngAfterViewInit(): void {}
 
   ngOnDestroy() {
     this.receivedData = null;
     localStorage.removeItem('cliente');
-    if (this.networkListener) {
-      this.networkListener.remove();
-    }
     Object.keys(this.subscripciones).forEach((key) => {
       try {
         this.subscripciones[key].unsubscribe();
+        console.log('key', key);
       } catch (error) {
         console.log(error);
       }
@@ -152,35 +108,24 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.detenerSeguimiento();
   }
 
-  listenerInternet() {
-    Network.addListener('networkStatusChange', (status) => {
-      //console.log('Network status changed', status);
-    });
-    const logCurrentNetworkStatus = async () => {
-      const status = await Network.getStatus();
+  //?---botones del alert
 
-      //console.log('Network status para ver si simplifico:', status);
-    };
+  handleInputChange(event: CustomEvent) {
+    const inputValue = event.detail.value;
+    // Hacer algo con el valor del campo de entrada
+    console.log('Valor actual del campo de entrada:', inputValue);
   }
 
-  async takePicture() {
-    const image = await Camera.getPhoto({
-      quality: 90,
-      allowEditing: true,
-      resultType: CameraResultType.Uri,
-      source: CameraSource.Camera,
-    });
+  //?-----------------------
 
-    this.myImage = image.webPath;
+  async getclienteDb() {
+    const cliente = await this.storage$.get('cliente');
+    return cliente;
   }
-
-  watchId: any;
 
   //*--------------------------------------------------------------------
 
   //?obtencion de coordenadas
-
-  nuevaPosition: any;
 
   getseguimiento() {
     this.subscripciones['geolocation'] = this.geolocation$
@@ -189,7 +134,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         (positionObs: { lat: number; lng: number }) => {
           this.nuevaPosition = positionObs;
           // Aquí puedes utilizar la posición actualizada
-          console.log(positionObs);
           const { lat } = positionObs;
           const { lng } = positionObs;
           this.currentPoint = { lat: lat, lng: lng };
@@ -202,12 +146,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
           );
 
           if (this.currentPoint?.lat) {
-            this.guardar();
+            this.verDistancias();
           }
-          console.log(
-            'cambios de la distancia con nuevo seguimiento',
-            this.cambioDistancias
-          );
         },
         (error) => {
           // Manejo de errores
@@ -216,102 +156,68 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       );
   }
 
-  private fisrtValue: boolean = true;
-
-  timestampText: any;
-
-  mssg!: string;
-
-  finalizo: boolean = false;
-
-  guardar() {
+  verDistancias() {
     // Verificar si currentPoint y markerDestiny no son nulos o indefinidos
 
-    if (this.fisrtValue) {
-      const distanciaDestino = this.calcularDistancia(
+    if (!this.lasPoint) {
+      this.lasPoint = {
+        lat: this.currentPoint.lat,
+        lng: this.currentPoint.lng,
+      };
+      console.log('le agregamos el primer las point');
+
+      this.mssg = 'primer punto';
+      this.timestampText = Date.now();
+      this.postPoint(this.lasPoint);
+    }
+
+    if (this.lasPoint) {
+      const currentdistance = this.calcularDistancia(
         this.currentPoint.lat,
         this.currentPoint.lng,
-        this.markerDestiny.lat,
-        this.markerDestiny.lng
+        this.lasPoint.lat,
+        this.lasPoint.lng
       );
 
-      if (distanciaDestino < 200) {
-        console.log('Finalizó el destino en primer tiro');
-        this.mssg = 'Finalizó el destino en primer tiro';
-        this.finalizo = true;
+      if (this.cambioDistancias <= 200) {
+        console.log('llego al punto final');
+        this.mssg = 'esta en el punto final';
         this.timestampText = Date.now();
+        this.finalPoint(this.currentPoint);
         return;
       }
 
-      console.log('Primer tiro');
-      this.mssg = 'Primer Tiro';
-      this.timestampText = Date.now();
-    }
+      if (currentdistance > 500) {
+        console.log('guardar punto');
+        this.lasPoint = {
+          lat: this.currentPoint.lat,
+          lng: this.currentPoint.lng,
+        };
 
-    this.fisrtValue = false;
-
-    if (this.currentPoint && this.markerDestiny) {
-      const distanciaDestino = this.calcularDistancia(
-        this.currentPoint.lat,
-        this.currentPoint.lng,
-        this.markerDestiny.lat,
-        this.markerDestiny.lng
-      );
-
-      if (distanciaDestino < 200) {
-        console.log('Finalizó el destino');
-        this.mssg = 'Finalizó el destino';
-        this.finalizo = true;
+        this.mssg = 'un punto cualquiera';
         this.timestampText = Date.now();
-      }
-
-      if (
-        this.previousPoint &&
-        this.calcularDistancia(
-          this.previousPoint.lat,
-          this.previousPoint.lng,
-          this.currentPoint.lat,
-          this.currentPoint.lng
-        ) >= 200
-      ) {
-        this.previousPoint = this.currentPoint;
-      }
-
-      if (
-        this.previousPoint &&
-        this.calcularDistancia(
-          this.previousPoint.lat,
-          this.previousPoint.lng,
-          this.currentPoint.lat,
-          this.currentPoint.lng
-        ) < 200
-      ) {
-        console.log('Próximo a 200 metros del punto anterior');
-        this.mssg = 'Próximo a 200 metros del punto anterior';
-        this.timestampText = Date.now();
+        this.postPoint(this.lasPoint);
       }
     }
+  }
+
+  finalPoint(coordenadas: { lat: number; lng: number }) {
+    const res = this.posttworker$.finalPoint();
+    console.log(res);
+  }
+
+  postPoint(coordenadas: { lat: number; lng: number }) {
+    const res = this.posttworker$.postPoint();
+    console.log(res);
   }
 
   //?matar la obtencion de coordenadas
   detenerSeguimiento() {
-    if (this.watchId) {
-      Geolocation.clearWatch({ id: this.watchId });
-      this.watchId = undefined;
-    }
+    this.geolocation$.detenerSeguimiento();
   }
 
   //*-----------------------------------------------------------------------
 
-  async share() {
-    await Share.share({
-      title: 'Come and find me',
-      text: `Here's my current location:
-        ${this.position.coords.latitude},
-        ${this.position.coords.longitude}`,
-      url: 'http://ionicacademy.com/',
-    });
-  }
   //? calculo de distancias
   calcularDistancia(lat1: number, lon1: number, lat2: number, lon2: number) {
     const radioTierra = 6371000;
@@ -337,7 +243,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     return distancia;
   }
 
-  toRad(grados: any) {
+  toRad(grados: number) {
     return (grados * Math.PI) / 180;
   }
 
@@ -363,8 +269,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     return role === 'confirm';
   };
 
-  selectedOption!: string;
-  inputValue!: string;
   submitForm() {
     console.log('Opción seleccionada:', this.selectedOption);
     console.log('Valor del campo de entrada:', this.inputValue);

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Geolocation, GeolocationPosition } from '@capacitor/geolocation';
+import { StorageService } from './storage.service';
 
 @Injectable({
   providedIn: 'root',
@@ -8,7 +9,7 @@ import { Geolocation, GeolocationPosition } from '@capacitor/geolocation';
 export class GeolocationService {
   private positionSubject = new Subject<{ lat: number; lng: number }>();
 
-  constructor() {}
+  constructor(private storage$: StorageService) {}
 
   watchId!: any;
 
@@ -29,10 +30,7 @@ export class GeolocationService {
 
   //?matar la obtencion de coordenadas
   detenerSeguimiento() {
-    console.log('ME DETUVE');
-
     if (this.watchId) {
-      console.log('si funciona');
       Geolocation.clearWatch({ id: this.watchId });
       this.watchId = undefined;
     }
@@ -40,7 +38,6 @@ export class GeolocationService {
 
   getPositionObservable(): Observable<{ lat: number; lng: number }> {
     this.iniciarSeguimiento();
-    console.log('se actualiza');
 
     return this.positionSubject.asObservable();
   }

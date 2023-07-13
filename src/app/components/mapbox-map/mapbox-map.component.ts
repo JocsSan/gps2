@@ -266,8 +266,6 @@ export class MapboxMapComponent
       this.rutaOptimaCache = ruta;
       return ruta;
     } else {
-      console.log('verificando distancia');
-
       // Verificar la distancia entre la ubicación actual y el primer punto de la respuesta anterior
       const referenceLat = previousResponse[0][1]; // Latitud del primer punto de la respuesta anterior
       const referenceLng = previousResponse[0][0]; // Longitud del primer punto de la respuesta anterior
@@ -278,7 +276,7 @@ export class MapboxMapComponent
         referenceLat,
         referenceLng
       );
-      if (distance <= 1000) {
+      if (distance <= 500) {
         // La ubicación actual está dentro del radio de 1 km del primer punto de la respuesta anterior
         console.log('La ubicación actual está dentro del radio establecido.');
         return previousResponse;

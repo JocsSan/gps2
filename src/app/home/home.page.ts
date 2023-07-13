@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { PluginListenerHandle } from '@capacitor/core';
 import { Subscription } from 'rxjs';
 import { GeotService } from '../services/geot.service';
 import { Router } from '@angular/router';
 import { Listado } from '../interfaces/listados.interface';
 import { GeolocationService } from '../services/geolocation.service';
 import { StorageService } from '../services/storage.service';
-
+import { PluginListenerHandle } from '@capacitor/core';
+import { Network } from '@capacitor/network';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -22,8 +22,19 @@ export class HomePage implements OnInit, OnDestroy {
     private storage$: StorageService
   ) {}
 
-  ngOnInit(): void {
+  networkStatus: any;
+  networkListener!: PluginListenerHandle;
+
+  async ngOnInit() {
+    this.clearDB();
     localStorage.removeItem('listadoClientes');
+    this.networkListener = Network.addListener(
+      'networkStatusChange',
+      (status) => {
+        this.networkStatus = status;
+        console.log('Network status changed', status);
+      }
+    );
   }
 
   messagetoast!: string;
@@ -42,9 +53,10 @@ export class HomePage implements OnInit, OnDestroy {
       this.router.navigate(['home/index']);
       return;
     }
-
+    this.storage$.remove('listado');
+    this.storage$.remove('key');
     this.geot$.getlistado(code).subscribe(
-      (res) => {
+      async (res) => {
         this.listadoClientes = res;
         const listadoString = JSON.stringify(this.listadoClientes);
         this.storage$.set('key', code);
@@ -68,6 +80,16 @@ export class HomePage implements OnInit, OnDestroy {
     this.isToastOpen = isOpen;
   }
 
+  async clearDB() {
+    const storageKeys = await this.storage$.keys();
+    const keysToRemove = storageKeys?.filter(
+      (el) => el !== 'listado' && el !== 'key' && el !== 'post'
+    );
+    keysToRemove?.forEach((element) => {
+      this.storage$.remove(element);
+    });
+  }
+
   ngOnDestroy() {
     console.log('funciona esto');
 
@@ -79,5 +101,16 @@ export class HomePage implements OnInit, OnDestroy {
       }
     });
     this.geolocation$.detenerSeguimiento();
+  }
+
+  async getNetWorkStatus() {
+    this.networkStatus = await Network.getStatus();
+    //console.log(this.networkStatus);
+  }
+
+  endNetworkListener() {
+    if (this.networkListener) {
+      this.networkListener.remove();
+    }
   }
 }

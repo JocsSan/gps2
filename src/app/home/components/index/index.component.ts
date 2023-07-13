@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Listado } from 'src/app/interfaces/listados.interface';
@@ -10,7 +10,7 @@ import { StorageService } from 'src/app/services/storage.service';
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.scss'],
 })
-export class IndexComponent implements OnInit {
+export class IndexComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private geolocation$: GeolocationService,
@@ -19,15 +19,38 @@ export class IndexComponent implements OnInit {
   private subscripciones: { [key: string]: Subscription } = {};
 
   listadoClientes!: Listado[];
+
   ngOnInit(): void {
     this.getseguimiento();
     this.getListado();
   }
 
+  ngOnDestroy(): void {
+    Object.keys(this.subscripciones).forEach((key) => {
+      try {
+        this.subscripciones[key].unsubscribe();
+      } catch (error) {
+        console.log(error);
+      }
+    });
+
+    this.detenerSeguimiento();
+  }
+
+  detenerSeguimiento() {
+    this.geolocation$.detenerSeguimiento();
+  }
+
+  listenerInternet() {}
+
   async getListado() {
     const previusListado = await this.storage$.get('listado');
     if (previusListado) {
       console.log(previusListado);
+      previusListado.map((item: Listado) => {
+        this.storage$.set(item.Cliente, item);
+        return item;
+      });
       this.listadoClientes = previusListado;
     } else {
       this.listadoClientes = this.listado;
