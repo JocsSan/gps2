@@ -9,7 +9,7 @@ import { Observable, Subject } from 'rxjs';
 })
 export class NetworkService {
   private networkListener!: PluginListenerHandle;
-  public networkStatus: boolean = false;
+  private networkStatus: boolean = false;
 
   private statusSubject = new Subject<boolean>();
 
@@ -39,5 +39,13 @@ export class NetworkService {
     this.startNetworkListener();
 
     return this.statusSubject.asObservable();
+  }
+
+  async getNetWorkStatus(): Promise<{
+    connected: boolean;
+    connectionType: string;
+  }> {
+    const networkStatus = await Network.getStatus();
+    return networkStatus;
   }
 }

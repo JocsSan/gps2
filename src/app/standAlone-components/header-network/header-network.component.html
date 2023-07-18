@@ -1,0 +1,10 @@
+<ion-fab
+  vertical="top"
+  horizontal="{{ orientation }}"
+  slot="fixed"
+  *ngIf="!networkStatus"
+>
+  <ion-fab-button size="small" color="danger">
+    <ion-icon name="cloud-offline-sharp"></ion-icon>
+  </ion-fab-button>
+</ion-fab>

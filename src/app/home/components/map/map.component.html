@@ -1,4 +1,5 @@
 <ion-content>
+  <app-header-network [orientation]="'start'"></app-header-network>
   <div style="height: 70%; width: 100%" *ngIf="!!receivedData">
     <app-mapbox-map
       [destiniyPoint]="markerDestiny"
@@ -24,7 +25,7 @@
         <ion-grid>
           <ion-row>
             <ion-col>
-              <ion-button id="open-modal">Open</ion-button>
+              <ion-button id="open-modal">Terminar</ion-button>
             </ion-col>
             <ion-col size="auto">
               <ion-button [routerLink]="['../index']">
@@ -64,10 +65,30 @@
                     [(ngModel)]="selectedOption"
                     name="animalSelection"
                   >
-                    <ion-radio value="dogs">Dogs</ion-radio><br />
-                    <ion-radio value="cats">Cats</ion-radio><br />
-                    <ion-radio value="turtles">Turtles</ion-radio><br />
-                    <ion-radio value="fish">Fish</ion-radio><br />
+                    <ion-radio
+                      value="dogs"
+                      labelPlacement="fixed"
+                      style="margin-left: 1rem"
+                      >Dogs</ion-radio
+                    ><br />
+                    <ion-radio
+                      value="cats"
+                      labelPlacement="fixed"
+                      style="margin-left: 1rem"
+                      >Cats</ion-radio
+                    ><br />
+                    <ion-radio
+                      value="turtles"
+                      labelPlacement="fixed"
+                      style="margin-left: 1rem"
+                      >Turtles</ion-radio
+                    ><br />
+                    <ion-radio
+                      value="fish"
+                      labelPlacement="fixed"
+                      style="margin-left: 1rem"
+                      >Fish</ion-radio
+                    ><br />
                   </ion-radio-group>
 
                   <ion-item>

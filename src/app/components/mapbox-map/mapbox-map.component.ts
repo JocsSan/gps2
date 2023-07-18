@@ -8,6 +8,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
+import { HeaderNetworkComponent } from 'src/app/standAlone-components/header-network/header-network.component';
 @Component({
   selector: 'app-mapbox-map',
   templateUrl: './mapbox-map.component.html',
@@ -166,7 +167,7 @@ export class MapboxMapComponent
         },
         paint: {
           'circle-radius': 10,
-          'circle-color': '#f30',
+          'circle-color': '#6041FA',
         },
       });
     });

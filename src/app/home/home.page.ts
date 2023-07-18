@@ -26,6 +26,7 @@ export class HomePage implements OnInit, OnDestroy {
   networkListener!: PluginListenerHandle;
 
   async ngOnInit() {
+    this.getRazones();
     this.clearDB();
     localStorage.removeItem('listadoClientes');
     this.networkListener = Network.addListener(
@@ -43,6 +44,21 @@ export class HomePage implements OnInit, OnDestroy {
 
   listadoClientes!: Listado[];
 
+  /**
+   * @description : obtiene las razones para estados de los pedidos y entregas
+   */
+  async getRazones() {
+    this.geot$.getRazones().subscribe((res) => {
+      const razones = res || this.razonesTest;
+      this.storage$.set('razones', razones);
+    });
+  }
+
+  /**
+   * @description obtiene los clientes de la ruta
+   * @param code codigo con el que se obiene el listado
+   * @returns
+   */
   async getlisatados(code: any) {
     const previusListado = await this.storage$.get('listado');
     const previusCode = (await this.storage$.get('key')) || '';
@@ -55,7 +71,7 @@ export class HomePage implements OnInit, OnDestroy {
     }
     this.storage$.remove('listado');
     this.storage$.remove('key');
-    this.geot$.getlistado(code).subscribe(
+    this.geot$.getListado(code).subscribe(
       async (res) => {
         this.listadoClientes = res;
         const listadoString = JSON.stringify(this.listadoClientes);
@@ -76,10 +92,20 @@ export class HomePage implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * @description funcion para abrir el toast
+   * @param isOpen
+   */
   setOpen(isOpen: boolean) {
     this.isToastOpen = isOpen;
   }
 
+  /**
+   * @description : funcion que limpia la base de datos
+   * local menos el listado y la key para evitar estar
+   * haciendo consultas inncesarias, no se si en eun
+   * futuro en tendre que limpiar mejor de otra manera
+   */
   async clearDB() {
     const storageKeys = await this.storage$.keys();
     const keysToRemove = storageKeys?.filter(
@@ -103,14 +129,40 @@ export class HomePage implements OnInit, OnDestroy {
     this.geolocation$.detenerSeguimiento();
   }
 
+  /**
+   * @description metodo que obtiene el estado actual de la red
+   */
   async getNetWorkStatus() {
     this.networkStatus = await Network.getStatus();
     //console.log(this.networkStatus);
   }
 
+  /**
+   * @description funcion para darle cuello al metodo de obtener red
+   */
   endNetworkListener() {
     if (this.networkListener) {
       this.networkListener.remove();
     }
   }
+
+  //variable de prueba
+  razonesTest = [
+    {
+      EstadoEntrega: 1,
+      Descripcion: 'PENDIENTE',
+    },
+    {
+      EstadoEntrega: 2,
+      Descripcion: 'EN TRANSITO',
+    },
+    {
+      EstadoEntrega: 3,
+      Descripcion: 'ENTREGADO',
+    },
+    {
+      EstadoEntrega: 4,
+      Descripcion: 'ANULADO',
+    },
+  ];
 }

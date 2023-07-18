@@ -11,6 +11,7 @@ import { MapComponent } from './components/map/map.component';
 import { IndexComponent } from './components/index/index.component';
 import { MapboxMapComponent } from '../components/mapbox-map/mapbox-map.component';
 import { CalcularDistanciaPipe } from '../pipes/calculo-distancia.pipe';
+import { HeaderNetworkComponent } from '../standAlone-components/header-network/header-network.component';
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import { CalcularDistanciaPipe } from '../pipes/calculo-distancia.pipe';
     HomePageRoutingModule,
     ButtonModule,
     GoogleMapsModule,
+    HeaderNetworkComponent,
   ],
   declarations: [
     HomePage,

@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { StorageService } from './services/storage.service';
-import { PluginListenerHandle } from '@capacitor/core';
-import { Network } from '@capacitor/network';
 import { NetworkService } from './services/net-work.service';
 
 @Component({
@@ -12,26 +10,37 @@ import { NetworkService } from './services/net-work.service';
 export class AppComponent {
   constructor(
     private storage$: StorageService,
-    private networkService: NetworkService
+    private network$: NetworkService
   ) {}
 
-  networkStatus: any;
-  networkListener!: PluginListenerHandle;
+  networkStatus!: boolean;
 
   async ngOnInit() {
     // If using a custom driver:
     // await this.storage.defineDriver(MyCustomDriver)
     this.initstorage();
     this.listenerNetwork();
+    this.networkStatus = await this.netWorkStatusInit();
   }
 
   estadoRed!: boolean;
 
   listenerNetwork() {
-    this.networkService.startNetworkListener();
-    console.log('Initial network status:', this.networkService.isConnected());
-    this.estadoRed = this.networkService.isConnected();
+    this.network$.getStatusObservable().subscribe(
+      (res) => {
+        this.networkStatus = res;
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   }
+
+  netWorkStatusInit = async (): Promise<boolean> => {
+    const initStatus = await this.network$.getNetWorkStatus();
+
+    return initStatus.connected;
+  };
 
   initstorage() {
     this.storage$.init();
