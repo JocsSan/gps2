@@ -22,6 +22,7 @@ export class HeaderNetworkComponent implements OnInit, OnDestroy {
   constructor(private network$: NetworkService) {}
   async ngOnInit() {
     this.networkStatus = await this.netWorkinit();
+    this.listenerNetwork();
   }
 
   ngOnDestroy(): void {
@@ -44,6 +45,7 @@ export class HeaderNetworkComponent implements OnInit, OnDestroy {
     this.subscripciones['getStatusObservable'] = this.network$
       .getStatusObservable()
       .subscribe((res) => {
+        console.log(res);
         this.networkStatus = res;
       });
   };

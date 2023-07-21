@@ -28,6 +28,7 @@ export class AppComponent {
   listenerNetwork() {
     this.network$.getStatusObservable().subscribe(
       (res) => {
+        console.log(res);
         this.networkStatus = res;
       },
       (error) => {
