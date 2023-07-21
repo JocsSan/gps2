@@ -98,7 +98,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async getRazones(): Promise<Razon[]> {
     try {
-      const res = await this.storage$.get('razones');
+      const res = (await this.storage$.get('razones')) || this.razonesTest;
       return res as Razon[];
     } catch (err) {
       console.error(err);
@@ -270,4 +270,23 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log('Opción seleccionada:', this.selectedOption);
     console.log('Valor del campo de entrada:', this.inputValue);
   }
+
+  razonesTest = [
+    {
+      EstadoEntrega: 1,
+      Descripcion: 'PENDIENTE',
+    },
+    {
+      EstadoEntrega: 2,
+      Descripcion: 'EN TRANSITO',
+    },
+    {
+      EstadoEntrega: 3,
+      Descripcion: 'ENTREGADO',
+    },
+    {
+      EstadoEntrega: 4,
+      Descripcion: 'ANULADO',
+    },
+  ];
 }
