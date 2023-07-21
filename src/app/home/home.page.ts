@@ -26,7 +26,7 @@ export class HomePage implements OnInit, OnDestroy {
   networkListener!: PluginListenerHandle;
 
   async ngOnInit() {
-    this.getRazones();
+   await this.getRazones();
     this.clearDB();
     localStorage.removeItem('listadoClientes');
     this.networkListener = Network.addListener(
@@ -49,8 +49,16 @@ export class HomePage implements OnInit, OnDestroy {
    */
   async getRazones() {
     this.geot$.getRazones().subscribe((res) => {
-      const razones = res || this.razonesTest;
+      const razones = res;
+      console.log(razones);
       this.storage$.set('razones', razones);
+    }, err =>{
+      console.log(err);
+      const razones = this.razonesTest;
+      this.storage$.set('razones', razones);
+      const customMsg = err?.error?.error || '';
+      this.messagetoast = `${err.message}; ${customMsg}`;
+      this.setOpen(true);
     });
   }
 

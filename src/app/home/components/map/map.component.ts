@@ -1,22 +1,10 @@
-import {
-  AfterViewInit,
-  Component,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  SimpleChanges,
-} from '@angular/core';
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { PluginListenerHandle } from '@capacitor/core';
-import { Network } from '@capacitor/network';
-import { Geolocation, GeolocationPosition } from '@capacitor/geolocation';
-import { Share } from '@capacitor/share';
-import { Subscription, interval } from 'rxjs';
-import { Router } from '@angular/router';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { GeolocationService } from 'src/app/services/geolocation.service';
-import { ActionSheetController, AlertInput } from '@ionic/angular';
+import { ActionSheetController } from '@ionic/angular';
 import { StorageService } from 'src/app/services/storage.service';
 import { PostOfflinerService } from 'src/app/services/post-offliner.service';
+import { Razon } from 'src/app/interfaces/razones.interface';
 
 @Component({
   selector: 'app-map',
@@ -49,9 +37,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedOption!: string;
   inputValue!: string;
 
-  watchId: any;
-  nuevaPosition: any;
-
   timestampText: any;
 
   mssg!: string;
@@ -65,8 +50,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   presentingElement: any;
 
+  razones!: Razon[];
+
   constructor(
-    private router: Router,
     private geolocation$: GeolocationService,
     private actionSheetCtrl: ActionSheetController,
     private storage$: StorageService,
@@ -77,6 +63,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.presentingElement = document.querySelector('.ion-page');
     this.getseguimiento();
     this.receivedData = null;
+
+    this.razones = await this.getRazones();
 
     const cliente = await this.getclienteDb();
     //    const localCliente = localStorage.getItem('cliente');
@@ -108,6 +96,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.detenerSeguimiento();
   }
 
+  async getRazones(): Promise<Razon[]> {
+    try {
+      const res = await this.storage$.get('razones');
+      return res as Razon[];
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
+  }
+
   //?---botones del alert
 
   handleInputChange(event: CustomEvent) {
@@ -132,7 +130,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       .getPositionObservable()
       .subscribe(
         (positionObs: { lat: number; lng: number }) => {
-          this.nuevaPosition = positionObs;
           // Aquí puedes utilizar la posición actualizada
           const { lat } = positionObs;
           const { lng } = positionObs;

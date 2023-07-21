@@ -61,33 +61,18 @@
                 <ion-list>
                   <ion-radio-group
                     [allowEmptySelection]="true"
-                    value="turtles"
                     [(ngModel)]="selectedOption"
-                    name="animalSelection"
+                    name="razonSelection"
+                    *ngFor="let razon of razones"
                   >
                     <ion-radio
-                      value="dogs"
-                      labelPlacement="fixed"
+                      value="{{ razon.EstadoEntrega }}"
+                      labelPlacement="end"
+                      [disabled]="
+                        !!(razon.EstadoEntrega == 3 && cambioDistancias <= 200)
+                      "
                       style="margin-left: 1rem"
-                      >Dogs</ion-radio
-                    ><br />
-                    <ion-radio
-                      value="cats"
-                      labelPlacement="fixed"
-                      style="margin-left: 1rem"
-                      >Cats</ion-radio
-                    ><br />
-                    <ion-radio
-                      value="turtles"
-                      labelPlacement="fixed"
-                      style="margin-left: 1rem"
-                      >Turtles</ion-radio
-                    ><br />
-                    <ion-radio
-                      value="fish"
-                      labelPlacement="fixed"
-                      style="margin-left: 1rem"
-                      >Fish</ion-radio
+                      >{{ razon.Descripcion }}</ion-radio
                     ><br />
                   </ion-radio-group>
 

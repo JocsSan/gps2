@@ -8,7 +8,6 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
-import { HeaderNetworkComponent } from 'src/app/standAlone-components/header-network/header-network.component';
 @Component({
   selector: 'app-mapbox-map',
   templateUrl: './mapbox-map.component.html',
@@ -32,6 +31,7 @@ export class MapboxMapComponent
   labelTest!: any;
 
   constructor() {}
+
   ngOnDestroy(): void {
     this.map.remove();
   }

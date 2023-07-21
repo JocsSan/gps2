@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-
 import { Storage } from '@ionic/storage-angular';
-
 @Injectable({
   providedIn: 'root',
 })
@@ -37,8 +35,8 @@ export class StorageService {
    * @returns lo que esta en la base de datos en local de indexdb
    */
   public async get(key: string) {
-    const values = await this._storage?.get(key);
-    console.log('values', values);
+    //const values = await this._storage?.get(key);
+    //console.log('values', values);
     return await this._storage?.get(key);
   }
 
