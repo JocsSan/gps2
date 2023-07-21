@@ -16,7 +16,6 @@ export class GeotService {
 
   private sendRequest<T>(param: number, body: any): Observable<T[]> {
     const url = `${this.urlGeot}tracking-rl/${param}`;
-
     return this.http.post<T[]>(url, body).pipe(
       map((res) => {
         console.log(res);

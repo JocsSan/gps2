@@ -53,6 +53,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       });
       this.listadoClientes = previusListado;
     } else {
+      //! es para pruebas
       this.listadoClientes = this.listado;
     }
   }

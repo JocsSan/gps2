@@ -26,7 +26,7 @@ export class HomePage implements OnInit, OnDestroy {
   networkListener!: PluginListenerHandle;
 
   async ngOnInit() {
-   await this.getRazones();
+    await this.getRazones();
     this.clearDB();
     localStorage.removeItem('listadoClientes');
     this.networkListener = Network.addListener(
@@ -48,18 +48,23 @@ export class HomePage implements OnInit, OnDestroy {
    * @description : obtiene las razones para estados de los pedidos y entregas
    */
   async getRazones() {
-    this.geot$.getRazones().subscribe((res) => {
-      const razones = res;
-      console.log(razones);
-      this.storage$.set('razones', razones);
-    }, err =>{
-      console.log(err);
-      const razones = this.razonesTest;
-      this.storage$.set('razones', razones);
-      const customMsg = err?.error?.error || '';
-      this.messagetoast = `${err.message}; ${customMsg}`;
-      this.setOpen(true);
-    });
+    console.log('se esta obteniendo razones');
+
+    this.geot$.getRazones().subscribe(
+      (res) => {
+        const razones = res;
+        console.log(razones);
+        this.storage$.set('razones', razones);
+      },
+      (err) => {
+        console.log(err);
+        const razones = this.razonesTest;
+        this.storage$.set('razones', razones);
+        const customMsg = err?.error?.error || '';
+        this.messagetoast = `${err.message}; ${customMsg}`;
+        this.setOpen(true);
+      }
+    );
   }
 
   /**
@@ -81,12 +86,21 @@ export class HomePage implements OnInit, OnDestroy {
     this.storage$.remove('key');
     this.geot$.getListado(code).subscribe(
       async (res) => {
-        this.listadoClientes = res;
-        const listadoString = JSON.stringify(this.listadoClientes);
-        this.storage$.set('key', code);
-        this.storage$.set('listado', res);
-        localStorage.setItem('listadoClientes', listadoString);
-        this.router.navigate(['home/index']);
+        if (res.length > 0) {
+          this.listadoClientes = res;
+          const listadoString = JSON.stringify(this.listadoClientes);
+          this.storage$.set('key', code);
+          this.storage$.set('listado', res);
+          localStorage.setItem('listadoClientes', listadoString);
+          this.router.navigate(['home/index']);
+        }
+
+        //!para test
+        this.messagetoast = 'No hay existen recorridos para esta ruta';
+        this.setOpen(true);
+        setTimeout(() => {
+          this.router.navigate(['home/index']);
+        }, 2000);
       },
       (err) => {
         console.log(err);
