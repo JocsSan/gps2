@@ -65,19 +65,34 @@
                     name="razonSelection"
                     *ngFor="let razon of razones"
                   >
-                    <ion-radio
-                      value="{{ razon.EstadoEntrega }}"
-                      labelPlacement="end"
-                      [disabled]="
-                        !!(razon.EstadoEntrega == 3 && cambioDistancias <= 200)
+                    <div *ngIf="razon.EstadoEntrega != 3">
+                      <ion-radio
+                        value="{{ razon.EstadoEntrega }}"
+                        labelPlacement="end"
+                        style="margin-left: 1rem"
+                        >{{ razon.Descripcion }}</ion-radio
+                      ><br />
+                    </div>
+
+                    <div
+                      *ngIf="
+                        razon.EstadoEntrega == 3 && cambioDistancias <= 175690
                       "
-                      style="margin-left: 1rem"
-                      >{{ razon.Descripcion }}</ion-radio
-                    ><br />
+                    >
+                      <ion-radio
+                        value="{{ razon.EstadoEntrega }}"
+                        labelPlacement="end"
+                        style="margin-left: 1rem"
+                        >{{ razon.Descripcion }}</ion-radio
+                      ><br />
+                    </div>
                   </ion-radio-group>
 
                   <ion-item>
-                    <ion-label position="floating">Campo de entrada</ion-label>
+                    <ion-label position="floating">Comentario</ion-label>
+                    <ion-label position="floating" *ngIf="selectedOption == '4'"
+                      >En caso de ser anulada debe justificar</ion-label
+                    >
                     <ion-input
                       type="text"
                       [(ngModel)]="inputValue"
@@ -85,8 +100,22 @@
                     ></ion-input>
                   </ion-item>
                 </ion-list>
-
-                <ion-button expand="full" type="submit">Enviar</ion-button>
+                <ion-button
+                  expand="full"
+                  type="submit"
+                  *ngIf="
+                    selectedOption == '4' &&
+                    inputValue != undefined &&
+                    inputValue != null
+                  "
+                  >Enviar</ion-button
+                >
+                <ion-button
+                  expand="full"
+                  type="submit"
+                  *ngIf="selectedOption != '4'"
+                  >Enviar</ion-button
+                >
               </form>
             </ion-content>
           </ng-template>

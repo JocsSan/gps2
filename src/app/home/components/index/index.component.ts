@@ -48,7 +48,7 @@ export class IndexComponent implements OnInit, OnDestroy {
     if (previusListado) {
       console.log(previusListado);
       previusListado.map((item: Listado) => {
-        this.storage$.set(item.Cliente, item);
+        this.storage$.set(item.Cliente || '', item);
         return item;
       });
       this.listadoClientes = previusListado;

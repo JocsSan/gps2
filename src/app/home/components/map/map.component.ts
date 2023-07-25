@@ -5,6 +5,8 @@ import { ActionSheetController } from '@ionic/angular';
 import { StorageService } from 'src/app/services/storage.service';
 import { PostOfflinerService } from 'src/app/services/post-offliner.service';
 import { Razon } from 'src/app/interfaces/razones.interface';
+import { Listado } from 'src/app/interfaces/listados.interface';
+import { Operacion } from 'src/app/interfaces/operation.interface';
 
 @Component({
   selector: 'app-map',
@@ -17,7 +19,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   position?: any;
   logGuardado: any;
   seGuardo: boolean = false;
-  receivedData!: any;
+  receivedData!: Listado;
 
   //*variables de mapa-------------------------------
   cambioDistancias!: number;
@@ -52,6 +54,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   razones!: Razon[];
 
+  operacionesPost!: Operacion[];
+
   constructor(
     private geolocation$: GeolocationService,
     private actionSheetCtrl: ActionSheetController,
@@ -62,7 +66,33 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   async ngOnInit() {
     this.presentingElement = document.querySelector('.ion-page');
     this.getseguimiento();
-    this.receivedData = null;
+    this.receivedData = {
+      Chofer: null,
+      Cliente: null,
+      Contacto: null,
+      Direccion: null,
+      Enlistamiento: null,
+      EstadoEntrega: null,
+      Factura: null,
+      Fecha: null,
+      HoraAPI: null,
+      HoraEstimadaLlegada: null,
+      HoraEstimadaSalida: null,
+      HoraLlegada: null,
+      HorarioAtencion: null,
+      HoraSalida: null,
+      keyEntrega: null,
+      KmRecorridos: null,
+      Lat: null,
+      Lon: null,
+      NomCliente: null,
+      Orden: null,
+      PrecioPorKm: null,
+      RutaOriginal: null,
+      Telefono: null,
+      TiempoAdicional: null,
+      TiempoPromEntrega: null,
+    };
 
     this.razones = await this.getRazones();
 
@@ -70,10 +100,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     //    const localCliente = localStorage.getItem('cliente');
     if (cliente) {
       this.receivedData = cliente;
-      this.markerDestiny = {
-        lat: this.receivedData.Lat,
-        lng: this.receivedData.Lon,
-      };
+      if (this.receivedData.Lat && this.receivedData.Lon)
+        this.markerDestiny = {
+          lat: parseFloat(this.receivedData.Lat),
+          lng: parseFloat(this.receivedData.Lon),
+        };
     }
 
     this.getseguimiento();
@@ -82,7 +113,34 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit(): void {}
 
   ngOnDestroy() {
-    this.receivedData = null;
+    this.receivedData = {
+      Chofer: null,
+      Cliente: null,
+      Contacto: null,
+      Direccion: null,
+      Enlistamiento: null,
+      EstadoEntrega: null,
+      Factura: null,
+      Fecha: null,
+      HoraAPI: null,
+      HoraEstimadaLlegada: null,
+      HoraEstimadaSalida: null,
+      HoraLlegada: null,
+      HorarioAtencion: null,
+      HoraSalida: null,
+      keyEntrega: null,
+      KmRecorridos: null,
+      Lat: null,
+      Lon: null,
+      NomCliente: null,
+      Orden: null,
+      PrecioPorKm: null,
+      RutaOriginal: null,
+      Telefono: null,
+      TiempoAdicional: null,
+      TiempoPromEntrega: null,
+    };
+
     localStorage.removeItem('cliente');
     Object.keys(this.subscripciones).forEach((key) => {
       try {
@@ -198,13 +256,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  finalPoint(coordenadas: { lat: number; lng: number }) {
-    const res = this.posttworker$.finalPoint();
+  async finalPoint(coordenadas: { lat: number; lng: number }) {
+    const res = await this.posttworker$.finalPoint();
     console.log(res);
   }
 
-  postPoint(coordenadas: { lat: number; lng: number }) {
-    const res = this.posttworker$.postPoint();
+  async postPoint(coordenadas: { lat: number; lng: number }) {
+    const res = await this.posttworker$.postPoint(coordenadas);
     console.log(res);
   }
 
@@ -269,7 +327,37 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   submitForm() {
     console.log('Opción seleccionada:', this.selectedOption);
     console.log('Valor del campo de entrada:', this.inputValue);
+    //? Se tomara la orden
+    if (this.selectedOption == '2') {
+      this.tomarPedido();
+    }
+
+    if (this.selectedOption == '3') {
+      this.finalizarPedido();
+    }
+
+    if (this.selectedOption == '4') {
+      this.anularOrden();
+    }
   }
+
+  tomarPedido = async () => {
+    console.log('se esta guardando esta vaina');
+    this.receivedData.EstadoEntrega = '2';
+    this.storage$.set('take_order', this.receivedData);
+    const postOrders = await this.storage$.get('posts_orders');
+    if (postOrders?.length) {
+      postOrders.push();
+    }
+  };
+
+  finalizarPedido = () => {
+    console.log('finalozando pedido');
+  };
+
+  anularOrden = () => {
+    console.log('anulando pedido');
+  };
 
   razonesTest = [
     {
