@@ -44,8 +44,8 @@ export class MapboxMapComponent
 
   ngOnChanges(changes: SimpleChanges): void {
     //console.log(changes);
-    const currentPoint = changes['currentPoint'].currentValue;
-    const center = changes['center'].currentValue;
+    const currentPoint = changes['currentPoint']?.currentValue;
+    const center = changes['center']?.currentValue;
     if (
       !changes['center']?.firstChange &&
       !changes['currentPoint']?.firstChange

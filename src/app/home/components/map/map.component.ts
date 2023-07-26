@@ -151,6 +151,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
 
+    console.log('se destruyo');
+
     this.detenerSeguimiento();
   }
 
