@@ -25,7 +25,11 @@
         mts
       </ion-card-content>
 
-      <ion-button fill="clear" (click)="navigateToDestination(item)"
+      {{ orderTake | json }}
+      <ion-button
+        fill="clear"
+        (click)="navigateToDestination(item)"
+        *ngIf="orderTake?.Cliente == item.Cliente || !orderTake?.Cliente"
         >Tomar Orden</ion-button
       >
     </ion-card>

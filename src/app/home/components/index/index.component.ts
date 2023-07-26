@@ -20,9 +20,12 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   listadoClientes!: Listado[];
 
-  ngOnInit(): void {
+  orderTake!: Listado;
+
+  ngOnInit() {
     this.getseguimiento();
     this.getListado();
+    this.getOrder();
   }
 
   ngOnDestroy(): void {
@@ -34,8 +37,13 @@ export class IndexComponent implements OnInit, OnDestroy {
       }
     });
 
+    console.log('se destruyo');
     this.detenerSeguimiento();
   }
+
+  getOrder = async () => {
+    this.orderTake = await this.storage$.get('take_order');
+  };
 
   detenerSeguimiento() {
     this.geolocation$.detenerSeguimiento();
@@ -81,6 +89,11 @@ export class IndexComponent implements OnInit, OnDestroy {
         }
       );
   }
+
+  disabledOrdes = () => {
+    const order = this.orderTake.Cliente || '';
+    return { status: order === '' ? true : false, order: order };
+  };
 
   listado: any = [
     {
