@@ -42,7 +42,16 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   getOrder = async () => {
-    this.orderTake = await this.storage$.get('take_order');
+    this.subscripciones['getOrderObservable'] = this.storage$
+      .getOrderObservable()
+      .subscribe(
+        (res) => {
+          this.orderTake = res;
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
   };
 
   detenerSeguimiento() {

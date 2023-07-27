@@ -346,7 +346,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   tomarPedido = async () => {
     console.log('se esta guardando esta vaina');
     this.receivedData.EstadoEntrega = '2';
-    this.storage$.set('take_order', this.receivedData);
+    this.storage$.setOrder(this.receivedData);
     const postOrders = await this.storage$.get('posts_orders');
     if (postOrders?.length) {
       postOrders.push();

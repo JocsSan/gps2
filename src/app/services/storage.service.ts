@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
+import { Observable, Subject } from 'rxjs';
+import { Listado } from '../interfaces/listados.interface';
 @Injectable({
   providedIn: 'root',
 })
 export class StorageService {
   private _storage: Storage | null = null;
-
+  private orderObject = new Subject<Listado>();
   constructor(private storage: Storage) {
     this.init();
   }
@@ -72,5 +74,14 @@ export class StorageService {
   public length() {
     const lonitud = this._storage?.length();
     return lonitud;
+  }
+
+  public setOrder(value: any) {
+    this._storage?.set('take_order', value);
+    this.orderObject.next(value);
+  }
+
+  getOrderObservable(): Observable<Listado> {
+    return this.orderObject.asObservable();
   }
 }
