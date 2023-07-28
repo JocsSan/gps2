@@ -348,6 +348,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.receivedData.EstadoEntrega = '2';
     this.storage$.setOrder(this.receivedData);
     const postOrders = await this.storage$.get('posts_orders');
+    this.storage$.updateOrder(this.receivedData);
     if (postOrders?.length) {
       postOrders.push();
     }

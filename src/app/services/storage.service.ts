@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, map } from 'rxjs';
 import { Listado } from '../interfaces/listados.interface';
 @Injectable({
   providedIn: 'root',
@@ -81,7 +81,48 @@ export class StorageService {
     this.orderObject.next(value);
   }
 
+  /**
+   * @description: para ver los cambios en vivo de las ordenes seleccionadas
+   * @returns
+   */
   getOrderObservable(): Observable<Listado> {
     return this.orderObject.asObservable();
+  }
+
+  async updateOrder(listadoNew: Listado) {
+    const listadoOld = await this.get('listado');
+    const listadoCurrent = listadoOld.map((el: Listado) => {
+      if (el.Cliente === listadoNew.Cliente) {
+        return {
+          Chofer: listadoNew.Chofer,
+          Cliente: listadoNew.Cliente,
+          Contacto: listadoNew.Contacto,
+          Direccion: listadoNew.Direccion,
+          Enlistamiento: listadoNew.Enlistamiento,
+          EstadoEntrega: listadoNew.EstadoEntrega,
+          Factura: listadoNew.Factura,
+          Fecha: listadoNew.Fecha,
+          HoraAPI: listadoNew.HoraAPI,
+          HoraEstimadaLlegada: listadoNew.HoraEstimadaLlegada,
+          HoraEstimadaSalida: listadoNew.HoraEstimadaSalida,
+          HoraLlegada: listadoNew.HoraLlegada,
+          HorarioAtencion: listadoNew.HorarioAtencion,
+          HoraSalida: listadoNew.HoraSalida,
+          keyEntrega: listadoNew.keyEntrega,
+          KmRecorridos: listadoNew.KmRecorridos,
+          Lat: listadoNew.Lat,
+          Lon: listadoNew.Lon,
+          NomCliente: listadoNew.NomCliente,
+          Orden: listadoNew.Orden,
+          PrecioPorKm: listadoNew.PrecioPorKm,
+          RutaOriginal: listadoNew.RutaOriginal,
+          Telefono: listadoNew.Telefono,
+          TiempoAdicional: listadoNew.TiempoAdicional,
+          TiempoPromEntrega: listadoNew.TiempoPromEntrega,
+        };
+      }
+      return el; // Return the original element if the condition is not met
+    });
+    this.set('listado', listadoCurrent);
   }
 }

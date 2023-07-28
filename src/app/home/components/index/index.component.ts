@@ -42,6 +42,8 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   getOrder = async () => {
+    //? Metodo para obtener orden tomada en caso de ya haber sido usada
+    this.orderTake = await this.storage$.get('take_order');
     this.subscripciones['getOrderObservable'] = this.storage$
       .getOrderObservable()
       .subscribe(
@@ -72,6 +74,7 @@ export class IndexComponent implements OnInit, OnDestroy {
     } else {
       //! es para pruebas
       this.listadoClientes = this.listado;
+      this.storage$.set('listado', this.listado);
     }
   }
 
@@ -114,6 +117,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       Direccion: 'COL. CALPULES CALLE PRINCIPAL ANTES DE PULP. FLORES',
       Lat: 15.466383,
       Lon: -87.961358,
+      EstadoEntrega: '0',
     },
     {
       Orden: 2,
@@ -124,6 +128,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       Direccion: 'COL. SAN JOSE LA PEA ZONA D BLOQUE 2',
       Lat: 15.468077,
       Lon: -87.962137,
+      EstadoEntrega: '0',
     },
     {
       Orden: 3,
@@ -135,6 +140,7 @@ export class IndexComponent implements OnInit, OnDestroy {
         'COL. SAN JOSE DE LA PEA SUBIENDO LA CUESTA DE LOS BOMBEROS A MANO IZQUIERDA DEL PARQUEO LA 5TA CASA',
       Lat: 15.465421,
       Lon: -87.961327,
+      EstadoEntrega: '0',
     },
     {
       Orden: 4,
@@ -146,6 +152,7 @@ export class IndexComponent implements OnInit, OnDestroy {
         'SAN JOSE DE LA EGA ,DESPUES DE PUENTE CONTIGUO A PLANTEL DE HONDUTEL',
       Lat: 14.063752,
       Lon: -87.200963,
+      EstadoEntrega: '0',
     },
     {
       Orden: 5,
@@ -156,6 +163,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       Direccion: 'CLL PRINPAL FTEA LACTEOS MIRAFLORES',
       Lat: 14.072696,
       Lon: -87.19375,
+      EstadoEntrega: '0',
     },
     {
       Orden: 6,
@@ -167,6 +175,7 @@ export class IndexComponent implements OnInit, OnDestroy {
         'COL.MIRAFLORES CALLE PRINCIPAL,ESQUINA OPUESTA A FARMACIA MIRAFLORES',
       Lat: 14.072091,
       Lon: -87.189975,
+      EstadoEntrega: '0',
     },
     {
       Orden: 7,
@@ -177,6 +186,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       Direccion: 'DOS CUADRAS ARRIBA DE FARMACIA EL AHORRO',
       Lat: 14.07182,
       Lon: -87.189845,
+      EstadoEntrega: '0',
     },
     {
       Orden: 8,
@@ -188,6 +198,7 @@ export class IndexComponent implements OnInit, OnDestroy {
         'TEGUCIGALPA COL. LAS COLONIAS ATRAS DE IGLESIA VIDA ABUNDANTE',
       Lat: 14.077081,
       Lon: -87.192171,
+      EstadoEntrega: '0',
     },
     {
       Orden: 9,
@@ -198,6 +209,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       Direccion: 'TEGUCIGALPA COL LAS COLINAS FRENTE A MERCADITO LAS COLOINAS',
       Lat: 14.077876,
       Lon: -87.194096,
+      EstadoEntrega: '0',
     },
     {
       Orden: 10,
@@ -209,6 +221,7 @@ export class IndexComponent implements OnInit, OnDestroy {
         'TEGUCIGALPA FRANCISCO MORAZAN COL.LAS COLINAS BQ Y C#3303 2 CDRA ABAJO VIDA ABUNDANTE',
       Lat: 14.078096,
       Lon: -87.194917,
+      EstadoEntrega: '0',
     },
     {
       Orden: 11,
@@ -229,6 +242,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       Direccion: 'FTE A OFICINAS CANAL AZTECA',
       Lat: 14.088918,
       Lon: -87.17599,
+      EstadoEntrega: '0',
     },
     {
       Orden: 13,
@@ -239,6 +253,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       Direccion: 'FINAL DEL BLVD MORAZAM',
       Lat: 14.101156,
       Lon: -87.176548,
+      EstadoEntrega: '0',
     },
     {
       Orden: 14,
@@ -250,6 +265,7 @@ export class IndexComponent implements OnInit, OnDestroy {
         'COMAYAGUELA FRANCISCO MORAZAN NUEVA SUYAPA SECT 1 1 CALLE CASA DE ESQUINA',
       Lat: 14.07788,
       Lon: -87.158544,
+      EstadoEntrega: '0',
     },
     {
       Orden: 15,
@@ -260,6 +276,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       Direccion: 'COLONIA NUEVA SUYAPA SECTOR MATUTE',
       Lat: 14.077803,
       Lon: -87.156387,
+      EstadoEntrega: '0',
     },
     {
       Orden: 16,
@@ -271,6 +288,7 @@ export class IndexComponent implements OnInit, OnDestroy {
         'COLONIA NUEVA SUYAPA CALLAE PRINCIPAL SECTOR 2 ARRIBA DE PULPERIA PALMIRA',
       Lat: 14.074564,
       Lon: -87.156211,
+      EstadoEntrega: '0',
     },
     {
       Orden: 17,
@@ -281,6 +299,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       Direccion: 'SECTOR UNIVERSIDAD FTE AL ANTIGUO CENTRO SALUD',
       Lat: 14.0755929,
       Lon: -87.1522334,
+      EstadoEntrega: '0',
     },
     {
       Orden: 18,
@@ -291,6 +310,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       Direccion: 'CLL PRINPAL 5CASAS ADELANTE PUL.ARACELY',
       Lat: 14.074379,
       Lon: -87.147353,
+      EstadoEntrega: '0',
     },
     {
       Orden: 19,
@@ -301,6 +321,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       Direccion: 'TEGUCIGALPA FRANCISCO MORAZAN COL.HATO DE ENMEDIO SECTOR 9',
       Lat: 14.07089,
       Lon: -87.165262,
+      EstadoEntrega: '0',
     },
     {
       Orden: 20,
@@ -311,6 +332,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       Direccion: 'TEGUCIGALPA COL.HATO SECTOR 10 FRENTE AL PUENTE PEATONAL.',
       Lat: 14.070087,
       Lon: -87.16631,
+      EstadoEntrega: '0',
     },
     {
       Orden: 21,
@@ -321,6 +343,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       Direccion: 'TEGUCIGALPA COL.HATO SECTOR 10 FRENTE AL PUENTE PEATONAL.',
       Lat: 14.070087,
       Lon: -87.16631,
+      EstadoEntrega: '0',
     },
     {
       Orden: 22,
@@ -331,6 +354,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       Direccion: 'TEGUCIGALPA JARDINES DE LOARQUE SALIDA AL ANILLO PERIFERICO',
       Lat: 14.041674,
       Lon: -87.20481,
+      EstadoEntrega: '0',
     },
     {
       Orden: 23,
@@ -341,6 +365,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       Direccion: 'COL. RIO GRANDE BLOQUE N#1 CASA #1001',
       Lat: 14.041892,
       Lon: -87.20634,
+      EstadoEntrega: '0',
     },
     {
       Orden: 24,
@@ -352,6 +377,7 @@ export class IndexComponent implements OnInit, OnDestroy {
         'COL. RIO GRANDE, FRENTE AL PUNTO DE TAXIS DE LOARQUE Y FRENT A CATOLICA',
       Lat: 14.04222,
       Lon: -87.208829,
+      EstadoEntrega: '0',
     },
     {
       Orden: 25,
@@ -362,6 +388,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       Direccion: 'COL. LOMAS DE TOCONTIN MEDIA CUADRA DE BUEN PASTOR',
       Lat: 14.039601,
       Lon: -87.221306,
+      EstadoEntrega: '0',
     },
     {
       Orden: 26,
@@ -373,6 +400,7 @@ export class IndexComponent implements OnInit, OnDestroy {
         'TEGUCIGALPA RES. LAS HADAS EN EL CENTRO COMERCIALFRENTE AL ANILLO',
       Lat: 14.041442,
       Lon: -87.232691,
+      EstadoEntrega: '0',
     },
     {
       Orden: 27,
@@ -384,6 +412,7 @@ export class IndexComponent implements OnInit, OnDestroy {
         'COL. LAS HADAS CALLE PRINCIPAL 1/2 CUADRA ARRIBA DE MERCADITO CIPRES',
       Lat: 14.046751,
       Lon: -87.2327,
+      EstadoEntrega: '0',
     },
     {
       Orden: 28,
@@ -395,6 +424,7 @@ export class IndexComponent implements OnInit, OnDestroy {
         'COL. LAS HADAS 1/2 CUADRA ABAJO E MERCADITO JANANIA CALLE PRINCIPAL',
       Lat: 14.047788,
       Lon: -87.232802,
+      EstadoEntrega: '0',
     },
     {
       Orden: 29,
@@ -405,6 +435,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       Direccion: 'CALLE PRINCIPAL, FTE. A RESTADORA DE CARROS HERTZ',
       Lat: 14.0506124,
       Lon: -87.2297661,
+      EstadoEntrega: '0',
     },
     {
       Orden: 30,
@@ -416,6 +447,7 @@ export class IndexComponent implements OnInit, OnDestroy {
         'RESIDENCIAL CASCADAS CALLE PRINCIPAL 1/2 CUADRA ANTES DE MERC. CONCORDIA',
       Lat: 14.053622,
       Lon: -87.233204,
+      EstadoEntrega: '0',
     },
     {
       Orden: 31,
@@ -426,6 +458,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       Direccion: 'COMAYAGUELA RES.LA CASCADA CLL.1C-S/NCLL.PPL.',
       Lat: 14.053662,
       Lon: -87.234567,
+      EstadoEntrega: '0',
     },
     {
       Orden: 32,
@@ -436,6 +469,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       Direccion: 'FTE A ESCUELA PUBLICA LOS ROBLES',
       Lat: 14.056197,
       Lon: -87.237011,
+      EstadoEntrega: '0',
     },
     {
       Orden: 33,
@@ -446,6 +480,7 @@ export class IndexComponent implements OnInit, OnDestroy {
       Direccion: 'COL ROBLE OESTE CL PPAL BL K 5 CDRAS DESPUES DE RES LAS CASC',
       Lat: 14.052463,
       Lon: -87.240829,
+      EstadoEntrega: '0',
     },
   ];
 
