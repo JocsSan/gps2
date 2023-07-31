@@ -115,8 +115,8 @@ export class IndexComponent implements OnInit, OnDestroy {
       Contacto: 'WILMER CERNA',
       Telefono: 'NULL',
       Direccion: 'COL. CALPULES CALLE PRINCIPAL ANTES DE PULP. FLORES',
-      Lat: 15.466383,
-      Lon: -87.961358,
+      Lat: 14.06906730460502,
+      Lon: -87.18476310609161,
       EstadoEntrega: '0',
     },
     {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, map } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { Listado } from '../interfaces/listados.interface';
@@ -61,5 +61,17 @@ export class GeotService {
 
     const param = 2;
     return this.sendRequest<Razon>(param, body);
+  }
+
+  postOrder(algo: any): Observable<number> {
+    console.log('log de algo', algo);
+    const observablexd = of(1);
+    return observablexd;
+  }
+
+  postPoint(unPunto: any): Observable<number> {
+    console.log('log de un punto', unPunto);
+    const observablexd = of(1);
+    return observablexd;
   }
 }

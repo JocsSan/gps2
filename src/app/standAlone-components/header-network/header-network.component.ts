@@ -3,7 +3,9 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { GeotService } from 'src/app/services/geot.service';
 import { NetworkService } from 'src/app/services/net-work.service';
+import { PostOfflinerService } from 'src/app/services/post-offliner.service';
 
 @Component({
   standalone: true,
@@ -19,7 +21,10 @@ export class HeaderNetworkComponent implements OnInit, OnDestroy {
 
   networkStatus!: boolean;
 
-  constructor(private network$: NetworkService) {}
+  constructor(
+    private network$: NetworkService,
+    private postOffline$: PostOfflinerService
+  ) {}
   async ngOnInit() {
     this.networkStatus = await this.netWorkinit();
     this.listenerNetwork();
@@ -47,6 +52,9 @@ export class HeaderNetworkComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         console.log(res);
         this.networkStatus = res;
+        if (this.networkStatus) {
+          this.postOffline$.postListado();
+        }
       });
   };
 }

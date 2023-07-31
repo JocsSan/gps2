@@ -2,13 +2,20 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 import { Observable, Subject, map } from 'rxjs';
 import { Listado } from '../interfaces/listados.interface';
+import { NetworkService } from './net-work.service';
+import { Operacion } from '../interfaces/operation.interface';
+import { GeotService } from './geot.service';
 @Injectable({
   providedIn: 'root',
 })
 export class StorageService {
   private _storage: Storage | null = null;
   private orderObject = new Subject<Listado>();
-  constructor(private storage: Storage) {
+  constructor(
+    private storage: Storage,
+    private network$: NetworkService,
+    private geot$: GeotService
+  ) {
     this.init();
   }
 
@@ -89,9 +96,10 @@ export class StorageService {
     return this.orderObject.asObservable();
   }
 
-  async updateOrder(listadoNew: Listado) {
+  async updateOrders(listadoNew: Listado) {
+    const statusRed = await this.network$.getNetWorkStatus();
     const listadoOld = await this.get('listado');
-    const listadoCurrent = listadoOld.map((el: Listado) => {
+    const listadosCurrent = listadoOld.map((el: Listado) => {
       if (el.Cliente === listadoNew.Cliente) {
         return {
           Chofer: listadoNew.Chofer,
@@ -123,6 +131,33 @@ export class StorageService {
       }
       return el; // Return the original element if the condition is not met
     });
-    this.set('listado', listadoCurrent);
+    if (statusRed.connected) {
+      console.log('lo vamos a subir normal');
+      this.postOrdersNetwork(listadoNew);
+    } else {
+      console.log('se guardara en local');
+      this.postOrdersLocal(listadoNew);
+    }
+    this.set('listado', listadosCurrent);
+  }
+
+  async postOrdersLocal(listado: Listado) {
+    const orders: Listado[] = await this.get('post_orders');
+    console.log('me wa guardar en local');
+    if (orders?.length > 0) {
+      orders.push(listado);
+    } else {
+      this.set('post_orders', [listado]);
+    }
+  }
+
+  updateCliente(cliente: Listado) {
+    this.set('cliente', cliente);
+  }
+
+  async postOrdersNetwork(listado: Listado) {
+    return this.geot$.postOrder(listado).subscribe((res: any) => {
+      console.log(res);
+    });
   }
 }

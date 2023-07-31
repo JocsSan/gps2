@@ -348,17 +348,27 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.receivedData.EstadoEntrega = '2';
     this.storage$.setOrder(this.receivedData);
     const postOrders = await this.storage$.get('posts_orders');
-    this.storage$.updateOrder(this.receivedData);
+    this.storage$.updateOrders(this.receivedData);
+    this.storage$.updateCliente(this.receivedData);
     if (postOrders?.length) {
       postOrders.push();
+      this.storage$.set('posts_orders', postOrders);
     }
   };
 
   finalizarPedido = () => {
+    this.receivedData.EstadoEntrega = '3';
+    this.storage$.setOrder(this.receivedData);
+    this.storage$.updateCliente(this.receivedData);
+    this.storage$.updateOrders(this.receivedData);
     console.log('finalozando pedido');
   };
 
   anularOrden = () => {
+    this.receivedData.EstadoEntrega = '4';
+    this.storage$.updateCliente(this.receivedData);
+    this.storage$.setOrder(this.receivedData);
+    this.storage$.updateOrders(this.receivedData);
     console.log('anulando pedido');
   };
 
