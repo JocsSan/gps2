@@ -4,8 +4,7 @@ import { NetworkService } from './net-work.service';
 import { StorageService } from './storage.service';
 import { Listado } from '../interfaces/listados.interface';
 import { GeotService } from './geot.service';
-import { map } from 'rxjs/operators';
-import { Observable, catchError, finalize, forkJoin, of } from 'rxjs';
+import { Observable, catchError, finalize, forkJoin, of, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',

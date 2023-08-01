@@ -135,17 +135,17 @@ export class StorageService {
       console.log('lo vamos a subir normal');
       this.postOrdersNetwork(listadoNew);
     } else {
-      console.log('se guardara en local');
       this.postOrdersLocal(listadoNew);
     }
     this.set('listado', listadosCurrent);
   }
 
   async postOrdersLocal(listado: Listado) {
+    console.log(listado.NomCliente);
     const orders: Listado[] = await this.get('post_orders');
-    console.log('me wa guardar en local');
-    if (orders?.length > 0) {
+    if (orders?.length || 0 > 0) {
       orders.push(listado);
+      this.set('post_orders', orders);
     } else {
       this.set('post_orders', [listado]);
     }
