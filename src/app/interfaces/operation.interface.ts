@@ -15,9 +15,11 @@ export interface OperacionUpdateOrder {
 export interface OperacionInsertLocation {
   operation: 'insert_location';
   enlistamiento: string;
+  cliente: string;
   lat: number;
   lon: number;
   timestamps: string;
+  ultimoPunto: boolean;
 }
 
 export type Operacion = OperacionUpdateOrder | OperacionInsertLocation;

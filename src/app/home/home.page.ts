@@ -48,12 +48,9 @@ export class HomePage implements OnInit, OnDestroy {
    * @description : obtiene las razones para estados de los pedidos y entregas
    */
   async getRazones() {
-    console.log('se esta obteniendo razones');
-
     this.geot$.getRazones().subscribe(
       (res) => {
         const razones = res;
-        console.log(razones);
         this.storage$.set('razones', razones);
       },
       (err) => {

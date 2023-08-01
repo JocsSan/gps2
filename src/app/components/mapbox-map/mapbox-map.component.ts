@@ -190,8 +190,6 @@ export class MapboxMapComponent
   }
 
   async actualizarPuntos() {
-    console.log('actualizarPuntos');
-
     const source = this.map?.getSource('line');
     //console.log(source);
     const source2 = this.map?.getSource('points');

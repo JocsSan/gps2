@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
-import { Observable, Subject, map } from 'rxjs';
+import { Observable, Subject, Subscription, map } from 'rxjs';
 import { Listado } from '../interfaces/listados.interface';
 import { NetworkService } from './net-work.service';
 import { Operacion } from '../interfaces/operation.interface';
@@ -11,6 +11,7 @@ import { GeotService } from './geot.service';
 export class StorageService {
   private _storage: Storage | null = null;
   private orderObject = new Subject<Listado>();
+  public subscripciones: { [key: string]: Subscription } = {};
   constructor(
     private storage: Storage,
     private network$: NetworkService,
@@ -156,8 +157,16 @@ export class StorageService {
   }
 
   async postOrdersNetwork(listado: Listado) {
-    return this.geot$.postOrder(listado).subscribe((res: any) => {
+    //? la orden a mandar
+    this.geot$.postOrderApi(listado).subscribe((res: any) => {
       console.log(res);
+    });
+    //?por si existen mas ordenes que mandar
+    const orders: Listado[] = await this.get('post_orders');
+    orders.forEach((element) => {
+      this.geot$.postOrderApi(element).subscribe((res: any) => {
+        console.log(res);
+      });
     });
   }
 }

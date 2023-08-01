@@ -5,6 +5,7 @@ import { Observable, catchError, map, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Listado } from '../interfaces/listados.interface';
 import { Razon } from '../interfaces/razones.interface';
+import { OperacionInsertLocation } from '../interfaces/operation.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -14,11 +15,19 @@ export class GeotService {
 
   constructor(private http: HttpClient) {}
 
-  private sendRequest<T>(param: number, body: any): Observable<T[]> {
-    const url = `${this.urlGeot}tracking-rl/${param}`;
-    return this.http.post<T[]>(url, body).pipe(
+  private sendRequest<T>(request: {
+    param: number;
+    body: any;
+  }): Observable<T[]> {
+    console.log(
+      'mandando una request',
+      request.param,
+      new Date(Date.now()).toLocaleString('es-ES', { timeZone: 'UTC' })
+    );
+
+    const url = `${this.urlGeot}tracking-rl/${request.param}`;
+    return this.http.post<T[]>(url, request.body).pipe(
       map((res) => {
-        console.log(res);
         return res;
       }),
       catchError((err) => {
@@ -42,7 +51,7 @@ export class GeotService {
     };
 
     const param = 1;
-    return this.sendRequest<Listado>(param, body);
+    return this.sendRequest<Listado>({ param, body });
   }
 
   getRazones(): Observable<Razon[]> {
@@ -60,18 +69,46 @@ export class GeotService {
     };
 
     const param = 2;
-    return this.sendRequest<Razon>(param, body);
+    return this.sendRequest<Razon>({ param, body });
   }
 
-  postOrder(algo: any): Observable<number> {
+  postOrderApi(algo: Listado): Observable<any> {
     console.log('log de algo', algo);
     const observablexd = of(1);
-    return observablexd;
+    const param = 4;
+    const body = {
+      p1: algo,
+      p2: 0,
+      p3: 0,
+      p4: 0,
+      p5: 0,
+      p6: 0,
+      p7: 0,
+      p8: 0,
+      p9: 0,
+      p10: 0,
+    };
+    return this.sendRequest({ param, body }) || 1;
   }
 
-  postPoint(unPunto: any): Observable<number> {
+  postPoint(unPunto: OperacionInsertLocation): Observable<any> {
     console.log('log de un punto', unPunto);
+
+    const body = {
+      p1: unPunto,
+      p2: 0,
+      p3: 0,
+      p4: 0,
+      p5: 0,
+      p6: 0,
+      p7: 0,
+      p8: 0,
+      p9: 0,
+      p10: 0,
+    };
+    const param = 3;
+    this.sendRequest({ param, body });
     const observablexd = of(1);
-    return observablexd;
+    return this.sendRequest({ param, body }) || 1;
   }
 }
