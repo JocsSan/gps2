@@ -74,7 +74,7 @@ export class GeotService {
 
   postOrderApi(order: Listado): Observable<any> {
     console.log('log de algo', order);
-    const observablexd = of(1);
+    //const observablexd = of(1);
     const param = 4;
     const body = {
       p1: order.Cliente,
@@ -108,7 +108,7 @@ export class GeotService {
     };
     const param = 3;
     this.sendRequest({ param, body });
-    const observablexd = of(1);
+    //const observablexd = of(1);
     return this.sendRequest({ param, body }) || 1;
   }
 }
