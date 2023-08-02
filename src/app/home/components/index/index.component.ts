@@ -98,9 +98,10 @@ export class IndexComponent implements OnInit, OnDestroy {
     }
   }
 
-  navigateToDestination(dataToSend: any): void {
+  async navigateToDestination(dataToSend: Listado) {
     this.storage$.set('cliente', dataToSend);
-    localStorage.setItem('cliente', JSON.stringify(dataToSend));
+    //localStorage.setItem('cliente', JSON.stringify(dataToSend));
+    await this.storage$.setClient(dataToSend);
     this.router.navigate(['home/map']);
   }
 

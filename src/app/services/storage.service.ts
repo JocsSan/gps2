@@ -11,6 +11,7 @@ import { GeotService } from './geot.service';
 export class StorageService {
   private _storage: Storage | null = null;
   private orderObject = new Subject<Listado>();
+  private clienObject = new Subject<Listado>();
   public subscripciones: { [key: string]: Subscription } = {};
   constructor(
     private storage: Storage,
@@ -87,6 +88,15 @@ export class StorageService {
   public setOrder(value: Listado) {
     this._storage?.set('take_order', value);
     this.orderObject.next(value);
+  }
+
+  public setClient(value: Listado) {
+    this._storage?.set('clientw', value);
+    this.clienObject.next(value);
+  }
+
+  getClienOrdeObserver(): Observable<Listado> {
+    return this.clienObject.asObservable();
   }
 
   /**

@@ -180,6 +180,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async getclienteDb() {
     const cliente = await this.storage$.get('cliente');
+    this.subscripciones['getClienOrdeObserver'] = this.storage$
+      .getClienOrdeObserver()
+      .subscribe((res) => {
+        this.receivedData = res;
+      });
     return cliente;
   }
 
