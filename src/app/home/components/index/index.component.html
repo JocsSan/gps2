@@ -4,6 +4,10 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
+  <app-header-network
+    [vertical]="'bottom'"
+    [orientation]="'end'"
+  ></app-header-network>
   <div *ngFor="let item of listadoClientes">
     <ion-item *ngIf="item.EstadoEntrega != '3' && item.EstadoEntrega != '4'">
       <ion-card [style]="{ 'min-width': '100%' }" style="min-width: 100%">

@@ -16,6 +16,7 @@ import { PostOfflinerService } from 'src/app/services/post-offliner.service';
 })
 export class HeaderNetworkComponent implements OnInit, OnDestroy {
   @Input() orientation!: 'start' | 'end';
+  @Input() vertical!: 'top' | 'bottom';
 
   public subscripciones: { [key: string]: Subscription } = {};
 

@@ -1,5 +1,8 @@
 <ion-content>
-  <app-header-network [orientation]="'start'"></app-header-network>
+  <app-header-network
+    [orientation]="'start'"
+    [vertical]="'top'"
+  ></app-header-network>
   <div style="height: 70%; width: 100%" *ngIf="!!receivedData">
     <app-mapbox-map
       [destiniyPoint]="markerDestiny"
