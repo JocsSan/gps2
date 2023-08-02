@@ -325,6 +325,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const { role } = await actionSheet.onWillDismiss();
 
+    if (!!this.selectedOption) {
+      this.submitForm();
+    }
     return role === 'confirm';
   };
 
