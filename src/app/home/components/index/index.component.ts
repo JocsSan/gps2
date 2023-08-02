@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Listado } from 'src/app/interfaces/listados.interface';
 import { GeolocationService } from 'src/app/services/geolocation.service';
+import { PostOfflinerService } from 'src/app/services/post-offliner.service';
 import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
@@ -14,13 +15,24 @@ export class IndexComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private geolocation$: GeolocationService,
-    private storage$: StorageService
+    private storage$: StorageService,
+    private posttworker$: PostOfflinerService
   ) {}
   private subscripciones: { [key: string]: Subscription } = {};
 
   listadoClientes!: Listado[];
 
   orderTake!: Listado;
+
+  currentPoint: { lat: number; lng: number } = { lat: 0, lng: 0 };
+
+  lasPoint: { lat: number; lng: number } = { lat: 0, lng: 0 };
+
+  markerDestiny: { lat: number; lng: number } = { lat: 0, lng: 0 };
+
+  isToastOpen = false;
+
+  cambioDistancias!: number;
 
   ngOnInit() {
     this.getseguimiento();
@@ -60,8 +72,6 @@ export class IndexComponent implements OnInit, OnDestroy {
     this.geolocation$.detenerSeguimiento();
   }
 
-  listenerInternet() {}
-
   async getListado() {
     const previusListado = await this.storage$.get('listado');
     if (previusListado) {
@@ -84,16 +94,28 @@ export class IndexComponent implements OnInit, OnDestroy {
     this.router.navigate(['home/map']);
   }
 
-  nuevaPosition: { lat: number; lng: number } = { lat: 0, lng: 0 };
+  async getseguimiento() {
+    const cliente: Listado = await this.storage$.get('take_order');
 
-  getseguimiento() {
     this.subscripciones['geolocation'] = this.geolocation$
       .getPositionObservable()
       .subscribe(
         (position) => {
-          this.nuevaPosition = position;
+          this.currentPoint = position;
+          this.markerDestiny = {
+            lat: parseInt(cliente.Lat || '0'),
+            lng: parseInt(cliente.Lon || '0'),
+          };
+          this.cambioDistancias = this.calcularDistancia(
+            this.currentPoint?.lat,
+            this.currentPoint?.lng,
+            this.markerDestiny?.lat,
+            this.markerDestiny?.lng
+          );
           // Aquí puedes utilizar la posición actualizada
-          console.log(position);
+          if (this.currentPoint.lat) {
+            this.verDistancias();
+          }
         },
         (error) => {
           // Manejo de errores
@@ -484,9 +506,85 @@ export class IndexComponent implements OnInit, OnDestroy {
     },
   ];
 
-  isToastOpen = false;
-
   setOpen(isOpen: boolean) {
     this.isToastOpen = isOpen;
+  }
+
+  verDistancias() {
+    // Verificar si currentPoint y markerDestiny no son nulos o indefinidos
+
+    if (!this.lasPoint) {
+      this.lasPoint = {
+        lat: this.currentPoint.lat,
+        lng: this.currentPoint.lng,
+      };
+      console.log('le agregamos el primer las point');
+      this.postPoint(this.lasPoint);
+
+      if (this.markerDestiny.lat == 0) {
+        this.postPoint(this.lasPoint);
+      }
+    }
+
+    if (this.lasPoint) {
+      if (this.markerDestiny.lat == 0) {
+        this.postPoint(this.lasPoint);
+      }
+      const currentdistance = this.calcularDistancia(
+        this.currentPoint.lat,
+        this.currentPoint.lng,
+        this.lasPoint.lat,
+        this.lasPoint.lng
+      );
+
+      if (this.cambioDistancias <= 200) {
+        console.log('llego al punto final');
+        this.finalPoint(this.currentPoint);
+        return;
+      }
+
+      if (currentdistance > 500) {
+        console.log('guardar punto');
+        this.lasPoint = {
+          lat: this.currentPoint.lat,
+          lng: this.currentPoint.lng,
+        };
+        this.postPoint(this.lasPoint);
+      }
+    }
+  }
+
+  calcularDistancia(lat1: number, lon1: number, lat2: number, lon2: number) {
+    const radioTierra = 6371000;
+    const dLat = this.toRad(lat2 - lat1);
+    const dLon = this.toRad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.toRad(lat1)) *
+        Math.cos(this.toRad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distancia = radioTierra * c;
+
+    if (distancia > 180) {
+      //console.log('se ha guardado');
+    }
+
+    return distancia;
+  }
+
+  toRad(grados: number) {
+    return (grados * Math.PI) / 180;
+  }
+
+  async finalPoint(coordenadas: { lat: number; lng: number }) {
+    const res = await this.posttworker$.finalPoint(coordenadas);
+    console.log(res);
+  }
+
+  async postPoint(coordenadas: { lat: number; lng: number }) {
+    const res = await this.posttworker$.postPoint(coordenadas);
+    console.log(res);
   }
 }

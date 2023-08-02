@@ -128,7 +128,13 @@ export class HomePage implements OnInit, OnDestroy {
   async clearDB() {
     const storageKeys = await this.storage$.keys();
     const keysToRemove = storageKeys?.filter(
-      (el) => el !== 'listado' && el !== 'key' && el !== 'post'
+      (el) =>
+        el !== 'listado' &&
+        el !== 'key' &&
+        el !== 'post' &&
+        el !== 'log_post_points' &&
+        el !== 'post_orders' &&
+        el !== 'take_order'
     );
     keysToRemove?.forEach((element) => {
       this.storage$.remove(element);

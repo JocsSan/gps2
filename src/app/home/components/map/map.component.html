@@ -57,7 +57,7 @@
             </ion-header>
 
             <ion-content>
-              <form (ngSubmit)="submitForm()">
+              <form (ngSubmit)="submitForm(); modal.dismiss()">
                 <ion-list>
                   <ion-radio-group
                     [allowEmptySelection]="true"
@@ -65,7 +65,11 @@
                     name="razonSelection"
                     *ngFor="let razon of razones"
                   >
-                    <div *ngIf="razon.EstadoEntrega != 3">
+                    <div
+                      *ngIf="
+                        razon.EstadoEntrega != 3 && razon.EstadoEntrega != 1
+                      "
+                    >
                       <ion-radio
                         value="{{ razon.EstadoEntrega }}"
                         labelPlacement="end"
@@ -113,7 +117,7 @@
                 <ion-button
                   expand="full"
                   type="submit"
-                  *ngIf="selectedOption != '4'"
+                  *ngIf="selectedOption != '4' && !!selectedOption"
                   >Enviar</ion-button
                 >
               </form>

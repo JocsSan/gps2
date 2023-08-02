@@ -20,9 +20,9 @@
       <ion-card-content>
         Esta a :
         {{
-          nuevaPosition.lat
+          currentPoint.lat
             | calcularDistancia
-              : nuevaPosition.lng
+              : currentPoint.lng
               : item.Lat || "0"
               : item.Lon || "0"
         }}
