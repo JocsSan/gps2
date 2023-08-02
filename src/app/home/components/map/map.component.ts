@@ -367,6 +367,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.storage$.updateCliente(this.receivedData);
     await this.storage$.updateOrders(this.receivedData);
     console.log('finalozando pedido');
+    this.storage$.remove('take_order');
     this.router.navigate(['home/index']);
   };
 
@@ -375,6 +376,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.storage$.updateCliente(this.receivedData);
     this.storage$.setOrder(this.receivedData);
     await this.storage$.updateOrders(this.receivedData);
+    this.storage$.remove('take_order');
     console.log('anulando pedido');
   };
 
