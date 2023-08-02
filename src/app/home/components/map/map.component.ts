@@ -331,20 +331,20 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     return role === 'confirm';
   };
 
-  submitForm() {
+  async submitForm() {
     console.log('Opción seleccionada:', this.selectedOption);
     console.log('Valor del campo de entrada:', this.inputValue);
     //? Se tomara la orden
     if (this.selectedOption == '2') {
-      this.tomarPedido();
+      await this.tomarPedido();
     }
 
     if (this.selectedOption == '3') {
-      this.finalizarPedido();
+      await this.finalizarPedido();
     }
 
     if (this.selectedOption == '4') {
-      this.anularOrden();
+      await this.anularOrden();
     }
   }
 
@@ -363,21 +363,22 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   finalizarPedido = async () => {
     this.receivedData.EstadoEntrega = '3';
-    this.storage$.setOrder(this.receivedData);
-    this.storage$.updateCliente(this.receivedData);
+    await this.storage$.setOrder(this.receivedData);
+    await this.storage$.updateCliente(this.receivedData);
     await this.storage$.updateOrders(this.receivedData);
-    console.log('finalozando pedido');
     this.storage$.remove('take_order');
+    console.log('finalozando pedido');
     this.router.navigate(['home/index']);
   };
 
   anularOrden = async () => {
     this.receivedData.EstadoEntrega = '4';
-    this.storage$.updateCliente(this.receivedData);
-    this.storage$.setOrder(this.receivedData);
+    await this.storage$.updateCliente(this.receivedData);
+    await this.storage$.setOrder(this.receivedData);
     await this.storage$.updateOrders(this.receivedData);
     this.storage$.remove('take_order');
     console.log('anulando pedido');
+    this.router.navigate(['home/index']);
   };
 
   razonesTest = [

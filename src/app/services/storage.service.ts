@@ -84,7 +84,7 @@ export class StorageService {
     return lonitud;
   }
 
-  public setOrder(value: any) {
+  public setOrder(value: Listado) {
     this._storage?.set('take_order', value);
     this.orderObject.next(value);
   }
@@ -138,7 +138,7 @@ export class StorageService {
     } else {
       this.postOrdersLocal(listadoNew);
     }
-    this.set('listado', listadosCurrent);
+    await this.set('listado', listadosCurrent);
   }
 
   async postOrdersLocal(listado: Listado) {

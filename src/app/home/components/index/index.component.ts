@@ -59,8 +59,18 @@ export class IndexComponent implements OnInit, OnDestroy {
     this.subscripciones['getOrderObservable'] = this.storage$
       .getOrderObservable()
       .subscribe(
-        (res) => {
+        async (res) => {
           this.orderTake = res;
+          const orderChange = this.orderTake;
+          if (
+            this.orderTake.EstadoEntrega == '4' ||
+            this.orderTake.EstadoEntrega == '3'
+          ) {
+            await this.storage$.updateOrders(orderChange);
+            this.storage$.updateCliente(orderChange);
+            console.log('a limpiar', this.orderTake);
+            this.listadoClientes = await this.storage$.get('listado');
+          }
         },
         (err) => {
           console.log(err);
