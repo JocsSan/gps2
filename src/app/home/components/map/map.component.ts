@@ -7,6 +7,7 @@ import { PostOfflinerService } from 'src/app/services/post-offliner.service';
 import { Razon } from 'src/app/interfaces/razones.interface';
 import { Listado } from 'src/app/interfaces/listados.interface';
 import { Operacion } from 'src/app/interfaces/operation.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-map',
@@ -60,7 +61,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     private geolocation$: GeolocationService,
     private actionSheetCtrl: ActionSheetController,
     private storage$: StorageService,
-    private posttworker$: PostOfflinerService
+    private posttworker$: PostOfflinerService,
+    private router: Router
   ) {}
 
   async ngOnInit() {
@@ -356,19 +358,20 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   };
 
-  finalizarPedido = () => {
+  finalizarPedido = async () => {
     this.receivedData.EstadoEntrega = '3';
     this.storage$.setOrder(this.receivedData);
     this.storage$.updateCliente(this.receivedData);
-    this.storage$.updateOrders(this.receivedData);
+    await this.storage$.updateOrders(this.receivedData);
     console.log('finalozando pedido');
+    this.router.navigate(['home/index']);
   };
 
-  anularOrden = () => {
+  anularOrden = async () => {
     this.receivedData.EstadoEntrega = '4';
     this.storage$.updateCliente(this.receivedData);
     this.storage$.setOrder(this.receivedData);
-    this.storage$.updateOrders(this.receivedData);
+    await this.storage$.updateOrders(this.receivedData);
     console.log('anulando pedido');
   };
 
