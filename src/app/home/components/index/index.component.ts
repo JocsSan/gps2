@@ -114,8 +114,8 @@ export class IndexComponent implements OnInit, OnDestroy {
         (position) => {
           this.currentPoint = position;
           this.markerDestiny = {
-            lat: parseInt(cliente.Lat || '0'),
-            lng: parseInt(cliente.Lon || '0'),
+            lat: parseInt(cliente?.Lat || '0'),
+            lng: parseInt(cliente?.Lon || '0'),
           };
           this.cambioDistancias = this.calcularDistancia(
             this.currentPoint?.lat,

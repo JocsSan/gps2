@@ -88,7 +88,9 @@ export class GeotService {
       p9: 0,
       p10: 0,
     };
-    return this.sendRequest({ param, body }) || 1;
+    const response = this.sendRequest({ param, body });
+    console.log(response);
+    return of(1);
   }
 
   postPoint(unPunto: OperacionInsertLocation): Observable<any> {
@@ -109,6 +111,8 @@ export class GeotService {
     const param = 3;
     this.sendRequest({ param, body });
     //const observablexd = of(1);
-    return this.sendRequest({ param, body }) || 1;
+    const response = this.sendRequest({ param, body });
+    console.log(response);
+    return of(1);
   }
 }

@@ -65,6 +65,7 @@ export class PostOfflinerService {
         this.logPoints(points);
       }
     }
+    return 'guardando puntos en local';
   };
 
   async logPoints(points: OperacionInsertLocation[]) {

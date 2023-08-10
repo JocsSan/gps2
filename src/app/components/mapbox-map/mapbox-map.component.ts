@@ -255,8 +255,6 @@ export class MapboxMapComponent
       this.currentPoint.lng; /* Obtener la longitud de la ubicación actual */
     const previousResponse = this.rutaOptimaCache;
 
-    console.log(this.rutaOptimaCache.length);
-
     if (previousResponse?.length == 0) {
       // No hay una respuesta anterior, realizar la primera solicitud al API
       console.log('Realizando la primera solicitud al API...');

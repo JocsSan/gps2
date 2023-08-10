@@ -29,8 +29,8 @@
           }}
           mts
         </ion-card-content>
-        <ion-label>
-          {{ orderTake?.Cliente }}
+        <ion-label *ngIf="orderTake?.Cliente">
+          {{ orderTake.Cliente }}
         </ion-label>
         <ion-button
           fill="clear"
