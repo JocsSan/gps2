@@ -91,7 +91,7 @@ export class StorageService {
   }
 
   public setClient(value: Listado) {
-    this._storage?.set('clientw', value);
+    this._storage?.set('cliente', value);
     this.clienObject.next(value);
   }
 

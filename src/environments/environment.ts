@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  geotUrl: 'http://localhost:3002/',
+  geotUrl: 'http://localhost:3000/',
 };
 
 /*

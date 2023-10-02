@@ -15,7 +15,7 @@ export class GeotService {
 
   constructor(private http: HttpClient) {}
 
-  private sendRequest<T>(request: {
+  private sendRequestPost<T>(request: {
     param: number;
     body: any;
   }): Observable<T[]> {
@@ -37,39 +37,33 @@ export class GeotService {
   }
 
   getListado(code: string): Observable<Listado[]> {
-    const body = {
-      p1: code,
-      p2: 0,
-      p3: 0,
-      p4: 0,
-      p5: 0,
-      p6: 0,
-      p7: 0,
-      p8: 0,
-      p9: 0,
-      p10: 0,
-    };
-
-    const param = 1;
-    return this.sendRequest<Listado>({ param, body });
+    const url = `${this.urlGeot}ruta-logica/get-enlistamiento`;
+    return this.http
+      .get<any[]>(url, {
+        params: {
+          key: code,
+        },
+      })
+      .pipe(
+        map((res) => {
+          return res;
+        }),
+        catchError((err) => {
+          throw err;
+        })
+      );
   }
 
   getRazones(): Observable<Razon[]> {
-    const body = {
-      p1: 0,
-      p2: 0,
-      p3: 0,
-      p4: 0,
-      p5: 0,
-      p6: 0,
-      p7: 0,
-      p8: 0,
-      p9: 0,
-      p10: 0,
-    };
-
-    const param = 2;
-    return this.sendRequest<Razon>({ param, body });
+    const url = `${this.urlGeot}ruta-logica/get-razones`;
+    return this.http.get<any[]>(url, {}).pipe(
+      map((res) => {
+        return res;
+      }),
+      catchError((err) => {
+        throw err;
+      })
+    );
   }
 
   postOrderApi(order: Listado): Observable<any> {
@@ -88,7 +82,7 @@ export class GeotService {
       p9: 0,
       p10: 0,
     };
-    const response = this.sendRequest({ param, body });
+    const response = this.sendRequestPost({ param, body });
     console.log(response);
     return of(1);
   }
@@ -109,9 +103,9 @@ export class GeotService {
       p10: 0,
     };
     const param = 3;
-    this.sendRequest({ param, body });
+    this.sendRequestPost({ param, body });
     //const observablexd = of(1);
-    const response = this.sendRequest({ param, body });
+    const response = this.sendRequestPost({ param, body });
     console.log(response);
     return of(1);
   }
