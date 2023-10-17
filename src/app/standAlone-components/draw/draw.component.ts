@@ -29,19 +29,30 @@ export class DrawComponent implements OnInit, AfterViewInit {
 
   public isAvailabe: boolean = false;
 
-  @HostListener('document:mousemove' || 'document:touchmove', ['$event'])
-  onMouseMove = (e: any) => {
-    if (e.target.id === 'canvasId' && this.isAvailabe) {
-      this.write(e);
+  @HostListener('document:touchmove', ['$event'])
+  @HostListener('document:mousemove', ['$event'])
+  onMove = (event: any) => {
+    if (
+      this.isMobileDevice() ||
+      (event.target && event.target.id === 'canvasId')
+    ) {
+      event.preventDefault(); // Evita el comportamiento predeterminado del desplazamiento en dispositivos táctiles
+      this.write(event);
     }
   };
 
-  @HostListener('click', ['$event'])
-  onClick = (e: any) => {
-    if (e.target.id === 'canvasId') {
+  @HostListener('document:click', ['$event'])
+  onClick = (event: any) => {
+    if (event.target && event.target.id === 'canvasId') {
       this.isAvailabe = !this.isAvailabe;
     }
   };
+
+  isMobileDevice(): boolean {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    );
+  }
 
   constructor() {}
 
