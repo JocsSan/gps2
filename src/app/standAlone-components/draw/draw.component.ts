@@ -29,7 +29,7 @@ export class DrawComponent implements OnInit, AfterViewInit {
 
   public isAvailabe: boolean = false;
 
-  @HostListener('document:mousemove', ['$event'])
+  @HostListener('document:mousemove' || 'document:touchmove', ['$event'])
   onMouseMove = (e: any) => {
     if (e.target.id === 'canvasId' && this.isAvailabe) {
       this.write(e);
