@@ -12,6 +12,7 @@ import { IndexComponent } from './components/index/index.component';
 import { MapboxMapComponent } from '../components/mapbox-map/mapbox-map.component';
 import { CalcularDistanciaPipe } from '../pipes/calculo-distancia.pipe';
 import { HeaderNetworkComponent } from '../standAlone-components/header-network/header-network.component';
+import { DrawComponent } from '../standAlone-components/draw/draw.component';
 
 @NgModule({
   imports: [
@@ -22,6 +23,7 @@ import { HeaderNetworkComponent } from '../standAlone-components/header-network/
     ButtonModule,
     GoogleMapsModule,
     HeaderNetworkComponent,
+    DrawComponent,
   ],
   declarations: [
     HomePage,

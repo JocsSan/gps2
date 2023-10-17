@@ -58,15 +58,21 @@ export class MapboxMapComponent
     console.log(this.center, this.currentPoint, this.destiniyPoint);
   }
 
+  /**
+   * Initializes the Mapbox configuration and sets up the map.
+   * This method configures various options for the map, adds sources and layers, and sets up map controls.
+   *@description: Funcion que inicaliza la configuracion de mapbox, gracias codeium, eres el creador de esta funcion
+   * @return {void}
+   */
   mapboxinit() {
     (mapboxgl as any).accessToken =
       'pk.eyJ1Ijoiam9jc3Nhbjk4IiwiYSI6ImNsaW9xNDZ6ZjB2bWIzZnRodTc0aDE4OXEifQ.oL3GaxTxdYoHCgWw80BL_A';
 
     this.map = new mapboxgl.Map({
-      container: 'mapabox', // container ID
-      style: 'mapbox://styles/mapbox/streets-v12', // style URL
-      center: [this.destiniyPoint.lng, this.destiniyPoint.lat], // starting position
-      zoom: 16, // starting zoom
+      container: 'mapabox',
+      style: 'mapbox://styles/mapbox/navigation-night-v1',
+      center: [this.destiniyPoint.lng, this.destiniyPoint.lat],
+      zoom: 16,
     });
 
     // Add map controls
@@ -93,6 +99,7 @@ export class MapboxMapComponent
         (error: any, image: any) => {
           if (error) throw error;
           this.map.addImage('custom-marker', image);
+
           // Add a GeoJSON source with 2 points
           this.map.addSource('points', {
             type: 'geojson',
@@ -100,7 +107,6 @@ export class MapboxMapComponent
               type: 'FeatureCollection',
               features: [
                 {
-                  // feature for Mapbox DC
                   type: 'Feature',
                   geometry: {
                     type: 'Point',
@@ -121,7 +127,6 @@ export class MapboxMapComponent
             source: 'points',
             layout: {
               'icon-image': 'custom-marker',
-              // get the title name from the source's "title" property
               'text-field': ['get', 'title'],
               'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
               'text-offset': [0, 1.25],
@@ -141,10 +146,6 @@ export class MapboxMapComponent
           'line-width': 8,
         },
       });
-
-      //start
-
-      //adding end
 
       this.map.addLayer({
         id: 'end',

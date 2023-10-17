@@ -83,7 +83,7 @@
 
                     <div
                       *ngIf="
-                        razon.EstadoEntrega == 3 && cambioDistancias <= 3000
+                        razon.EstadoEntrega == 3 && cambioDistancias <= 800000
                       "
                     >
                       <ion-radio
@@ -105,6 +105,9 @@
                       [(ngModel)]="inputValue"
                       name="inputField"
                     ></ion-input>
+                  </ion-item>
+                  <ion-item>
+                    <app-draw></app-draw>
                   </ion-item>
                 </ion-list>
                 <ion-button
