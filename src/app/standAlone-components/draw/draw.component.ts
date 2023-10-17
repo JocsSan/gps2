@@ -29,7 +29,6 @@ export class DrawComponent implements OnInit, AfterViewInit {
 
   public isAvailabe: boolean = false;
 
-  @HostListener('document:touchstart', ['$event'])
   @HostListener('document:mousemove', ['$event'])
   onMouseMove = (e: any) => {
     if (e.target.id === 'canvasId' && this.isAvailabe) {
@@ -39,6 +38,21 @@ export class DrawComponent implements OnInit, AfterViewInit {
 
   @HostListener('click', ['$event'])
   onClick = (e: any) => {
+    if (e.target.id === 'canvasId') {
+      this.isAvailabe = !this.isAvailabe;
+    }
+  };
+
+  //raton eventos
+  @HostListener('document:touchmove', ['$event'])
+  onTouchMove = (e: any) => {
+    if (e.target.id === 'canvasId' && this.isAvailabe) {
+      this.write(e);
+    }
+  };
+
+  @HostListener('document:touchend', ['$event'])
+  onTouchEnd = (e: any) => {
     if (e.target.id === 'canvasId') {
       this.isAvailabe = !this.isAvailabe;
     }
@@ -63,9 +77,17 @@ export class DrawComponent implements OnInit, AfterViewInit {
   private write(res: any) {
     const canvasEl = this.canvasRef.nativeElement;
     const rect = canvasEl.getBoundingClientRect();
+
+    let touch;
+    if (res.touches) {
+      touch = res.touches[0];
+    } else {
+      touch = res;
+    }
+
     const prevPos = {
-      x: res.clientX - rect.left,
-      y: res.clientY - rect.top,
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top,
     };
     this.writeSingle(prevPos);
   }
