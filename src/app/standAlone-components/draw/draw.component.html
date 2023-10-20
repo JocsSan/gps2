@@ -1,4 +1,9 @@
-<canvas id="canvasId" #canvasRef></canvas>
+<canvas #canvas width="600" height="300"></canvas>
 <div>
-  <button class="btn btn-primary" (click)="clearZone()">Limpiar</button>
+  <div
+    class="bg-gradient-to-r from-pink-500 to-yellow-500 hover:from-indigo-500 hover:from-10% hover:via-sky-500 hover:via-30% hover:to-emerald-300 hover:to-90% p-3 rounded-lg shadow cursor-pointer"
+    (click)="clear()"
+  >
+    Limpiar
+  </div>
 </div>
