@@ -2,8 +2,10 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   ElementRef,
+  EventEmitter,
   HostListener,
   OnInit,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -18,6 +20,8 @@ import SignaturePad from 'signature_pad';
   styleUrls: ['./draw.component.scss'],
 })
 export class DrawComponent implements OnInit {
+  @Output() signature = new EventEmitter<string>();
+
   @ViewChild('canvas', { static: true }) canvas!: ElementRef;
   sig!: SignaturePad;
 
@@ -30,5 +34,14 @@ export class DrawComponent implements OnInit {
   @HostListener('window:keydown.enter', ['$event'])
   clear() {
     this.sig.clear();
+  }
+
+  isEmpty = (): boolean => {
+    return this.sig.isEmpty();
+  };
+  saveSignature() {
+    // console.log(this.sig.toDataURL());
+    this.signature.emit(this.sig.toDataURL());
+    return this.sig.toDataURL();
   }
 }

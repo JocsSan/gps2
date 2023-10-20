@@ -107,7 +107,7 @@
                     ></ion-input>
                   </ion-item>
                   <ion-item>
-                    <app-draw></app-draw>
+                    <app-draw (signature)="getSignature($event)"></app-draw>
                   </ion-item>
                 </ion-list>
                 <ion-button

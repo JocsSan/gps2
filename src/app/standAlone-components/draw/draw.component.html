@@ -1,9 +1,22 @@
 <canvas #canvas width="600" height="300"></canvas>
-<div>
-  <div
-    class="bg-gradient-to-r from-pink-500 to-yellow-500 hover:from-indigo-500 hover:from-10% hover:via-sky-500 hover:via-30% hover:to-emerald-300 hover:to-90% p-3 rounded-lg shadow cursor-pointer"
-    (click)="clear()"
-  >
-    Limpiar
+<div class="grid grid-cols-3 gap-4">
+  <div>
+    <div
+      class="bg-gradient-to-r from-pink-500 to-yellow-500 hover:from-indigo-500 hover:from-10% hover:via-sky-500 hover:via-30% hover:to-emerald-300 hover:to-90% p-3 rounded-lg shadow cursor-pointer"
+      (click)="clear()"
+    >
+      Limpiar
+    </div>
   </div>
+  <div>
+    <div
+      class="bg-gradient-to-r from-pink-500 to-yellow-500 hover:from-indigo-500 hover:from-10% hover:via-sky-500 hover:via-30% hover:to-emerald-300 hover:to-90% p-3 rounded-lg shadow cursor-pointer"
+      (click)="saveSignature()"
+    >
+      obtener firma
+    </div>
+  </div>
+</div>
+<div>
+  {{ isEmpty() ? "Dibuja" : "Ya hay un dibujo" }}
 </div>

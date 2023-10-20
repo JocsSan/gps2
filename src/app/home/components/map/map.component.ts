@@ -158,6 +158,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.detenerSeguimiento();
   }
 
+  getSignature = (SignaturePad: any) => {
+    console.log(SignaturePad);
+  };
+
   async getRazones(): Promise<Razon[]> {
     try {
       const res = (await this.storage$.get('razones')) || this.razonesTest;
