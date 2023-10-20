@@ -11,11 +11,11 @@ import { IonicModule } from '@ionic/angular';
 import SignaturePad from 'signature_pad';
 
 @Component({
-  selector: 'app-draw',
   standalone: true,
+  imports: [IonicModule, CommonModule, FormsModule],
+  selector: 'app-draw',
   templateUrl: './draw.component.html',
   styleUrls: ['./draw.component.scss'],
-  imports: [CommonModule, IonicModule, FormsModule],
 })
 export class DrawComponent implements OnInit {
   @ViewChild('canvas', { static: true }) canvas!: ElementRef;
