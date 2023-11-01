@@ -56,9 +56,10 @@ export class PostOfflinerService {
 
       if (points.length > 0) {
         points.forEach((point) => {
-          this.geot$.postPoint(point).subscribe((res) => {
-            console.log(res);
-          });
+          //TODO: MANDAR PUNTOS A LA API
+          // this.geot$.postPoint(point).subscribe((res) => {
+          //   console.log(res);
+          // });
           return point;
         });
         this.storage$.remove('post_points');
@@ -121,18 +122,15 @@ export class PostOfflinerService {
         'post_final_points'
       );
       points.map((point) => {
-        this.geot$.postPoint(point).subscribe((res) => {
-          console.log(res);
-        });
+        //TODO: MANDAR PUNTOS A LA API
+        // this.geot$.postPoint(point).subscribe((res) => {
+        //   console.log(res);
+        // });
       });
       this.logPoints(points);
       this.storage$.remove('post_final_points');
     }
     return statusRed;
-  };
-
-  purgeWorker = () => {
-    console.log('a despachar todo lo que tengo en colas');
   };
 
   /**

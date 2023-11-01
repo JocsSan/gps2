@@ -33,7 +33,9 @@ export class MapboxMapComponent
   constructor() {}
 
   ngOnDestroy(): void {
-    this.map.remove();
+    if (this.map) {
+      this.map.remove();
+    }
   }
   ngAfterViewInit(): void {
     setTimeout(() => {

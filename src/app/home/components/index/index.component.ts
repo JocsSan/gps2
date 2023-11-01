@@ -590,12 +590,14 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   async finalPoint(coordenadas: { lat: number; lng: number }) {
-    const res = await this.posttworker$.finalPoint(coordenadas);
-    console.log(res);
+    //TODO: mandar los puntos
+    // const res = await this.posttworker$.finalPoint(coordenadas);
+    // console.log(res);
   }
 
   async postPoint(coordenadas: { lat: number; lng: number }) {
-    const res = await this.posttworker$.postPoint(coordenadas);
-    console.log(res);
+    //TODO: mandar los puntos
+    // const res = await this.posttworker$.postPoint(coordenadas);
+    // console.log(res);
   }
 }

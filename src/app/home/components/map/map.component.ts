@@ -255,7 +255,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         return;
       }
 
-      if (currentdistance > 500) {
+      if (currentdistance > 0) {
         console.log('guardar punto');
         this.lasPoint = {
           lat: this.currentPoint.lat,
@@ -270,13 +270,15 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   async finalPoint(coordenadas: { lat: number; lng: number }) {
-    const res = await this.posttworker$.finalPoint(coordenadas);
-    console.log(res);
+    //TODO: mandar los puntos
+    // const res = await this.posttworker$.finalPoint(coordenadas);
+    // console.log(res);
   }
 
   async postPoint(coordenadas: { lat: number; lng: number }) {
-    const res = await this.posttworker$.postPoint(coordenadas);
-    console.log(res);
+    //TODO: mandar los puntos
+    // const res = await this.posttworker$.postPoint(coordenadas);
+    // console.log(res);
   }
 
   //?matar la obtencion de coordenadas
