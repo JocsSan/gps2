@@ -226,7 +226,6 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   verDistancias() {
     // Verificar si currentPoint y markerDestiny no son nulos o indefinidos
-
     if (!this.lasPoint) {
       this.lasPoint = {
         lat: this.currentPoint.lat,
@@ -257,6 +256,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
       if (currentdistance > 0) {
         console.log('guardar punto');
+        console.log('Cambio en la distancia:', currentdistance); // Nuevo console.log añadido
         this.lasPoint = {
           lat: this.currentPoint.lat,
           lng: this.currentPoint.lng,
