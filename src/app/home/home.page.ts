@@ -7,6 +7,8 @@ import { GeolocationService } from '../services/geolocation.service';
 import { StorageService } from '../services/storage.service';
 import { PluginListenerHandle } from '@capacitor/core';
 import { Network } from '@capacitor/network';
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -14,7 +16,7 @@ import { Network } from '@capacitor/network';
 })
 export class HomePage implements OnInit, OnDestroy {
   public subscripciones: { [key: string]: Subscription } = {};
-
+  version = environment.version;
   constructor(
     private geot$: GeotService,
     private router: Router,

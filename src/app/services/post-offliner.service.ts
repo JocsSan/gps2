@@ -22,11 +22,17 @@ export class PostOfflinerService {
    * @returns
    */
   postPoint = async (coordenadas: { lat: number; lng: number }) => {
-    //?determinamos si hay conexion a red
-    const statusRed = await this.netWorK$.getNetWorkStatus();
-    console.log(statusRed.connected ? 'si hay señal' : 'no hay red pipipipipi');
+    const new_point = await this.createNewPoint(coordenadas);
+    await this.savePointToLocal(new_point);
+    await this.sendPointsToAPI();
+  };
 
-    //?Obtenemos la key
+  /**
+   * @description : Funcion que guarda los puntos por donde anda los motoristas
+   * @param coordenadas
+   * @returns
+   */
+  createNewPoint = async (coordenadas: { lat: number; lng: number }) => {
     const key: string = await this.storage$.get('key');
     const cliente: Listado = await this.storage$.get('take_order');
     const new_point: OperacionInsertLocation = {
@@ -40,6 +46,15 @@ export class PostOfflinerService {
       }),
       ultimoPunto: false,
     };
+    return new_point;
+  };
+
+  /**
+   * @description : Funcion que guarda los en local los puntos por donde anda los motoristas
+   * @param new_point
+   * @returns
+   */
+  savePointToLocal = async (new_point: OperacionInsertLocation) => {
     const points_post: OperacionInsertLocation[] = await this.storage$.get(
       'post_points'
     );
@@ -49,27 +64,49 @@ export class PostOfflinerService {
     } else {
       await this.storage$.set('post_points', [new_point]);
     }
-    if (statusRed.connected) {
-      const points: OperacionInsertLocation[] = await this.storage$.get(
-        'post_points'
-      );
-
-      if (points.length > 0) {
-        points.forEach((point) => {
-          //TODO: MANDAR PUNTOS A LA API
-          // this.geot$.postPoint(point).subscribe((res) => {
-          //   console.log(res);
-          // });
-          return point;
-        });
-        this.storage$.remove('post_points');
-        this.logPoints(points);
-      }
-    }
-    return 'guardando puntos en local';
   };
 
-  async logPoints(points: OperacionInsertLocation[]) {
+  //en esta funncio quiero que se guarden los puntos en local e caso de que no haya internet o una respuesta correcta crees poder ayudarme con eso
+  /**
+   * @description : Funcion que envia la lista de puntos al servidor
+   * @returns
+   */
+  sendPointsToAPI = async () => {
+    const statusRed = await this.netWorK$.getNetWorkStatus();
+    const points: OperacionInsertLocation[] = await this.storage$.get(
+      'post_points'
+    );
+
+    if (statusRed.connected && points.length > 0) {
+      for (const point of points) {
+        try {
+          // Intenta enviar el punto a la API
+          const res = await this.geot$.postPoint(point).toPromise();
+          console.log(res);
+        } catch (error) {
+          // Si hay un error (por ejemplo, la API no responde), guarda el punto en local
+          await this.savePointToLocal(point);
+          console.log(
+            'Error al enviar el punto a la API, se guardó en local',
+            error
+          );
+        }
+      }
+      // Elimina los puntos del almacenamiento local solo si se enviaron correctamente a la API
+      this.storage$.remove('post_points');
+      this.logPointsx(points);
+    } else if (!statusRed.connected && points.length > 0) {
+      // Si no hay conexión a Internet, guarda los puntos en local
+      for (const point of points) {
+        await this.savePointToLocal(point);
+      }
+      console.log(
+        'No hay conexión a Internet, los puntos se guardaron en local'
+      );
+    }
+  };
+
+  async logPointsx(points: OperacionInsertLocation[]) {
     console.log('entra a los log');
     const points_local: OperacionInsertLocation[] = await this.storage$.get(
       'log_post_points'
@@ -127,7 +164,9 @@ export class PostOfflinerService {
         //   console.log(res);
         // });
       });
-      this.logPoints(points);
+
+      //TODO: Log de puntos en local storage
+      //this.logPoints(points);
       this.storage$.remove('post_final_points');
     }
     return statusRed;
