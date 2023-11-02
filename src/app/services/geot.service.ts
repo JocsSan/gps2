@@ -95,7 +95,7 @@ export class GeotService {
     );
   }
 
-  postPoint(unPunto: OperacionInsertLocation): Observable<any> {
+  postPoint(unPunto: OperacionInsertLocation[]): Observable<any> {
     console.log('log de un punto', unPunto);
 
     const body = {

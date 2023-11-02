@@ -78,22 +78,24 @@ export class PostOfflinerService {
     );
 
     if (statusRed.connected && points.length > 0) {
-      for (const point of points) {
-        try {
-          // Intenta enviar el punto a la API
-          const res = await this.geot$.postPoint(point).toPromise();
-          console.log(res);
-        } catch (error) {
-          // Si hay un error (por ejemplo, la API no responde), guarda el punto en local
+      try {
+        const res: number = await this.geot$.postPoint(points).toPromise();
+        // Intenta enviar el punto a la API
+        console.log(res);
+
+        // Elimina el punto del almacenamiento local solo si se envió correctamente a la API
+        await this.storage$.remove('post_points');
+      } catch (error) {
+        // Si hay un error (por ejemplo, la API no responde), guarda el punto en local
+        for (const point of points) {
           await this.savePointToLocal(point);
-          console.log(
-            'Error al enviar el punto a la API, se guardó en local',
-            error
-          );
         }
+        console.log(
+          'Error al enviar el punto a la API, se guardó en local',
+          error
+        );
       }
-      // Elimina los puntos del almacenamiento local solo si se enviaron correctamente a la API
-      await this.storage$.remove('post_points');
+
       this.logPointsx(points);
     } else if (!statusRed.connected && points.length > 0) {
       // Si no hay conexión a Internet, guarda los puntos en local
