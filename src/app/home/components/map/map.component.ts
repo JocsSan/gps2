@@ -61,7 +61,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     private geolocation$: GeolocationService,
     private actionSheetCtrl: ActionSheetController,
     private storage$: StorageService,
-    private posttworker$: PostOfflinerService,
+    private postOffline$: PostOfflinerService,
     private router: Router
   ) {}
 
@@ -271,14 +271,14 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async finalPoint(coordenadas: { lat: number; lng: number }) {
     //TODO: mandar los puntos
-    // const res = await this.posttworker$.finalPoint(coordenadas);
-    // console.log(res);
+    const res = await this.postOffline$.finalPoint(coordenadas);
+    console.log(res);
   }
 
   async postPoint(coordenadas: { lat: number; lng: number }) {
     //TODO: mandar los puntos
-    // const res = await this.posttworker$.postPoint(coordenadas);
-    // console.log(res);
+    const res = await this.postOffline$.postPoint(coordenadas);
+    console.log(res);
   }
 
   //?matar la obtencion de coordenadas
