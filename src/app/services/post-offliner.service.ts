@@ -93,7 +93,7 @@ export class PostOfflinerService {
         }
       }
       // Elimina los puntos del almacenamiento local solo si se enviaron correctamente a la API
-      this.storage$.remove('post_points');
+      await this.storage$.remove('post_points');
       this.logPointsx(points);
     } else if (!statusRed.connected && points.length > 0) {
       // Si no hay conexión a Internet, guarda los puntos en local
@@ -114,14 +114,15 @@ export class PostOfflinerService {
     console.log('local logs', points_local?.length || 0);
     if (points_local?.length || 0 > 0) {
       console.log('a agregar mas puntos');
-      points_local.concat(points);
-      this.storage$.set('log_post_points', points_local);
+      const new_points = points_local.concat(points);
+      await this.storage$.set('log_post_points', new_points);
     } else {
       console.log('inicalizar el log');
-      this.storage$.set('log_post_points', points);
+      await this.storage$.set('log_post_points', points);
     }
   }
 
+  //TODO: Revisar funcion
   /**
    * @description: funcion que sirve para guardar el ultimo punto para los pedidos
    * @param coordenadas

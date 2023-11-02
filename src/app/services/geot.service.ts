@@ -115,6 +115,7 @@ export class GeotService {
     //const observablexd = of(1);
     const response = this.sendRequestPost({ param, body });
     console.log(response);
+    throw new Error('Function not implemented.');
     return of(1);
   }
 }
