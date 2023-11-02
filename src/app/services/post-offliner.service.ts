@@ -85,6 +85,7 @@ export class PostOfflinerService {
 
         // Elimina el punto del almacenamiento local solo si se envió correctamente a la API
         await this.storage$.remove('post_points');
+        this.logPointsx(points);
       } catch (error) {
         // Si hay un error (por ejemplo, la API no responde), guarda el punto en local
         for (const point of points) {
@@ -95,8 +96,6 @@ export class PostOfflinerService {
           error
         );
       }
-
-      this.logPointsx(points);
     } else if (!statusRed.connected && points.length > 0) {
       // Si no hay conexión a Internet, guarda los puntos en local
       for (const point of points) {
