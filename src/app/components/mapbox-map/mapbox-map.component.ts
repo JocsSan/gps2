@@ -146,7 +146,7 @@ export class MapboxMapComponent
         source: 'line',
         paint: {
           'line-color': '#ff0000',
-          'line-width': 8,
+          'line-width': 5,
         },
       });
 
@@ -171,7 +171,9 @@ export class MapboxMapComponent
         },
         paint: {
           'circle-radius': 10,
-          'circle-color': '#6041FA',
+          'circle-color': '#3bb2d0',
+          'circle-stroke-width': 3,
+          'circle-stroke-color': '#fbb03b',
         },
       });
     });

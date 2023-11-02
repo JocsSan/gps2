@@ -272,8 +272,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async finalPoint(coordenadas: { lat: number; lng: number }) {
     //TODO: mandar los puntos
-    //const res = await this.postOffline$.finalPoint(coordenadas);
-    //console.log(res);
+    const res = await this.postOffline$.finalPoint(coordenadas);
+    console.log(res);
   }
 
   async postPoint(coordenadas: { lat: number; lng: number }) {

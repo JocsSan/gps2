@@ -116,51 +116,65 @@ export class PostOfflinerService {
   /**
    * @description: funcion que sirve para guardar el ultimo punto para los pedidos
    * @param coordenadas
-   * @returns
    */
   finalPoint = async (coordenadas: { lat: number; lng: number }) => {
-    const statusRed = await this.netWorK$.getNetWorkStatus();
+    const final_point = await this.createFinalPoint(coordenadas);
+    await this.saveFinalPointToLocal(final_point);
+    await this.sendFinalPointsToAPI();
+  };
 
-    console.log(statusRed.connected ? 'si hay señal' : 'no hay red pipipipipi');
-
-    const final_points_post: OperacionInsertLocation[] =
-      await this.storage$.get('post_final_points');
-    const cliente: Listado = await this.storage$.get('take_order');
+  createFinalPoint = async (coordenadas: { lat: number; lng: number }) => {
     const key: string = await this.storage$.get('key');
-
+    const cliente: Listado = await this.storage$.get('take_order');
     const final_point: OperacionInsertLocation = {
-      cliente: cliente.Cliente || '',
       enlistamiento: key,
       lat: coordenadas.lat,
       lon: coordenadas.lng,
       operation: 'insert_location',
+      cliente: cliente?.Cliente || '',
       timestamps: new Date(Date.now()).toLocaleString('es-ES', {
         timeZone: 'UTC',
       }),
       ultimoPunto: true,
     };
-    if (final_points_post?.length > 0) {
-      final_points_post.push(final_point);
-      this.storage$.set('post_final_points', final_points_post);
-    } else {
-      this.storage$.set('post_final_points', [final_point]);
-    }
-    if (statusRed.connected) {
-      const points: OperacionInsertLocation[] = await this.storage$.get(
-        'post_final_points'
-      );
-      points.map((point) => {
-        //TODO: MANDAR PUNTOS A LA API
-        // this.geot$.postPoint(point).subscribe((res) => {
-        //   console.log(res);
-        // });
-      });
+    return final_point;
+  };
 
-      //TODO: Log de puntos en local storage
-      //this.logPoints(points);
-      this.storage$.remove('post_final_points');
+  saveFinalPointToLocal = async (final_point: OperacionInsertLocation) => {
+    let final_points_post: OperacionInsertLocation[] = await this.storage$.get(
+      'post_final_points'
+    );
+    if (!final_points_post) {
+      final_points_post = [];
     }
-    return statusRed;
+    final_points_post.push(final_point);
+    await this.storage$.set('post_final_points', final_points_post);
+  };
+
+  sendFinalPointsToAPI = async () => {
+    const statusRed = await this.netWorK$.getNetWorkStatus();
+    let points: OperacionInsertLocation[] = await this.storage$.get(
+      'post_final_points'
+    );
+
+    if (statusRed.connected && points && points.length > 0) {
+      try {
+        const res: number = await this.geot$.postPoint(points).toPromise();
+        console.log(res);
+
+        await this.storage$.remove('post_final_points');
+        this.logPointsx(points);
+      } catch (error) {
+        console.log(
+          'Error al enviar el punto a la API, se guardó en local',
+          error
+        );
+      }
+    } else if (!statusRed.connected && points && points.length > 0) {
+      console.log(
+        'No hay conexión a Internet, los puntos se guardaron en local'
+      );
+    }
   };
 
   /**
