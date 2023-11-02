@@ -55,15 +55,14 @@ export class PostOfflinerService {
    * @returns
    */
   savePointToLocal = async (new_point: OperacionInsertLocation) => {
-    const points_post: OperacionInsertLocation[] = await this.storage$.get(
+    let points_post: OperacionInsertLocation[] = await this.storage$.get(
       'post_points'
     );
-    if (points_post?.length > 0) {
-      points_post.push(new_point);
-      await this.storage$.set('post_points', points_post);
-    } else {
-      await this.storage$.set('post_points', [new_point]);
+    if (!points_post) {
+      points_post = [];
     }
+    points_post.push(new_point);
+    await this.storage$.set('post_points', points_post);
   };
 
   //en esta funncio quiero que se guarden los puntos en local e caso de que no haya internet o una respuesta correcta crees poder ayudarme con eso
@@ -73,34 +72,24 @@ export class PostOfflinerService {
    */
   sendPointsToAPI = async () => {
     const statusRed = await this.netWorK$.getNetWorkStatus();
-    const points: OperacionInsertLocation[] = await this.storage$.get(
+    let points: OperacionInsertLocation[] = await this.storage$.get(
       'post_points'
     );
 
-    if (statusRed.connected && points.length > 0) {
+    if (statusRed.connected && points && points.length > 0) {
       try {
         const res: number = await this.geot$.postPoint(points).toPromise();
-        // Intenta enviar el punto a la API
         console.log(res);
 
-        // Elimina el punto del almacenamiento local solo si se envió correctamente a la API
         await this.storage$.remove('post_points');
         this.logPointsx(points);
       } catch (error) {
-        // Si hay un error (por ejemplo, la API no responde), guarda el punto en local
-        for (const point of points) {
-          await this.savePointToLocal(point);
-        }
         console.log(
           'Error al enviar el punto a la API, se guardó en local',
           error
         );
       }
-    } else if (!statusRed.connected && points.length > 0) {
-      // Si no hay conexión a Internet, guarda los puntos en local
-      for (const point of points) {
-        await this.savePointToLocal(point);
-      }
+    } else if (!statusRed.connected && points && points.length > 0) {
       console.log(
         'No hay conexión a Internet, los puntos se guardaron en local'
       );
