@@ -276,12 +276,12 @@ export class MapboxMapComponent
         referenceLat,
         referenceLng
       );
-      if (distance <= 500) {
-        // La ubicación actual está dentro del radio de 1 km del primer punto de la respuesta anterior
+      if (distance <= 200) {
+        // La ubicación actual está dentro del radio de 200 km del primer punto de la respuesta anterior
         console.log('La ubicación actual está dentro del radio establecido.');
         return previousResponse;
       } else {
-        // La ubicación actual está fuera del radio de 1 km del primer punto de la respuesta anterior
+        // La ubicación actual está fuera del radio de 200 km del primer punto de la respuesta anterior
         console.log(
           'La ubicación actual está fuera del radio establecido. Actualizando las rutas...'
         );

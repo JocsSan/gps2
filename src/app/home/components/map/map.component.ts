@@ -254,7 +254,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         return;
       }
 
-      if (currentdistance > 0) {
+      if (currentdistance > 1) {
         console.log('guardar punto');
         console.log('Cambio en la distancia:', currentdistance); // Nuevo console.log añadido
         this.lasPoint = {
@@ -271,8 +271,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async finalPoint(coordenadas: { lat: number; lng: number }) {
     //TODO: mandar los puntos
-    const res = await this.postOffline$.finalPoint(coordenadas);
-    console.log(res);
+    //const res = await this.postOffline$.finalPoint(coordenadas);
+    //console.log(res);
   }
 
   async postPoint(coordenadas: { lat: number; lng: number }) {

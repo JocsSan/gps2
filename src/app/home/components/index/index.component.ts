@@ -16,7 +16,7 @@ export class IndexComponent implements OnInit, OnDestroy {
     private router: Router,
     private geolocation$: GeolocationService,
     private storage$: StorageService,
-    private posttworker$: PostOfflinerService
+    private postOffline$: PostOfflinerService
   ) {}
   private subscripciones: { [key: string]: Subscription } = {};
 
@@ -554,7 +554,7 @@ export class IndexComponent implements OnInit, OnDestroy {
         return;
       }
 
-      if (currentdistance > 500) {
+      if (currentdistance > 1) {
         console.log('guardar punto');
         this.lasPoint = {
           lat: this.currentPoint.lat,
@@ -597,7 +597,7 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   async postPoint(coordenadas: { lat: number; lng: number }) {
     //TODO: mandar los puntos
-    // const res = await this.posttworker$.postPoint(coordenadas);
-    // console.log(res);
+    const res = await this.postOffline$.postPoint(coordenadas);
+    console.log(res);
   }
 }
