@@ -8,6 +8,7 @@ import { Razon } from 'src/app/interfaces/razones.interface';
 import { Listado } from 'src/app/interfaces/listados.interface';
 import { Operacion } from 'src/app/interfaces/operation.interface';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-map',
@@ -254,7 +255,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
         return;
       }
 
-      if (currentdistance > 1) {
+      if (currentdistance > environment.changeDistance) {
         console.log('guardar punto');
         console.log('Cambio en la distancia:', currentdistance); // Nuevo console.log añadido
         this.lasPoint = {

@@ -5,6 +5,7 @@ import { Listado } from 'src/app/interfaces/listados.interface';
 import { GeolocationService } from 'src/app/services/geolocation.service';
 import { PostOfflinerService } from 'src/app/services/post-offliner.service';
 import { StorageService } from 'src/app/services/storage.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-index',
@@ -554,7 +555,7 @@ export class IndexComponent implements OnInit, OnDestroy {
         return;
       }
 
-      if (currentdistance > 1) {
+      if (currentdistance > environment.changeDistance) {
         console.log('guardar punto');
         this.lasPoint = {
           lat: this.currentPoint.lat,

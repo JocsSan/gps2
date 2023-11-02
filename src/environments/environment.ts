@@ -5,7 +5,9 @@
 export const environment = {
   production: false,
   geotUrl: 'http://localhost:3000/',
-  version: '0.0.1.1.5',
+  version: '0.0.1.1.6',
+  changeDistance: 1,
+  rechargeMap: 200,
 };
 
 /*

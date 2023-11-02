@@ -8,6 +8,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
+import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-mapbox-map',
   templateUrl: './mapbox-map.component.html',
@@ -276,7 +277,7 @@ export class MapboxMapComponent
         referenceLat,
         referenceLng
       );
-      if (distance <= 200) {
+      if (distance <= environment.rechargeMap) {
         // La ubicación actual está dentro del radio de 200 km del primer punto de la respuesta anterior
         console.log('La ubicación actual está dentro del radio establecido.');
         return previousResponse;
