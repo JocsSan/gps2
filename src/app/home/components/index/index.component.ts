@@ -594,6 +594,8 @@ export class IndexComponent implements OnInit, OnDestroy {
   async postPoint(coordenadas: { lat: number; lng: number }) {
     //TODO: mandar los puntos
     const res = await this.postOffline$.postPoint(coordenadas);
+    console.log(environment.changeDistance);
+    console.log('post de index', res);
     console.log(res);
   }
 }
