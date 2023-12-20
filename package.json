@@ -37,7 +37,7 @@
     "@ionic/storage-angular": "^4.0.0",
     "ionicons": "^7.0.0",
     "mapbox-gl": "^2.15.0",
-    "ngx-cookie-service": "^17.0.1",
+    "ngx-cookie-service": "^16.0.1",
     "primeng": "^16.0.0-rc.2",
     "rxjs": "~7.8.0",
     "signature_pad": "^4.1.6",
