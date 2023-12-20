@@ -8,8 +8,9 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { GoogleMapsModule } from '@angular/google-maps';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage-angular';
+import { JwtAutInterceptor } from './utils/interceptor/jwt-aut.interceptor';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -28,6 +29,7 @@ import { IonicStorageModule } from '@ionic/storage-angular';
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    { provide: HTTP_INTERCEPTORS, useClass: JwtAutInterceptor, multi: true },
     CookieService,
   ],
   bootstrap: [AppComponent],
