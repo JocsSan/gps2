@@ -1,18 +1,20 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, map, of } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { Listado } from '../interfaces/listados.interface';
 import { Razon } from '../interfaces/razones.interface';
 import { OperacionInsertLocation } from '../interfaces/operation.interface';
+import { ResponseListado } from '../interfaces/response.interface';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GeotService {
-  private urlGeot = environment.geotUrl;
-
+  readonly urlGeot = environment.geotUrl;
+  private cokie$ = inject(CookieService);
   constructor(private http: HttpClient) {}
 
   private sendRequestPost<T>(request: {
@@ -40,7 +42,8 @@ export class GeotService {
     const timestamp = new Date().getTime();
     const url = `${this.urlGeot}ruta-logica/get-enlistamiento`;
     return this.http
-      .get<Listado[]>(url, {
+      .get<ResponseListado>(url, {
+        headers: { 'ngrok-skip-browser-warning': '69420' },
         params: {
           key: code,
           timestamp: timestamp.toString(),
@@ -48,7 +51,9 @@ export class GeotService {
       })
       .pipe(
         map((res) => {
-          return res;
+          console.log('respuesta de la api', res);
+          this.cokie$.set('token', res.token);
+          return res.listado;
         }),
         catchError((err) => {
           throw err;
@@ -61,6 +66,7 @@ export class GeotService {
     const url = `${this.urlGeot}ruta-logica/get-razones`;
     return this.http
       .get<Razon[]>(url, {
+        headers: { 'ngrok-skip-browser-warning': '69420' },
         params: {
           timestamp: timestamp.toString(),
         },
@@ -77,7 +83,7 @@ export class GeotService {
 
   postOrderApi(order: Listado): Observable<any> {
     console.log('log de algo', order);
-    //const observablexd = of(1);
+
     const url = `${this.urlGeot}ruta-logica/post-order`;
     const body = {
       order: order.Cliente,
@@ -85,7 +91,16 @@ export class GeotService {
       lon: order.Lon,
       estadoEntrega: order.EstadoEntrega,
     };
-    return this.http.post<any[]>(url, body).pipe(
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: 'my-auth-token',
+        'ngrok-skip-browser-warning': '69420',
+      }),
+    };
+
+    return this.http.post<any[]>(url, body, httpOptions).pipe(
       map((res) => {
         return res;
       }),
@@ -96,26 +111,14 @@ export class GeotService {
   }
 
   postPoint(unPunto: OperacionInsertLocation[]): Observable<any> {
-    console.log('log de un punto', unPunto);
-
-    const body = {
-      p1: unPunto,
-      p2: 0,
-      p3: 0,
-      p4: 0,
-      p5: 0,
-      p6: 0,
-      p7: 0,
-      p8: 0,
-      p9: 0,
-      p10: 0,
-    };
-    const param = 3;
-    this.sendRequestPost({ param, body });
-    //const observablexd = of(1);
-    const response = this.sendRequestPost({ param, body });
-    console.log(response);
-    return response;
-    throw new Error('Function not implemented.');
+    const url = `${this.urlGeot}ruta-logica/post-point`;
+    return this.http.post<any[]>(url, unPunto).pipe(
+      map((res) => {
+        return res;
+      }),
+      catchError((err) => {
+        throw err;
+      })
+    );
   }
 }

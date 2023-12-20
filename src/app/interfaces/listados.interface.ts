@@ -1,8 +1,8 @@
 export interface Listado {
-  Enlistamiento: string[] | null;
+  Enlistamiento: string | null;
   Chofer: string | null;
   Fecha: Date | null;
-  HoraSalida: string[] | null;
+  HoraSalida: string | null;
   KmRecorridos: number | null;
   PrecioPorKm: number | null;
   RutaOriginal: number | null;

@@ -363,7 +363,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   tomarPedido = async () => {
-    console.log('se esta guardando esta vaina');
+    this.receivedData.EstadoEntrega = '2';
+    await this.storage$.setOrder(this.receivedData);
+    await this.storage$.updateCliente(this.receivedData);
+    await this.storage$.updateOrders(this.receivedData);
   };
 
   finalizarPedido = async () => {
@@ -404,4 +407,16 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       Descripcion: 'ANULADO',
     },
   ];
+
+  trackByFn(index: any, item: any) {
+    return item.id; // or a unique property of the item
+  }
+
+  shouldShowRadio(razon: any, cambioDistancias: number) {
+    console.log(environment.changeDistance);
+    return (
+      (razon.EstadoEntrega != 3 && razon.EstadoEntrega != 1) ||
+      (razon.EstadoEntrega == 3 && cambioDistancias <= 80000000)
+    );
+  }
 }

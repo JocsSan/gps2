@@ -116,7 +116,7 @@ export class MapboxMapComponent
                     coordinates: [this.currentPoint.lng, this.currentPoint.lat],
                   },
                   properties: {
-                    title: `Mapbox Current Point ${this.currentPoint.lat}  ${this.currentPoint.lng}`,
+                    title: `Mapbox punto Actual ${this.currentPoint.lat}  ${this.currentPoint.lng}`,
                   },
                 },
               ],
@@ -211,7 +211,7 @@ export class MapboxMapComponent
               coordinates: [this.currentPoint.lng, this.currentPoint.lat],
             },
             properties: {
-              title: `Mapbox Current Point new ${this.currentPoint.lng} & ${this.currentPoint.lat}`,
+              title: `Mapbox punto actual new ${this.currentPoint.lng} & ${this.currentPoint.lat}`,
             },
           },
         ],

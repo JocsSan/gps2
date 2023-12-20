@@ -85,6 +85,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.storage$.remove('key');
     this.geot$.getListado(code).subscribe(
       async (res) => {
+        console.log(res);
         if (res.length > 0) {
           this.listadoClientes = res;
           const listadoString = JSON.stringify(this.listadoClientes);
@@ -97,18 +98,18 @@ export class HomePage implements OnInit, OnDestroy {
         //!para test
         this.messagetoast = 'No hay existen recorridos para esta ruta';
         this.setOpen(true);
-        setTimeout(() => {
-          this.router.navigate(['home/index']);
-        }, 2000);
+        // setTimeout(() => {
+        //   this.router.navigate(['home/index']);
+        // }, 2000);
       },
       (err) => {
         console.log(err);
         const customMsg = err?.error?.error || '';
         this.messagetoast = `${err.message}; ${customMsg}`;
         this.setOpen(true);
-        setTimeout(() => {
-          this.router.navigate(['home/index']);
-        }, 2000);
+        // setTimeout(() => {
+        //   this.router.navigate(['home/index']);
+        // }, 2000);
       }
     );
   }

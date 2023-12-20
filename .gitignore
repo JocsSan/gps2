@@ -33,6 +33,9 @@ log.txt
 /node_modules
 npm-debug.log
 yarn-error.log
+.pnpm-lock.yaml
+pnpm-lock.yaml
+
 
 # IDEs and editors
 .idea/

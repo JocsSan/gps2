@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { Coordenadas } from 'src/app/interfaces/coordenadas.interface';
 import { Listado } from 'src/app/interfaces/listados.interface';
 import { GeolocationService } from 'src/app/services/geolocation.service';
 import { PostOfflinerService } from 'src/app/services/post-offliner.service';
@@ -25,11 +26,11 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   orderTake!: Listado;
 
-  currentPoint: { lat: number; lng: number } = { lat: 0, lng: 0 };
+  currentPoint: Coordenadas = { lat: 0, lng: 0 };
 
-  lasPoint: { lat: number; lng: number } = { lat: 0, lng: 0 };
+  lasPoint: Coordenadas = { lat: 0, lng: 0 };
 
-  markerDestiny: { lat: number; lng: number } = { lat: 0, lng: 0 };
+  markerDestiny: Coordenadas = { lat: 0, lng: 0 };
 
   isToastOpen = false;
 
@@ -94,8 +95,8 @@ export class IndexComponent implements OnInit, OnDestroy {
       this.listadoClientes = previusListado;
     } else {
       //! es para pruebas
-      this.listadoClientes = this.listado;
-      this.storage$.set('listado', this.listado);
+      // this.listadoClientes = this.listado;
+      // this.storage$.set('listado', this.listado);
     }
   }
 
@@ -523,8 +524,6 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   verDistancias() {
-    // Verificar si currentPoint y markerDestiny no son nulos o indefinidos
-
     if (!this.lasPoint) {
       this.lasPoint = {
         lat: this.currentPoint.lat,
@@ -579,10 +578,6 @@ export class IndexComponent implements OnInit, OnDestroy {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distancia = radioTierra * c;
 
-    if (distancia > 180) {
-      //console.log('se ha guardado');
-    }
-
     return distancia;
   }
 
@@ -592,8 +587,8 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   async finalPoint(coordenadas: { lat: number; lng: number }) {
     //TODO: mandar los puntos
-    // const res = await this.posttworker$.finalPoint(coordenadas);
-    // console.log(res);
+    const res = await this.postOffline$.finalPoint(coordenadas);
+    console.log(res);
   }
 
   async postPoint(coordenadas: { lat: number; lng: number }) {
