@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Subscription, map } from 'rxjs';
 import { GeotService } from '../services/geot.service';
 import { Router } from '@angular/router';
 import { Listado } from '../interfaces/listados.interface';
@@ -8,6 +8,7 @@ import { StorageService } from '../services/storage.service';
 import { PluginListenerHandle } from '@capacitor/core';
 import { Network } from '@capacitor/network';
 import { environment } from 'src/environments/environment';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-home',
@@ -17,6 +18,9 @@ import { environment } from 'src/environments/environment';
 export class HomePage implements OnInit, OnDestroy {
   public subscripciones: { [key: string]: Subscription } = {};
   version = environment.version;
+
+  private cokie$ = inject(CookieService);
+
   constructor(
     private geot$: GeotService,
     private router: Router,
@@ -30,6 +34,7 @@ export class HomePage implements OnInit, OnDestroy {
   async ngOnInit() {
     await this.getRazones();
     this.clearDB();
+    this.cokie$.delete('token');
     localStorage.removeItem('listadoClientes');
     this.networkListener = Network.addListener(
       'networkStatusChange',
@@ -48,8 +53,10 @@ export class HomePage implements OnInit, OnDestroy {
 
   /**
    * @description : obtiene las razones para estados de los pedidos y entregas
+   * @returns : void
    */
-  async getRazones() {
+  async getRazones(): Promise<void> {
+    this.cokie$.delete('token');
     this.geot$.getRazones().subscribe(
       (res) => {
         const razones = res;
@@ -71,47 +78,62 @@ export class HomePage implements OnInit, OnDestroy {
    * @param code codigo con el que se obiene el listado
    * @returns
    */
-  async getlisatados(code: any) {
+  async getlistados(
+    code: string | null | number | undefined
+  ): Promise<Subscription> {
+    code = code?.toString() || '';
     const previusListado = await this.storage$.get('listado');
     const previusCode = (await this.storage$.get('key')) || '';
+    const token = (await this.cokie$.get('token')) || '';
 
-    if (!!previusListado?.length && previusCode != '' && code == previusCode) {
+    if (
+      !!previusListado?.length &&
+      previusCode != '' &&
+      code == previusCode &&
+      token != ''
+    ) {
       console.log('ya hay data');
-
       this.router.navigate(['home/index']);
-      return;
+      return new Subscription();
     }
     this.storage$.remove('listado');
     this.storage$.remove('key');
-    this.geot$.getListado(code).subscribe(
-      async (res) => {
-        console.log(res);
-        if (res.length > 0) {
-          this.listadoClientes = res;
-          const listadoString = JSON.stringify(this.listadoClientes);
-          this.storage$.set('key', code);
-          this.storage$.set('listado', res);
-          localStorage.setItem('listadoClientes', listadoString);
-          this.router.navigate(['home/index']);
-        }
+    return this.geot$
+      .getListado(code)
+      .pipe(
+        map(
+          async (res) => {
+            console.log(res);
+            if (res.length > 0) {
+              this.listadoClientes = res;
+              const listadoString = JSON.stringify(this.listadoClientes);
+              this.storage$.set('key', code);
+              this.storage$.set('listado', res);
+              localStorage.setItem('listadoClientes', listadoString);
+              this.router.navigate(['home/index']);
+            }
+            //!para test
+            if (res.length == 0) {
+              this.messagetoast = 'No hay existen recorridos para esta ruta';
+              this.setOpen(true);
+            }
 
-        //!para test
-        this.messagetoast = 'No hay existen recorridos para esta ruta';
-        this.setOpen(true);
-        // setTimeout(() => {
-        //   this.router.navigate(['home/index']);
-        // }, 2000);
-      },
-      (err) => {
-        console.log(err);
-        const customMsg = err?.error?.error || '';
-        this.messagetoast = `${err.message}; ${customMsg}`;
-        this.setOpen(true);
-        // setTimeout(() => {
-        //   this.router.navigate(['home/index']);
-        // }, 2000);
-      }
-    );
+            // setTimeout(() => {
+            //   this.router.navigate(['home/index']);
+            // }, 2000);
+          },
+          (err: any) => {
+            console.log(err);
+            const customMsg = err?.error?.error || '';
+            this.messagetoast = `${err.message}; ${customMsg}`;
+            this.setOpen(true);
+            // setTimeout(() => {
+            //   this.router.navigate(['home/index']);
+            // }, 2000);
+          }
+        )
+      )
+      .subscribe();
   }
 
   /**

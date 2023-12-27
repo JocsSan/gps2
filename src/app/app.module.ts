@@ -10,7 +10,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage-angular';
-import { JwtAutInterceptor } from './utils/interceptor/jwt-aut.interceptor';
+import { JwtAutInterceptor } from './utils/interceptors/jwt-aut.interceptor';
+import { AuthInterceptor } from './utils/interceptors/auth.interceptor';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -30,6 +31,7 @@ import { JwtAutInterceptor } from './utils/interceptor/jwt-aut.interceptor';
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: HTTP_INTERCEPTORS, useClass: JwtAutInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     CookieService,
   ],
   bootstrap: [AppComponent],

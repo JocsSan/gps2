@@ -38,12 +38,16 @@ export class GeotService {
     );
   }
 
+  /**
+   * @description : obtiene el listado de clientes para el usuario logueado
+   * @param code : key de enlistamiento
+   * @returns : listado de clientes
+   * */
   getListado(code: string): Observable<Listado[]> {
     const timestamp = new Date().getTime();
     const url = `${this.urlGeot}ruta-logica/get-enlistamiento`;
     return this.http
       .get<ResponseListado>(url, {
-        headers: { 'ngrok-skip-browser-warning': '69420' },
         params: {
           key: code,
           timestamp: timestamp.toString(),
@@ -61,12 +65,15 @@ export class GeotService {
       );
   }
 
+  /**
+   * @description : obtiene las razones para estados de los pedidos y entregas
+   * @returns : listado de razones
+   */
   getRazones(): Observable<Razon[]> {
     const timestamp = new Date().getTime();
     const url = `${this.urlGeot}ruta-logica/get-razones`;
     return this.http
       .get<Razon[]>(url, {
-        headers: { 'ngrok-skip-browser-warning': '69420' },
         params: {
           timestamp: timestamp.toString(),
         },
@@ -81,9 +88,13 @@ export class GeotService {
       );
   }
 
+  /**
+   * @description : guarda los pedidos y entregas
+   * @param order : objeto con la informacion del listado
+   * @returns : listado de razones
+   */
   postOrderApi(order: Listado): Observable<any> {
     console.log('log de algo', order);
-
     const url = `${this.urlGeot}ruta-logica/post-order`;
     const body = {
       order: order.Cliente,
@@ -92,15 +103,7 @@ export class GeotService {
       estadoEntrega: order.EstadoEntrega,
     };
 
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: 'my-auth-token',
-        'ngrok-skip-browser-warning': '69420',
-      }),
-    };
-
-    return this.http.post<any[]>(url, body, httpOptions).pipe(
+    return this.http.post<any[]>(url, body).pipe(
       map((res) => {
         return res;
       }),
@@ -110,6 +113,11 @@ export class GeotService {
     );
   }
 
+  /**
+   * @description : guarda los puntos de la ruta
+   * @param unPunto : objeto con la informacion del punto
+   * @returns : status del post
+   */
   postPoint(unPunto: OperacionInsertLocation[]): Observable<any> {
     const url = `${this.urlGeot}ruta-logica/post-point`;
     return this.http.post<any[]>(url, unPunto).pipe(
@@ -121,4 +129,30 @@ export class GeotService {
       })
     );
   }
+
+  /**
+   * @description : code o key de enlistamiento
+   * @param code : objeto con la informacion del punto
+   * @returns : status del post
+   */
+  refreshtoken = (code: string): Observable<boolean> => {
+    const url = `${this.urlGeot}ruta-logica/refresh-token`;
+    const timestamp = new Date().getTime();
+    const token = this.cokie$.get('token');
+    const body = {
+      key: code,
+      token,
+      timestamp: timestamp.toString(),
+    };
+    return this.http.patch<{ token: string }>(url, body).pipe(
+      map((res) => {
+        this.cokie$.delete('token');
+        this.cokie$.set('token', res.token);
+        return true;
+      }),
+      catchError((err) => {
+        throw err;
+      })
+    );
+  };
 }
