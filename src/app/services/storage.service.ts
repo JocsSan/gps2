@@ -112,6 +112,8 @@ export class StorageService {
     const listadoOld = await this.get('listado');
     const listadosCurrent = listadoOld.map((el: Listado) => {
       if (el.Cliente === listadoNew.Cliente) {
+        console.log('nuevo', listadoNew);
+        console.log('viejo', el);
         return {
           Chofer: listadoNew.Chofer,
           Cliente: listadoNew.Cliente,
