@@ -204,8 +204,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     return cliente;
   }
 
-  setclienteDb(cliente: Listado) {
-    this.storage$.set('cliente', cliente);
+  async setclienteDb(cliente: Listado) {
+    await this.storage$.set('cliente', cliente);
   }
 
   //*--------------------------------------------------------------------
@@ -392,7 +392,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     await this.storage$.updateCliente(this.receivedData);
     await this.storage$.updateOrders(this.receivedData);
 
-    this.setclienteDb(this.receivedData);
+    await this.setclienteDb(this.receivedData);
 
     console.log('tomando pedido');
     this.cancel();
