@@ -60,6 +60,8 @@ export class GeotService {
           return res.listado;
         }),
         catchError((err) => {
+          console.log('error de la api', err);
+
           throw err;
         })
       );

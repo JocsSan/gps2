@@ -4,10 +4,10 @@
 
 export const environment = {
   production: false,
-  // geotUrl: 'tcp://2.tcp.ngrok.io:19480/',
-  geotUrl: 'https://53d0-190-4-28-69.ngrok-free.app/',
+  //geotUrl: 'http://localhost:3000/',
+  geotUrl: 'https://6981-190-4-28-69.ngrok-free.app',
   version: '0.0.1.1.6',
-  changeDistance: 1,
+  changeDistance: 50,
   rechargeMap: 200,
 };
 

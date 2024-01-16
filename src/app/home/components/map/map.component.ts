@@ -1,7 +1,13 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { GeolocationService } from 'src/app/services/geolocation.service';
-import { ActionSheetController } from '@ionic/angular';
+import { ActionSheetController, IonModal } from '@ionic/angular';
 import { StorageService } from 'src/app/services/storage.service';
 import { PostOfflinerService } from 'src/app/services/post-offliner.service';
 import { Razon } from 'src/app/interfaces/razones.interface';
@@ -57,6 +63,9 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   razones!: Razon[];
 
   operacionesPost!: Operacion[];
+
+  //?modal de razon
+  @ViewChild(IonModal, { static: true }) modal!: IonModal;
 
   constructor(
     private geolocation$: GeolocationService,
@@ -322,16 +331,11 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   canDismiss = async () => {
     const actionSheet = await this.actionSheetCtrl.create({
-      header: 'Are you sure?',
+      header: 'Guardar y Cerrar?',
       buttons: [
         {
           text: 'Yes',
           role: 'confirm',
-          handler: () => {
-            if (!!this.selectedOption) {
-              this.submitForm();
-            }
-          },
         },
         {
           text: 'No',
@@ -346,6 +350,17 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
     return role === 'confirm';
   };
+
+  async handleFormSubmission() {
+    const confirmed = await this.canDismiss();
+    if (confirmed) {
+      this.submitForm();
+    }
+  }
+
+  selectRazon(razon: '2' | '3' | '4') {
+    this.selectedOption = razon;
+  }
 
   async submitForm() {
     console.log('Opción seleccionada:', this.selectedOption);
@@ -362,6 +377,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.selectedOption == '4') {
       await this.anularOrden();
     }
+    // Dismiss the modal after form submission
   }
 
   tomarPedido = async () => {
@@ -369,6 +385,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     await this.storage$.setOrder(this.receivedData);
     await this.storage$.updateCliente(this.receivedData);
     await this.storage$.updateOrders(this.receivedData);
+    console.log('tomando pedido');
+    this.cancel();
   };
 
   finalizarPedido = async () => {
@@ -376,8 +394,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     await this.storage$.setOrder(this.receivedData);
     await this.storage$.updateCliente(this.receivedData);
     await this.storage$.updateOrders(this.receivedData);
-    this.storage$.remove('take_order');
-    console.log('finalozando pedido');
+    await this.storage$.remove('take_order');
+    this.cancel();
     this.router.navigate(['home/index']);
   };
 
@@ -388,6 +406,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     await this.storage$.updateOrders(this.receivedData);
     this.storage$.remove('take_order');
     console.log('anulando pedido');
+    this.cancel();
     this.router.navigate(['home/index']);
   };
 
@@ -415,10 +434,13 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   shouldShowRadio(razon: any, cambioDistancias: number) {
-    console.log(environment.changeDistance);
     return (
       (razon.EstadoEntrega != 3 && razon.EstadoEntrega != 1) ||
       (razon.EstadoEntrega == 3 && cambioDistancias <= 80000000)
     );
+  }
+
+  cancel() {
+    this.modal.dismiss(null, 'cerrar');
   }
 }

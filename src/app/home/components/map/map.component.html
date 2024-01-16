@@ -49,26 +49,46 @@
               <ion-toolbar>
                 <ion-title>Modal</ion-title>
                 <ion-buttons slot="end">
-                  <ion-button (click)="modal.dismiss()">Close</ion-button>
+                  <ion-button (click)="modal.dismiss()">Cerrar</ion-button>
                 </ion-buttons>
               </ion-toolbar>
             </ion-header>
             <ion-header>
               <ion-toolbar>
                 <ion-title> Formulario </ion-title>
+                <ion-title
+                  *ngIf="receivedData.EstadoEntrega"
+                  [ngStyle]="{
+                    background:
+                      +receivedData.EstadoEntrega === 3
+                        ? 'red'
+                        : +receivedData.EstadoEntrega === 2
+                        ? 'blue'
+                        : 'green'
+                  }"
+                >
+                  {{
+                    +receivedData.EstadoEntrega === 3
+                      ? "Finalizar"
+                      : +receivedData.EstadoEntrega === 2
+                      ? "Se tomó pedido"
+                      : "No se ha trabajado aun"
+                  }}
+                </ion-title>
               </ion-toolbar>
             </ion-header>
 
             <ion-content>
-              <form (ngSubmit)="modal.dismiss()">
+              <form #form="ngForm">
                 <ion-list>
-                  <ion-radio-group
+                  <!-- <ion-radio-group
                     [allowEmptySelection]="true"
                     [(ngModel)]="selectedOption"
                     name="razonSelection"
                     *ngFor="let razon of razones; trackBy: trackByFn"
                   >
                     <div *ngIf="shouldShowRadio(razon, cambioDistancias)">
+                      {{ receivedData.EstadoEntrega }}
                       <ion-radio
                         [value]="razon.EstadoEntrega"
                         labelPlacement="end"
@@ -78,8 +98,32 @@
                       </ion-radio>
                       <br />
                     </div>
-                  </ion-radio-group>
+                  </ion-radio-group> -->
 
+                  <ion-button
+                    expand="block"
+                    fill="solid"
+                    color="primary"
+                    (click)="selectRazon('2')"
+                    >Tomar Pedido</ion-button
+                  >
+
+                  <ion-button
+                    expand="block"
+                    fill="solid"
+                    color="success"
+                    (click)="selectRazon('3')"
+                    *ngIf="cambioDistancias < 8000"
+                    >Finalizar Entrega</ion-button
+                  >
+
+                  <ion-button
+                    expand="block"
+                    fill="solid"
+                    color="danger"
+                    (click)="selectRazon('4')"
+                    >Cancelar</ion-button
+                  >
                   <ion-item>
                     <ion-label position="floating">Comentario</ion-label>
                     <ion-label position="floating" *ngIf="selectedOption == '4'"
@@ -95,22 +139,29 @@
                     <app-draw (signature)="getSignature($event)"></app-draw>
                   </ion-item>
                 </ion-list>
-                <ion-button
-                  expand="full"
-                  type="submit"
-                  *ngIf="
-                    selectedOption == '4' &&
-                    inputValue != undefined &&
-                    inputValue != null
-                  "
-                  >Enviar</ion-button
-                >
-                <ion-button
-                  expand="full"
-                  type="submit"
-                  *ngIf="selectedOption != '4' && !!selectedOption"
-                  >Enviar</ion-button
-                >
+                <form #form="ngForm">
+                  <!-- ... -->
+                  <ion-button
+                    expand="full"
+                    type="button"
+                    *ngIf="
+                      selectedOption == '4' &&
+                      inputValue != undefined &&
+                      inputValue != null
+                    "
+                    (click)="handleFormSubmission()"
+                  >
+                    Enviar
+                  </ion-button>
+                  <ion-button
+                    expand="full"
+                    type="button"
+                    *ngIf="selectedOption != '4' && !!selectedOption"
+                    (click)="handleFormSubmission()"
+                  >
+                    Enviar
+                  </ion-button>
+                </form>
               </form>
             </ion-content>
           </ng-template>

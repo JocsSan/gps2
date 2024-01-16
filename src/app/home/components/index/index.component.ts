@@ -64,6 +64,7 @@ export class IndexComponent implements OnInit, OnDestroy {
         async (res) => {
           this.orderTake = res;
           const orderChange = this.orderTake;
+          console.log('orderChange', orderChange);
           if (
             this.orderTake.EstadoEntrega == '4' ||
             this.orderTake.EstadoEntrega == '3'
@@ -221,5 +222,13 @@ export class IndexComponent implements OnInit, OnDestroy {
     console.log(environment.changeDistance);
     console.log('post de index', res);
     console.log(res);
+  }
+
+  async validateOrder(cliente: string): Promise<boolean> {
+    const orderTake: Listado = await this.storage$.get('take_order');
+    if (orderTake?.Cliente === cliente) {
+      return true;
+    }
+    return false;
   }
 }
