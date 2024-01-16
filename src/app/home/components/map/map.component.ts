@@ -385,6 +385,18 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     await this.storage$.setOrder(this.receivedData);
     await this.storage$.updateCliente(this.receivedData);
     await this.storage$.updateOrders(this.receivedData);
+
+    const cliente = await this.getclienteDb();
+    //    const localCliente = localStorage.getItem('cliente');
+    if (cliente) {
+      this.receivedData = cliente;
+      if (this.receivedData.Lat && this.receivedData.Lon)
+        this.markerDestiny = {
+          lat: parseFloat(this.receivedData.Lat),
+          lng: parseFloat(this.receivedData.Lon),
+        };
+    }
+
     console.log('tomando pedido');
     this.cancel();
   };
