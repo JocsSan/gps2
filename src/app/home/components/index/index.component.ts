@@ -39,7 +39,10 @@ export class IndexComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getseguimiento();
     this.getListado();
-    this.getOrder();
+
+    setInterval(() => {
+      this.getOrder();
+    }, 1000);
   }
 
   ngOnDestroy(): void {
@@ -58,10 +61,15 @@ export class IndexComponent implements OnInit, OnDestroy {
   getOrder = async () => {
     //? Metodo para obtener orden tomada en caso de ya haber sido usada
     this.orderTake = await this.storage$.get('take_order');
+    if (this.subscripciones['getOrderObservable']) {
+      this.subscripciones['getOrderObservable'].unsubscribe();
+    }
+
     this.subscripciones['getOrderObservable'] = this.storage$
       .getOrderObservable()
       .subscribe(
         async (res) => {
+          console.log('res', res);
           this.orderTake = res;
           const orderChange = this.orderTake;
           console.log('orderChange', orderChange);
