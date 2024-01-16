@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   //geotUrl: 'http://localhost:3000/',
-  geotUrl: 'https://6981-190-4-28-69.ngrok-free.app',
+  geotUrl: 'https://6981-190-4-28-69.ngrok-free.app/',
   version: '0.0.1.1.6',
   changeDistance: 50,
   rechargeMap: 200,
