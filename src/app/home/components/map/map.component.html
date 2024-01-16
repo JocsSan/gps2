@@ -60,17 +60,20 @@
                   *ngIf="receivedData.EstadoEntrega"
                   [ngStyle]="{
                     background:
-                      +receivedData.EstadoEntrega === 3
+                      +receivedData.EstadoEntrega === 3 || selectedOption == '3'
                         ? 'red'
-                        : +receivedData.EstadoEntrega === 2
+                        : +receivedData.EstadoEntrega === 2 ||
+                          selectedOption == '2'
                         ? 'blue'
                         : 'green'
                   }"
                 >
+                  {{ receivedData.EstadoEntrega }}
                   {{
-                    +receivedData.EstadoEntrega === 3
+                    +receivedData.EstadoEntrega === 3 || selectedOption == "3"
                       ? "Finalizar"
-                      : +receivedData.EstadoEntrega === 2
+                      : +receivedData.EstadoEntrega === 2 ||
+                        selectedOption == "2"
                       ? "Se tomó pedido"
                       : "No se ha trabajado aun"
                   }}

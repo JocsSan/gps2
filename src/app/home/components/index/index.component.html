@@ -41,14 +41,8 @@
           fill="clear"
           (click)="navigateToDestination(item)"
           *ngIf="orderTake?.Cliente == item.Cliente || !orderTake?.Cliente"
-          >Procesar Orden :
+          >Procesar Orden
         </ion-button>
-        orderTake?.Cliente == item.Cliente :
-        {{ orderTake?.Cliente == item.Cliente }} ,!orderTake?.Cliente :
-        {{ !orderTake?.Cliente }},
-        {{ orderTake?.Cliente == item.Cliente || !orderTake }}
-
-        orderTake : {{ orderTake | json }}
       </ion-card>
     </ion-item>
   </div>
