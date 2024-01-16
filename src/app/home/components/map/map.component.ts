@@ -109,6 +109,8 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.razones = await this.getRazones();
 
     const cliente = await this.getclienteDb();
+    console.log('cliente', cliente);
+
     //    const localCliente = localStorage.getItem('cliente');
     if (cliente) {
       this.receivedData = cliente;
