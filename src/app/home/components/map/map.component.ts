@@ -200,7 +200,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     //usar tak order si aun caso
-    const clienteTake = await this.storage$.get('cliente');
+    const clienteTake = await this.storage$.get('take_order');
     if (clienteTake) {
       this.subscripciones['getClienOrdeObserver'] = this.storage$
         .getClienOrdeObserver()
