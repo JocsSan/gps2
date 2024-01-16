@@ -43,6 +43,9 @@
           *ngIf="orderTake?.Cliente == item.Cliente || !orderTake?.Cliente"
           >Procesar Orden :
         </ion-button>
+        orderTake?.Cliente == item.Cliente :
+        {{ orderTake?.Cliente == item.Cliente }} ,!orderTake?.Cliente :
+        {{ !orderTake?.Cliente }},
         {{ orderTake?.Cliente == item.Cliente || !orderTake?.Cliente }}
       </ion-card>
     </ion-item>
