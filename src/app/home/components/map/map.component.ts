@@ -395,8 +395,10 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     await this.storage$.updateCliente(this.receivedData);
     await this.storage$.updateOrders(this.receivedData);
     await this.storage$.remove('take_order');
-    this.cancel();
-    this.router.navigate(['home/index']);
+    setTimeout(() => {
+      this.cancel();
+      this.router.navigate(['home/index']);
+    }, 1000);
   };
 
   anularOrden = async () => {
