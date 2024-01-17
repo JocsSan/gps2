@@ -360,7 +360,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       header: 'Guardar y Cerrar?',
       buttons: [
         {
-          text: 'Yes',
+          text: 'Si',
           role: 'confirm',
         },
         {
