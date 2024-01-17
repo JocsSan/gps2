@@ -123,6 +123,11 @@ export class GeotService {
    * @returns : status del post
    */
   postPoint(unPunto: OperacionInsertLocation[]): Observable<any> {
+    unPunto = unPunto.filter(
+      (v, i, a) =>
+        a.map((e) => `${e.lat},${e.lon}`).indexOf(`${v.lat},${v.lon}`) === i
+    );
+
     const url = `${this.urlGeot}ruta-logica/post-point`;
     return this.http.post<any[]>(url, unPunto).pipe(
       map((res) => {
