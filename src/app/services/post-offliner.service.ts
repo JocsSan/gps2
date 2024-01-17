@@ -190,7 +190,13 @@ export class PostOfflinerService {
     this.storage$.remove('post_orders');
     const postOrderObservables: Observable<any>[] = ordersLocal.map(
       (element) => {
+        //TODO: mandar la orden
         return this.geot$.postOrderApi(element).pipe(
+          map((res) => {
+            this.storage$.remove('listado');
+            this.storage$.set('listado', res);
+            return res;
+          }),
           catchError((err) => {
             console.log('Error en una solicitud:', err);
             return of({ error: err, element }); // Devuelve un observable con un objeto que contiene el error y el elemento que generó el error.

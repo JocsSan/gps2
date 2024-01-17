@@ -61,11 +61,11 @@
                   [ngStyle]="{
                     background:
                       +receivedData.EstadoEntrega === 3 || selectedOption == '3'
-                        ? 'red'
+                        ? 'green'
                         : +receivedData.EstadoEntrega == 2 ||
                           selectedOption == '2'
                         ? 'blue'
-                        : 'green'
+                        : 'red'
                   }"
                 >
                   {{ receivedData.EstadoEntrega }}
@@ -139,7 +139,10 @@
                     ></ion-input>
                   </ion-item>
                   <ion-item>
-                    <app-draw (signature)="getSignature($event)"></app-draw>
+                    <!-- <app-draw
+                      (signature)="getSignature($event)"
+                      *ngIf="selectedOption == '3'"
+                    ></app-draw> -->
                   </ion-item>
                 </ion-list>
                 <form #form="ngForm">
@@ -167,7 +170,6 @@
                 </form>
               </form>
             </ion-content>
-            {{ receivedData | json }}
           </ng-template>
         </ion-modal>
       </ion-row>

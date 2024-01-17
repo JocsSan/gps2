@@ -28,6 +28,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
   logGuardado: any;
   seGuardo: boolean = false;
   receivedData!: Listado;
+  firma = '';
 
   //*variables de mapa-------------------------------
   cambioDistancias!: number;
@@ -110,7 +111,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const cliente = await this.getclienteDb();
     console.log('cliente', cliente);
-
+    this.firma = '';
     //    const localCliente = localStorage.getItem('cliente');
     if (cliente) {
       this.receivedData = cliente;
@@ -172,6 +173,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getSignature = (SignaturePad: any) => {
     console.log(SignaturePad);
+    this.firma = SignaturePad;
   };
 
   async getRazones(): Promise<Razon[]> {
@@ -205,6 +207,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
       this.subscripciones['getClienOrdeObserver'] = this.storage$
         .getClienOrdeObserver()
         .subscribe((res) => {
+          this.firma = '';
           this.receivedData = res;
         });
       return clienteTake;
@@ -214,6 +217,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscripciones['getClienOrdeObserver'] = this.storage$
       .getClienOrdeObserver()
       .subscribe((res) => {
+        this.firma = '';
         this.receivedData = res;
       });
     return cliente;
@@ -302,6 +306,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async finalPoint(coordenadas: { lat: number; lng: number }) {
     //TODO: mandar los puntos
+    //TODO: Agregar la firma
     const res = await this.postOffline$.finalPoint(coordenadas);
     console.log(res);
   }

@@ -8,6 +8,7 @@ import { Razon } from '../interfaces/razones.interface';
 import { OperacionInsertLocation } from '../interfaces/operation.interface';
 import { ResponseListado } from '../interfaces/response.interface';
 import { CookieService } from 'ngx-cookie-service';
+import { StorageService } from './storage.service';
 
 @Injectable({
   providedIn: 'root',
@@ -95,17 +96,18 @@ export class GeotService {
    * @param order : objeto con la informacion del listado
    * @returns : listado de razones
    */
-  postOrderApi(order: Listado): Observable<any> {
+  postOrderApi(order: Listado): Observable<Listado[]> {
     console.log('log de algo', order);
     const url = `${this.urlGeot}ruta-logica/post-order`;
     const body = {
       order: order.Cliente,
       lat: order.Lat,
+      enlistamiento: order.Enlistamiento,
       lon: order.Lon,
       estadoEntrega: order.EstadoEntrega,
     };
 
-    return this.http.post<any[]>(url, body).pipe(
+    return this.http.post<Listado[]>(url, body).pipe(
       map((res) => {
         return res;
       }),

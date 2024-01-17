@@ -170,13 +170,19 @@ export class StorageService {
 
   async postOrdersNetwork(listado: Listado) {
     //? la orden a mandar
-    this.geot$.postOrderApi(listado).subscribe((res: any) => {
+    //TODO: mandar la orden
+    this.geot$.postOrderApi(listado).subscribe((res) => {
+      this.storage.remove('listado');
+      this.storage.set('listado', res);
       console.log(res);
     });
     //?por si existen mas ordenes que mandar
     const orders: Listado[] = await this.get('post_orders');
     orders.forEach((element) => {
-      this.geot$.postOrderApi(element).subscribe((res: any) => {
+      //TODO: mandar la orden
+      this.geot$.postOrderApi(element).subscribe((res) => {
+        this.storage.remove('listado');
+        this.storage.set('listado', res);
         console.log(res);
       });
     });
