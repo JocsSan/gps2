@@ -99,12 +99,14 @@ export class GeotService {
   postOrderApi(order: Listado): Observable<Listado[]> {
     console.log('log de algo', order);
     const url = `${this.urlGeot}ruta-logica/post-order`;
+
     const body = {
       order: order.Cliente,
       lat: order.Lat,
       enlistamiento: order.Enlistamiento,
       lon: order.Lon,
       estadoEntrega: order.EstadoEntrega,
+      horaLlegada: order.HoraLlegada,
     };
 
     return this.http.post<Listado[]>(url, body).pipe(

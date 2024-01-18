@@ -191,6 +191,9 @@ export class PostOfflinerService {
     const postOrderObservables: Observable<any>[] = ordersLocal.map(
       (element) => {
         //TODO: mandar la orden
+        element.HoraLlegada = new Date(Date.now()).toLocaleString('es-ES', {
+          timeZone: 'UTC',
+        });
         return this.geot$.postOrderApi(element).pipe(
           map((res) => {
             this.storage$.remove('listado');

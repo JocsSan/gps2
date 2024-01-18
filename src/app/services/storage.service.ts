@@ -170,6 +170,10 @@ export class StorageService {
 
   async postOrdersNetwork(listado: Listado) {
     //? la orden a mandar
+
+    listado.HoraLlegada = new Date(Date.now()).toLocaleString('es-ES', {
+      timeZone: 'UTC',
+    });
     //TODO: mandar la orden
     this.geot$.postOrderApi(listado).subscribe((res) => {
       this.storage.remove('listado');
@@ -180,6 +184,9 @@ export class StorageService {
     const orders: Listado[] = await this.get('post_orders');
     orders.forEach((element) => {
       //TODO: mandar la orden
+      element.HoraLlegada = new Date(Date.now()).toLocaleString('es-ES', {
+        timeZone: 'UTC',
+      });
       this.geot$.postOrderApi(element).subscribe((res) => {
         this.storage.remove('listado');
         this.storage.set('listado', res);

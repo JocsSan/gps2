@@ -13,37 +13,43 @@
     [vertical]="'bottom'"
     [orientation]="'end'"
   ></app-header-network>
-  <div *ngFor="let item of listadoClientes">
-    <ion-item *ngIf="item.EstadoEntrega != '3' && item.EstadoEntrega != '4'">
-      <ion-card [style]="{ 'min-width': '100%' }" style="min-width: 100%">
-        <ion-card-header>
-          <ion-card-title>Cliente: {{ item.Cliente }}</ion-card-title>
-          <ion-card-subtitle>{{ item.NomCliente }}</ion-card-subtitle>
-          <ion-card-subtitle>{{ item.Contacto }} </ion-card-subtitle>
-          <ion-card-subtitle> Tel : {{ item.Telefono }} </ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content> Direccion: {{ item.Direccion }} </ion-card-content>
-        <ion-card-content>
-          Esta a :
-          {{
-            currentPoint.lat
-              | calcularDistancia
-                : currentPoint.lng
-                : item.Lat || "0"
-                : item.Lon || "0"
-          }}
-          mts
-        </ion-card-content>
-        <ion-label *ngIf="orderTake?.Cliente">
-          {{ orderTake.Cliente }}
-        </ion-label>
-        <ion-button
-          fill="clear"
-          (click)="navigateToDestination(item)"
-          *ngIf="orderTake?.Cliente == item.Cliente || !orderTake?.Cliente"
-          >Procesar Orden
-        </ion-button>
-      </ion-card>
-    </ion-item>
+  <div *ngIf="(listadoClientes?.length || 0) > 0; else noClients">
+    <div *ngFor="let item of listadoClientes">
+      <ion-item *ngIf="item.EstadoEntrega != '3' && item.EstadoEntrega != '4'">
+        <ion-card [style]="{ 'min-width': '100%' }" style="min-width: 100%">
+          <ion-card-header>
+            <ion-card-title>Cliente: {{ item.Cliente }}</ion-card-title>
+            <ion-card-subtitle>{{ item.NomCliente }}</ion-card-subtitle>
+            <ion-card-subtitle>{{ item.Contacto }} </ion-card-subtitle>
+            <ion-card-subtitle> Tel : {{ item.Telefono }} </ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content> Direccion: {{ item.Direccion }} </ion-card-content>
+          <ion-card-content>
+            Esta a :
+            {{
+              currentPoint.lat
+                | calcularDistancia
+                  : currentPoint.lng
+                  : item.Lat || "0"
+                  : item.Lon || "0"
+            }}
+            mts
+          </ion-card-content>
+          <ion-label *ngIf="orderTake?.Cliente">
+            {{ orderTake.Cliente }}
+          </ion-label>
+          <ion-button
+            fill="clear"
+            (click)="navigateToDestination(item)"
+            *ngIf="orderTake?.Cliente == item.Cliente || !orderTake?.Cliente"
+            >Procesar Orden
+          </ion-button>
+        </ion-card>
+      </ion-item>
+    </div>
   </div>
 </ion-content>
+
+<ng-template #noClients>
+  <p>Ya no hay clientes que atender</p>
+</ng-template>
