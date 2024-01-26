@@ -313,6 +313,7 @@ export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async postPoint(coordenadas: { lat: number; lng: number }) {
     //TODO: mandar los puntos
+    console.log('post de mapa', coordenadas);
     const res = await this.postOffline$.postPoint(coordenadas);
     console.log(environment.changeDistance);
     console.log('post de mapa', res);

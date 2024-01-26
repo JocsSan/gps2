@@ -164,16 +164,17 @@ export class IndexComponent implements OnInit, OnDestroy {
       };
       console.log('le agregamos el primer las point');
       this.postPoint(this.lasPoint);
-
-      if (this.markerDestiny.lat == 0) {
-        this.postPoint(this.lasPoint);
-      }
+      //TODO: ELIMINADO LOS MARKER DESTINI
+      // if (this.markerDestiny.lat == 0) {
+      //   this.postPoint(this.lasPoint);
+      // }
     }
 
     if (this.lasPoint) {
-      if (this.markerDestiny.lat == 0) {
-        this.postPoint(this.lasPoint);
-      }
+      //TODO: ELIMINADO LOS MARKER DESTINI
+      // if (this.markerDestiny.lat == 0) {
+      //   this.postPoint(this.lasPoint);
+      // }
       const currentdistance = this.calcularDistancia(
         this.currentPoint.lat,
         this.currentPoint.lng,
@@ -226,6 +227,7 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   async postPoint(coordenadas: { lat: number; lng: number }) {
     //TODO: mandar los puntos
+    console.log('post de index', coordenadas);
     const res = await this.postOffline$.postPoint(coordenadas);
     console.log(environment.changeDistance);
     console.log('post de index', res);
